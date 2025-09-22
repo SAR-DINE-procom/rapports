@@ -27,6 +27,8 @@ jobs:
         with:
           root_file: main.tex
           working_directory: src/rapport_complet
+        env:
+          TEXINPUTS: ".:../../sty//:../sty//:sty//:../../ico//:../ico//:ico//:"
 
       - name: Upload all PDFs (respecting directory structure)
         uses: actions/upload-artifact@v4
