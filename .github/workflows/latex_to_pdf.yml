@@ -36,7 +36,7 @@ jobs:
         if: steps.detect_changes.outputs.rapport_complet_modified == 'true'
         run: |
           cd src/rapport_complet
-          latexmk -pdf -r=latexmkrc main.tex
+          latexmk -pdf -r latexmkrc main.tex
 
       - name: Upload PDF
         if: steps.detect_changes.outputs.rapport_complet_modified == 'true'
