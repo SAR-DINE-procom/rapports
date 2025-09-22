@@ -4,11 +4,10 @@ on: [push]
 jobs:
   build_latex:
     runs-on: ubuntu-latest
+    container: texlive/texlive:latest  # Image Docker officielle avec TeX Live
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
 
       - name: Detect changed LaTeX projects
         id: detect_changes
@@ -20,12 +19,6 @@ jobs:
           if echo "$CHANGED_FILES" | grep -q "src/rapport_complet/main\.tex" && [ -f "src/rapport_complet/main.tex" ]; then
             echo "rapport_complet_modified=true" >> $GITHUB_OUTPUT
           fi
-
-      - name: Install TeX Live
-        if: steps.detect_changes.outputs.rapport_complet_modified == 'true'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y texlive-full latexmk
 
       - name: Prepare compilation environment
         if: steps.detect_changes.outputs.rapport_complet_modified == 'true'
