@@ -1,46 +1,41 @@
-name: Build LaTeX document
-on: [push]
+name: Build LaTeX Projects
+
+on: push   # Se lance à chaque push, quelle que soit la branche
 
 jobs:
-  build_latex:
+  build:
     runs-on: ubuntu-latest
-    container: texlive/texlive:latest  # Image Docker officielle avec TeX Live
+
+    container:
+      image: texlive/texlive:latest   # Image Docker avec LaTeX déjà installé
+
     steps:
-      - name: Set up Git repository
+      - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Suffisant pour comparer HEAD~1 et HEAD
 
-      - name: Detect changed LaTeX projects
-        id: detect_changes
+      - name: Compile LaTeX projects
         run: |
-          # Récupérer les fichiers modifiés entre les deux derniers commits
-          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
-          echo "Fichiers modifiés : $CHANGED_FILES"
+          mkdir -p build
+          for project in src/*; do
+            if [ -d "$project" ] && [ -f "$project/main.tex" ]; then
+              project_name=$(basename "$project")
+              outdir="build/$project_name"
+              mkdir -p "$outdir"
+              echo "Compiling $project -> $outdir/${project_name}.pdf"
 
-          # Extraire les dossiers contenant un main.tex modifié
-          PROJECT_DIR=$(echo "$CHANGED_FILES" | grep -E 'main\.tex$' | sed 's|/main\.tex$||' | head -n 1)
+              # Compile (PDF dans $outdir)
+              latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir="$outdir" "$project/main.tex"
 
-          if [ -n "$PROJECT_DIR" ]; then
-            echo "project_dir=$PROJECT_DIR" >> $GITHUB_OUTPUT
-          fi
+              # Renommer le PDF final
+              mv "$outdir/main.pdf" "$outdir/${project_name}.pdf"
 
-      - name: Compile modified LaTeX project
-        if: steps.detect_changes.outputs.project_dir
-        run: |
-          PROJECT_DIR="${{ steps.detect_changes.outputs.project_dir }}"
-          echo "Compilation du projet : $PROJECT_DIR"
+              # Nettoyer les fichiers auxiliaires
+              latexmk -c -outdir="$outdir" "$project/main.tex" || true
+            fi
+          done
 
-          # Copier les ressources partagées (sty, ico, latexmkrc) dans le dossier du projet
-          cp -r sty ico latexmkrc "$PROJECT_DIR"/
-
-          # Compiler avec latexmk
-          cd "$PROJECT_DIR"
-          latexmk -pdf -r latexmkrc main.tex
-
-      - name: Upload PDF
-        if: steps.detect_changes.outputs.project_dir
+      - name: Upload PDFs
         uses: actions/upload-artifact@v4
         with:
-          name: PDF-${{ steps.detect_changes.outputs.project_dir }}
-          path: ${{ steps.detect_changes.outputs.project_dir }}/main.pdf
+          name: latex-pdfs
+          path: build/
