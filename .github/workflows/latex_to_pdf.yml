@@ -21,7 +21,13 @@ jobs:
             echo "rapport_complet_modified=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Compile rapport_complet (si modifié)
+      - name: Install TeX Live
+        if: steps.detect_changes.outputs.rapport_complet_modified == 'true'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y texlive-full latexmk
+
+      - name: Prepare compilation environment
         if: steps.detect_changes.outputs.rapport_complet_modified == 'true'
         run: |
           # Copier les dossiers sty et ico dans le dossier de travail
@@ -31,14 +37,13 @@ jobs:
             cp latexmkrc src/rapport_complet/
           fi
 
-      - name: Run LaTeX compilation with xu-cheng/latex-action
+      - name: Compile LaTeX document
         if: steps.detect_changes.outputs.rapport_complet_modified == 'true'
-        uses: xu-cheng/latex-action@v4
-        with:
-          root_file: main.tex
-          working_directory: src/rapport_complet
+        run: |
+          cd src/rapport_complet
+          latexmk -pdf -r=latexmkrc main.tex
 
-      - name: Upload PDF (respecting directory structure)
+      - name: Upload PDF
         if: steps.detect_changes.outputs.rapport_complet_modified == 'true'
         uses: actions/upload-artifact@v4
         with:
