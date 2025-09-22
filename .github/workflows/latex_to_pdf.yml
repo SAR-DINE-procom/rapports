@@ -26,7 +26,7 @@ jobs:
         uses: xu-cheng/latex-action@v4
         with:
           root_file: main.tex
-          working_directory: rapport_complet
+          working_directory: src/rapport_complet
 
       - name: Upload all PDFs (respecting directory structure)
         uses: actions/upload-artifact@v4
