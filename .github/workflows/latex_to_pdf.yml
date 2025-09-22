@@ -1,0 +1,38 @@
+name: Build LaTeX documents
+on: [push]
+
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Detect changed LaTeX projects
+        id: detect_changes
+        run: |
+          CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
+          echo "Fichiers modifiés : $CHANGED_FILES"
+
+          # Vérifier si rapport_complet/main.tex a été modifié et existe
+          if echo "$CHANGED_FILES" | grep -q "rapport_complet/main\.tex" && [ -f "rapport_complet/main.tex" ]; then
+            echo "rapport_complet_modified=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Compile rapport_complet (si modifié)
+        if: steps.detect_changes.outputs.rapport_complet_modified == 'true'
+        uses: xu-cheng/latex-action@v4
+        with:
+          root_file: main.tex
+          working_directory: rapport_complet
+
+      - name: Upload all PDFs (respecting directory structure)
+        uses: actions/upload-artifact@v4
+        with:
+          name: PDFs
+          path: |
+            rapport_complet/main.pdf
+
+
