@@ -23,18 +23,24 @@ jobs:
 
       - name: Compile rapport_complet (si modifié)
         if: steps.detect_changes.outputs.rapport_complet_modified == 'true'
+        run: |
+          # Copier les dossiers sty et ico dans le dossier de travail
+          cp -r sty ico src/rapport_complet/
+          # Copier le fichier latexmkrc si présent
+          if [ -f latexmkrc ]; then
+            cp latexmkrc src/rapport_complet/
+          fi
+
+      - name: Run LaTeX compilation with xu-cheng/latex-action
+        if: steps.detect_changes.outputs.rapport_complet_modified == 'true'
         uses: xu-cheng/latex-action@v4
         with:
           root_file: main.tex
           working_directory: src/rapport_complet
-        env:
-          TEXINPUTS: ".:../../sty//:../sty//:sty//:../../ico//:../ico//:ico//:"
 
-      - name: Upload all PDFs (respecting directory structure)
+      - name: Upload PDF (respecting directory structure)
+        if: steps.detect_changes.outputs.rapport_complet_modified == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: PDFs
-          path: |
-            src/rapport_complet/main.pdf
-
-
+          name: PDF_rapport_complet
+          path: src/rapport_complet/main.pdf
