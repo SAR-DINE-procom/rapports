@@ -9,7 +9,7 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2  # Suffisant pour comparer HEAD~1 et HEAD
+          fetch-depth: 0  # Suffisant pour comparer HEAD~1 et HEAD
 
       - name: Detect changed LaTeX projects
         id: detect_changes
