@@ -1,4 +1,4 @@
-name: Build LaTeX documents
+name: Build LaTeX document
 on: [push]
 
 jobs:
@@ -9,38 +9,38 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 2
+          fetch-depth: 2  # Suffisant pour comparer HEAD~1 et HEAD
 
       - name: Detect changed LaTeX projects
         id: detect_changes
         run: |
-          CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
+          # Récupérer les fichiers modifiés entre les deux derniers commits
+          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
           echo "Fichiers modifiés : $CHANGED_FILES"
 
-          # Vérifier si src/rapport_complet/main.tex a été modifié et existe
-          if echo "$CHANGED_FILES" | grep -q "src/rapport_complet/main\.tex" && [ -f "src/rapport_complet/main.tex" ]; then
-            echo "rapport_complet_modified=true" >> $GITHUB_OUTPUT
+          # Extraire les dossiers contenant un main.tex modifié
+          PROJECT_DIR=$(echo "$CHANGED_FILES" | grep -E 'main\.tex$' | sed 's|/main\.tex$||' | head -n 1)
+
+          if [ -n "$PROJECT_DIR" ]; then
+            echo "project_dir=$PROJECT_DIR" >> $GITHUB_OUTPUT
           fi
 
-      - name: Prepare compilation environment
-        if: steps.detect_changes.outputs.rapport_complet_modified == 'true'
+      - name: Compile modified LaTeX project
+        if: steps.detect_changes.outputs.project_dir
         run: |
-          # Copier les dossiers sty et ico dans le dossier de travail
-          cp -r sty ico src/rapport_complet/
-          # Copier le fichier latexmkrc si présent
-          if [ -f latexmkrc ]; then
-            cp latexmkrc src/rapport_complet/
-          fi
+          PROJECT_DIR="${{ steps.detect_changes.outputs.project_dir }}"
+          echo "Compilation du projet : $PROJECT_DIR"
 
-      - name: Compile LaTeX document
-        if: steps.detect_changes.outputs.rapport_complet_modified == 'true'
-        run: |
-          cd src/rapport_complet
+          # Copier les ressources partagées (sty, ico, latexmkrc) dans le dossier du projet
+          cp -r sty ico latexmkrc "$PROJECT_DIR"/
+
+          # Compiler avec latexmk
+          cd "$PROJECT_DIR"
           latexmk -pdf -r latexmkrc main.tex
 
       - name: Upload PDF
-        if: steps.detect_changes.outputs.rapport_complet_modified == 'true'
+        if: steps.detect_changes.outputs.project_dir
         uses: actions/upload-artifact@v4
         with:
-          name: PDF_rapport_complet
-          path: src/rapport_complet/main.pdf
+          name: PDF-${{ steps.detect_changes.outputs.project_dir }}
+          path: ${{ steps.detect_changes.outputs.project_dir }}/main.pdf
