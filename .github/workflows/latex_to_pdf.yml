@@ -16,8 +16,8 @@ jobs:
           CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
           echo "Fichiers modifiés : $CHANGED_FILES"
 
-          # Vérifier si rapport_complet/main.tex a été modifié et existe
-          if echo "$CHANGED_FILES" | grep -q "rapport_complet/main\.tex" && [ -f "rapport_complet/main.tex" ]; then
+          # Vérifier si src/rapport_complet/main.tex a été modifié et existe
+          if echo "$CHANGED_FILES" | grep -q "src/rapport_complet/main\.tex" && [ -f "src/rapport_complet/main.tex" ]; then
             echo "rapport_complet_modified=true" >> $GITHUB_OUTPUT
           fi
 
@@ -33,6 +33,6 @@ jobs:
         with:
           name: PDFs
           path: |
-            rapport_complet/main.pdf
+            src/rapport_complet/main.pdf
 
 
