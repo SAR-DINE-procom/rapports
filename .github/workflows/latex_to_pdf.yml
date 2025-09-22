@@ -20,17 +20,22 @@ jobs:
             if [ -d "$project" ] && [ -f "$project/main.tex" ]; then
               project_name=$(basename "$project")
               outdir="build/$project_name"
-              mkdir -p "$outdir"
+              tmpdir="build/tmp_$project_name"
+
+              mkdir -p "$outdir" "$tmpdir"
               echo "Compiling $project -> $outdir/${project_name}.pdf"
 
-              # Compile (PDF dans $outdir)
-              latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir="$outdir" "$project/main.tex"
+              # Compile dans un répertoire temporaire
+              latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir="$tmpdir" "$project/main.tex"
 
-              # Renommer le PDF final
-              mv "$outdir/main.pdf" "$outdir/${project_name}.pdf"
+              # Déplacer le PDF final et le renommer
+              mv "$tmpdir/main.pdf" "$outdir/${project_name}.pdf"
 
-              # Nettoyer les fichiers auxiliaires
-              latexmk -c -outdir="$outdir" "$project/main.tex" || true
+              # Nettoyer les fichiers auxiliaires (dans tmpdir)
+              latexmk -c -outdir="$tmpdir" "$project/main.tex" || true
+
+              # Supprimer le répertoire temporaire
+              rm -rf "$tmpdir"
             fi
           done
 
