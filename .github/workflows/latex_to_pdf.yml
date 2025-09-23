@@ -19,7 +19,7 @@ jobs:
           for project in src/*; do
             if [ -d "$project" ] && [ -f "$project/main.tex" ]; then
               project_name=$(basename "$project")
-              outdir="build/$project_name"
+              outdir="build"
               tmpdir="build/tmp_$project_name"
 
               mkdir -p "$outdir" "$tmpdir"
