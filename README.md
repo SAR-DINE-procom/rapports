@@ -9,6 +9,69 @@ Modèle de document LaTeX IMT Atlantique pour la rédaction de rapports de reche
 (validé par la DRI) ou des supports de cours et TP, *.tex (v2.3), *.sty (v3.9)
 
 Maintenu par : Thierry LE GALL (poste 1378) - thierry.legall1@imt-atlantique.fr
+# 📝 Règles pour l'écriture du rapport en LaTeX
+
+Afin de garantir une bonne organisation et éviter les conflits dans le rapport, **toute modification doit suivre le workflow suivant :**
+
+---
+
+## 🚀 Workflow
+
+1. **Créer une branche dédiée**  
+   - Nommez-la de manière explicite :  
+     - `rapport/intro-nom`  
+     - `rapport/section-rf`  
+     - `rapport/section-traitement`  
+
+   Exemple :
+   ```bash
+   git checkout -b rapport/section-resultats
+   ```
+
+2. **Modifier les fichiers LaTeX**  
+   - Ajouter le contenu de votre section (texte, figures, bibliographie).  
+   - Vérifier la compilation locale (`latexmk`, `pdflatex`, etc.).  
+
+3. **Committer vos changements**  
+   - Utilisez un message clair et concis :  
+     - `feat: ajout section méthodologie`  
+     - `fix: correction citation bibliographie`  
+
+   Exemple :
+   ```bash
+   git add rapport.tex figures/mon_graphique.png
+   git commit -m "feat: ajout début section résultats"
+   ```
+
+4. **Pousser la branche sur GitHub**  
+   ```bash
+   git push origin rapport/section-resultats
+   ```
+
+5. **Ouvrir une Pull Request (PR)**  
+   - Titre : `[Rapport] Ajout section Résultats`  
+   - Décrire brièvement le contenu ajouté.  
+   - Assigner un relecteur (un autre membre de l’équipe).  
+
+6. **Relecture et fusion**  
+   - La PR est revue par au moins **un membre**.  
+   - Une fois validée → elle est fusionnée dans `main`.  
+   - 🚫 **Pas de commit direct sur `main` pour le rapport.**
+
+---
+
+## ✅ Bonnes pratiques
+- Une PR = une section ou une amélioration ciblée.  
+- Ne mélangez pas écriture et corrections orthographiques massives → faites deux PR séparées.  
+- Ajoutez vos figures dans `figures/` et utilisez des noms explicites (`antenne_schema_v1.png`).  
+- Vérifiez que la bibliographie (`.bib`) compile correctement avant d’ouvrir la PR.  
+
+---
+
+## 📌 Exemple
+- Branche : `rapport/discussion-mikael`  
+- PR : `[Rapport] Section Discussion – Mikael`  
+- Assignée à : `@JeanTronet` pour relecture  
 
 -------------------------------------------------------------------------------------
 1- Description du modèle:
