@@ -1,38 +1,46 @@
-name: Build LaTeX documents
-on: [push]
+name: Build LaTeX Projects
+
+on: push   # Se lance à chaque push, quelle que soit la branche
 
 jobs:
-  build_latex:
+  build:
     runs-on: ubuntu-latest
+
+    container:
+      image: texlive/texlive:latest   # Image Docker avec LaTeX déjà installé
+
     steps:
-      - name: Set up Git repository
+      - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
 
-      - name: Detect changed LaTeX projects
-        id: detect_changes
+      - name: Compile LaTeX projects
         run: |
-          CHANGED_FILES=$(git diff --name-only HEAD^ HEAD)
-          echo "Fichiers modifiés : $CHANGED_FILES"
+          mkdir -p build
+          for project in src/*; do
+            if [ -d "$project" ] && [ -f "$project/main.tex" ]; then
+              project_name=$(basename "$project")
+              outdir="build"
+              tmpdir="build/tmp_$project_name"
 
-          # Vérifier si src/rapport_complet/main.tex a été modifié et existe
-          if echo "$CHANGED_FILES" | grep -q "src/rapport_complet/main\.tex" && [ -f "src/rapport_complet/main.tex" ]; then
-            echo "rapport_complet_modified=true" >> $GITHUB_OUTPUT
-          fi
+              mkdir -p "$outdir" "$tmpdir"
+              echo "Compiling $project -> $outdir/${project_name}.pdf"
 
-      - name: Compile rapport_complet (si modifié)
-        if: steps.detect_changes.outputs.rapport_complet_modified == 'true'
-        uses: xu-cheng/latex-action@v4
-        with:
-          root_file: main.tex
-          working_directory: src/rapport_complet
+              # Compile dans un répertoire temporaire
+              latexmk -pdf -interaction=nonstopmode -halt-on-error -outdir="$tmpdir" "$project/main.tex"
 
-      - name: Upload all PDFs (respecting directory structure)
+              # Déplacer le PDF final et le renommer
+              mv "$tmpdir/main.pdf" "$outdir/${project_name}.pdf"
+
+              # Nettoyer les fichiers auxiliaires (dans tmpdir)
+              latexmk -c -outdir="$tmpdir" "$project/main.tex" || true
+
+              # Supprimer le répertoire temporaire
+              rm -rf "$tmpdir"
+            fi
+          done
+
+      - name: Upload PDFs
         uses: actions/upload-artifact@v4
         with:
-          name: PDFs
-          path: |
-            src/rapport_complet/main.pdf
-
-
+          name: latex-pdfs
+          path: build/
