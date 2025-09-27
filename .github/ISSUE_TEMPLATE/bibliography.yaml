@@ -5,7 +5,7 @@ labels: ["Rapport", "Bibliographie"]
 body:
   - type: markdown
     attributes:
-      value: "## 📚 Suivi bibliographique"
+      value: "## 📚 Etude bibliographique"
   - type: input
     id: sujet
     attributes:
@@ -16,7 +16,7 @@ body:
   - type: textarea
     id: reference
     attributes:
-      label: "📄 Référence complète"
+      label: "📄 Références complètes"
       description: "Format IEEE/APA, DOI, lien PDF."
     validations:
       required: true
@@ -34,17 +34,12 @@ body:
       label: "📝 Résumé (5 lignes)"
       description: "Points clés de l’article."
   - type: textarea
-    id: points
-    attributes:
-      label: "⭐ Points utiles au projet"
-      description: "Méthodes, résultats, limitations…"
-  - type: textarea
     id: a_lire
     attributes:
       label: "📌 Liens / À creuser"
       description: "Articles liés, références citées."
-  - type: input
-    id: responsable
+  - type: textarea
+    id: ref
     attributes:
-      label: "👤 Responsable"
-      description: "Membre de l’équipe en charge de cette lecture."
+      label: "Documents réalisés / Conclusions"
+      description: "Liens vers notes, fiches de lecture, résumé dans le repo."
