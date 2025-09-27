@@ -1,0 +1,41 @@
+name: "📝 Rédaction section de rapport"
+description: "Rédiger une partie du rapport écrit (intro, RF, traitement, résultats, conclusion)."
+title: "[RA][Rédac] "
+labels: ["Rapport", "Rédaction"]
+body:
+  - type: markdown
+    attributes:
+      value: "## 📝 Suivi de section"
+  - type: input
+    id: partie
+    attributes:
+      label: "📑 Partie concernée"
+      description: "Introduction, RF, Traitement du signal, Résultats, Discussion, Conclusion…"
+    validations:
+      required: true
+  - type: input
+    id: redacteur
+    attributes:
+      label: "✍️ Rédacteur"
+      description: "Nom du responsable de cette partie."
+    validations:
+      required: true
+  - type: input
+    id: deadline
+    attributes:
+      label: "📅 Échéance"
+      description: "Date prévue de rendu."
+  - type: textarea
+    id: contenu
+    attributes:
+      label: "Contenu prévu"
+      description: "Points clés, figures, formules, sources à intégrer."
+  - type: checkboxes
+    id: avancement
+    attributes:
+      label: "✅ Avancement"
+      options:
+        - label: "Plan rédigé"
+        - label: "Texte complet"
+        - label: "Figures/graphes ajoutés"
+        - label: "Relecture effectuée"

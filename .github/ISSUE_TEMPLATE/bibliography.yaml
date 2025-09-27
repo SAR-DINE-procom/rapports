@@ -1,0 +1,50 @@
+name: "📚 Bibliographie / État de l’art"
+description: "Suivre une source bibliographique (article, thèse, doc technique)."
+title: "[RA][Biblio] "
+labels: ["Rapport", "Bibliographie"]
+body:
+  - type: markdown
+    attributes:
+      value: "## 📚 Suivi bibliographique"
+  - type: input
+    id: sujet
+    attributes:
+      label: "🎯 Sujet / Thème"
+      description: "Ex: SAR polarimétrique, antennes FMCW, traitement Range-Doppler…"
+    validations:
+      required: true
+  - type: textarea
+    id: reference
+    attributes:
+      label: "📄 Référence complète"
+      description: "Format IEEE/APA, DOI, lien PDF."
+    validations:
+      required: true
+  - type: checkboxes
+    id: domaine
+    attributes:
+      label: "📌 Domaine concerné"
+      description: "Cochez la ou les catégories liées à cette source."
+      options:
+        - label: "📡 RF / Conception radar"
+        - label: "📊 Traitement du signal"
+  - type: textarea
+    id: resume
+    attributes:
+      label: "📝 Résumé (5 lignes)"
+      description: "Points clés de l’article."
+  - type: textarea
+    id: points
+    attributes:
+      label: "⭐ Points utiles au projet"
+      description: "Méthodes, résultats, limitations…"
+  - type: textarea
+    id: a_lire
+    attributes:
+      label: "📌 Liens / À creuser"
+      description: "Articles liés, références citées."
+  - type: input
+    id: responsable
+    attributes:
+      label: "👤 Responsable"
+      description: "Membre de l’équipe en charge de cette lecture."

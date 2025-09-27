@@ -1,0 +1,38 @@
+name: "📦 Relecture livrable"
+description: "Préparer une relecture ou une validation par les encadrants."
+title: "[RA][Review] "
+labels: ["Rapport", "Validation"]
+body:
+  - type: markdown
+    attributes:
+      value: "## 📦 Revue / Relecture"
+  - type: input
+    id: livrable
+    attributes:
+      label: "Livrable concerné"
+      description: "État de l’art, L2, rapport intermédiaire, poster, rapport final."
+    validations:
+      required: true
+  - type: input
+    id: responsable
+    attributes:
+      label: "👤 Responsable de l’envoi"
+  - type: input
+    id: deadline
+    attributes:
+      label: "📅 Deadline de remise"
+  - type: textarea
+    id: doc
+    attributes:
+      label: "📎 Document à transmettre"
+      description: "Lien vers version draft (PDF, doc, slides)."
+  - type: textarea
+    id: retours
+    attributes:
+      label: "🔎 Retours encadrants"
+      description: "Commentaires / corrections reçus."
+  - type: textarea
+    id: suites
+    attributes:
+      label: "✅ Actions post-revue"
+      description: "Corrections à faire, suivi."

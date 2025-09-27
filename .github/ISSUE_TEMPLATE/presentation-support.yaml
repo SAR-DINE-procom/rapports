@@ -1,0 +1,40 @@
+name: "🎤 Support de présentation"
+description: "Préparer un support oral (soutenance, poster, présentation intermédiaire)."
+title: "[RA][Prés] "
+labels: ["Rapport", "Présentation"]
+body:
+  - type: markdown
+    attributes:
+      value: "## 🎤 Préparation support"
+  - type: input
+    id: type
+    attributes:
+      label: "Type de support"
+      description: "Slides, poster, vidéo, autre."
+    validations:
+      required: true
+  - type: textarea
+    id: messages
+    attributes:
+      label: "Message clé / Storytelling"
+      description: "3 à 5 messages à faire passer."
+  - type: textarea
+    id: repartition
+    attributes:
+      label: "Répartition des parties"
+      description: "Qui présente quoi."
+  - type: input
+    id: deadline
+    attributes:
+      label: "📅 Deadline"
+      description: "Date limite de finalisation."
+  - type: textarea
+    id: feedback
+    attributes:
+      label: "🔎 Retours encadrants"
+      description: "Commentaires, corrections à intégrer."
+  - type: input
+    id: version
+    attributes:
+      label: "📎 Version finale"
+      description: "Lien vers PDF/Slides/Poster dans le repo."
