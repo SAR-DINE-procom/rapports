@@ -1,7 +1,10 @@
 name: Build LaTeX Projects
 
-on: push   # Se lance à chaque push, quelle que soit la branche
-
+on:
+  push:
+    branches:
+      - base
+      
 jobs:
   build:
     runs-on: ubuntu-latest
