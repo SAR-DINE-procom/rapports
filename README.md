@@ -3,7 +3,7 @@
 ## Démarrer le projet
 1. Se connecter avec le **SSO IMT Atlantique** sur Overleaf.  
 2. Lier son compte **Overleaf** avec son compte **GitHub**.  
-3. Vous avez reçu une invitation par mail pour rejoindre le projet **« rapports »** sur Overleaf.  
+3. Vous avez reçu une invitation par mail pour rejoindre le projet **« rapports »** sur Overleaf.  (https://www.overleaf.com/2259418269vhznjjzsvbgg#9a2f5f) 
 
 ## Bonnes pratiques
 - Après modification du code sur Overleaf, **synchroniser** avec GitHub :  
