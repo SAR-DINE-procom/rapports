@@ -23,12 +23,12 @@ jobs:
 
       - name: Vérifier script
         run: |
-          test -f scripts/new_report.sh || { echo "scripts/new_report.sh introuvable"; exit 1; }
-          chmod +x scripts/new_report.sh
+          test -f scripts/new_report || { echo "scripts/new_report introuvable"; exit 1; }
+          chmod +x scripts/new_report
 
       - name: Exécuter le script de scaffolding
         run: |
-          ./scripts/new_report.sh "${{ inputs.report_name }}"
+          ./scripts/new_report "${{ inputs.report_name }}"
 
       - name: Config Git
         run: |
