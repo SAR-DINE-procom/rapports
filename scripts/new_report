@@ -42,5 +42,8 @@ mkdir -p "src"
 echo "Création du nouveau rapport '$nom_rapport' dans '$dest_dir'..."
 cp -r "$template_dir" "$dest_dir"
 
+# Création du répertoire img
+mkdir -p "$dest_dir/img"
+
 echo "✓ Rapport '$nom_rapport' créé avec succès."
 echo "Consultez éventuellement 'src/$nom_rapport/README.md' s'il existe."
