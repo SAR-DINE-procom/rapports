@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Script pour créer un nouveau rapport à partir du template
+# Usage:
+#   scripts/new_report.sh <nom_du_rapport>
+
+if [ $# -ne 1 ]; then
+    echo "Usage: $0 <nom_du_rapport>"
+    echo "Exemple: $0 mon_nouveau_rapport"
+    exit 1
+fi
+
+nom_rapport="$1"
+
+# Vérification du nom (lettres, chiffres, tirets, underscores)
+if [[ ! "$nom_rapport" =~ ^[a-zA-Z0-9_-]+$ ]]; then
+    echo "Erreur: Le nom du rapport ne doit contenir que des lettres, chiffres, tirets et underscores"
+    exit 1
+fi
+
+# Chemins
+template_dir="templates/create_rapport"
+dest_dir="src/$nom_rapport"
+
+# Vérifie que le template existe
+if [ ! -d "$template_dir" ]; then
+    echo "Erreur: Le dossier template '$template_dir' n'existe pas"
+    exit 1
+fi
+
+# Vérifie collision
+if [ -d "$dest_dir" ]; then
+    echo "Erreur: Un rapport '$nom_rapport' existe déjà dans '$dest_dir'"
+    echo "Choisissez un autre nom ou supprimez le rapport existant."
+    exit 1
+fi
+
+# Crée src si besoin
+mkdir -p "src"
+
+echo "Création du nouveau rapport '$nom_rapport' dans '$dest_dir'..."
+cp -r "$template_dir" "$dest_dir"
+
+echo "✓ Rapport '$nom_rapport' créé avec succès."
+echo "Consultez éventuellement 'src/$nom_rapport/README.md' s'il existe."

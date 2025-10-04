@@ -1,0 +1,46 @@
+name: New report scaffolding
+
+on:
+  workflow_dispatch:
+    inputs:
+      report_name:
+        description: "Nom du rapport (slug sans espaces)"
+        required: true
+        type: string
+
+permissions:
+  contents: write  # nécessaire pour pousser les commits
+
+jobs:
+  scaffold:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Vérifier script
+        run: |
+          test -f scripts/new_report.sh || { echo "scripts/new_report.sh introuvable"; exit 1; }
+          chmod +x scripts/new_report.sh
+
+      - name: Exécuter le script de scaffolding
+        run: |
+          ./scripts/new_report.sh "${{ inputs.report_name }}"
+
+      - name: Config Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit & Push
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git add -A
+            git commit -m "chore(scaffold): init report '${{ inputs.report_name }}'"
+            git push origin main
+          else
+            echo "Aucun changement à pousser."
+          fi
