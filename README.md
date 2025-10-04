@@ -19,9 +19,11 @@ Afin de garantir une bonne organisation et éviter les conflits dans le rapport,
 
 1. **Créer une branche dédiée**  
    - Nommez-la de manière explicite :  
-     - `rapport/intro-nom`  
-     - `rapport/section-rf`  
-     - `rapport/section-traitement`  
+      - `rapport/intro-nom`  
+      - `rapport/section-rf`  
+      - `rapport/section-traitement`  
+   - Si vous travaillez sur différents ordinateurs et que votre travail n'a pas vocation directe à aller sur un rendu, nommez la de la façon suivante :  
+      - `maxence/pdn_biblio`
 
    Exemple :
    ```bash
