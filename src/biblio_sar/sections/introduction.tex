@@ -1,2 +1,151 @@
 \section{Introduction}\label{SEC:introdcution}
-Salut
+Dans de nombreux domaines, l’imagerie constitue un moyen efficace d’acquérir et d’agréger rapidement un volume d’informations considérable, indispensable à la prise de décision. À titre d’exemple, les applications de suivi des changements exploitent des techniques d’imagerie afin de cartographier et d’évaluer les impacts d’une catastrophe naturelle sur une zone sinistrée. \\
+Pour l’acquisition d’images, plusieurs types de capteurs peuvent être employés. De manière intuitive, l’on pense aux capteurs photographiques, capables de détecter les ondes électromagnétiques des domaines ultraviolet, visible et infrarouge. Toutefois, ces dispositifs présentent une limitation majeure : ils ne permettent pas l’imagerie en toutes conditions, leur fonctionnement étant fortement dépendant de l’éclairement et des conditions atmosphériques. \\
+Afin de pallier cette limitation, la Royal Air Force développa, au cours de la Seconde Guerre mondiale, le premier radar aéroporté capable de produire une image radar analogique : le H2S. Ce système permit aux forces britanniques d’améliorer la précision de leurs bombardements nocturnes en détectant les reliefs et les zones urbaines, dont la représentation était affichée sur un écran cathodique. \\ 
+À la fin des années 1940, de nouvelles avancées dans les technologies d’imagerie radar furent réalisées, parmi lesquelles le radar à fauchée latérale. Ce dispositif consiste à orienter une antenne latéralement afin de capturer l’image d’une bande étendue du sol. Les premiers systèmes SLAR\footnote{Side Looking Airborn Radar ou radar à fauchée latérale} fonctionnels furent testés au début des années 1950 et, à la fin de la décennie, les premières cartes radar continues du terrain purent être produites.\\
+\begin{figure}[ht]
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{src/biblio_sar/img/H2S_zuider_zee.jpg}
+        \caption{Image du radar H2S réalisée au dessus de la Zuider Zee aux Pays-Bas \cite{h2s_source}}
+        \label{fig:h2s_zuider_zee}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.9\linewidth]{src/biblio_sar/img/first_SLAR_image.png}
+        \caption{Une des premières image d'un radar à ouverture réelle acquise par un radar à fauchée latérale \cite{colin_radar_images}}
+        \label{fig:first_slar_image}
+    \end{minipage}
+\end{figure} \\
+Ainsi, l’imagerie radar revêt un intérêt manifeste tant dans le domaine civil que militaire. Elle se distingue notamment par sa capacité d’observation en toutes conditions météorologiques et à tout moment, garantissant une continuité d’acquisition que ne permettent pas les systèmes optiques. Par ailleurs, les propriétés propres à la technologie radar confèrent des possibilités d’analyse spécifiques. L’interférométrie des signaux, exploitant à la fois l’amplitude et la phase, permet notamment d’estimer des altitudes avec une grande précision. En outre, la complémentarité avec l’imagerie optique est particulièrement remarquable : tandis que cette dernière met en évidence les caractéristiques physico-chimiques des surfaces observées, l’imagerie radar est sensible aux propriétés géométriques des cibles, à la nature des matériaux ainsi qu’à leur état. Ces paramètres, essentiels à de nombreuses applications, demeurent souvent inaccessibles par les moyens optiques traditionnels. \\
+Bien que l’imagerie radar conventionnelle soit performante, elle présente une limite majeure : la résolution. En effet, dans le cas d’un SLAR/RAR\footnote{Real Aperture Radar ou radar à ouverture réelle}, la résolution en azimut peut être approximée par l’expression suivante :
+
+\begin{equation}
+\Delta x_{az} \approx \frac{R\lambda}{L}
+\end{equation}
+Où :
+\begin{description}
+\item[$\Delta x_{az}$] : résolution en azimut
+\item[$R$] : distance entre la cible et le radar
+\item[$\lambda$] : longueur d’onde
+\item[$L$] : longueur physique de l’antenne
+\end{description}
+Cette relation montre qu’une résolution azimutale élevée nécessite une antenne de très grande dimension. Or, dans la pratique, les contraintes liées à la capacité d’emport des vecteurs aériens rendent cette solution peu réaliste. \\
+C’est précisément pour surmonter cette limitation que le radar à synthèse d’ouverture a été développé. La partie qui suit s’attachera à présenter les motivations et les principes fondamentaux de cette technologie, qui permet d’obtenir des résolutions beaucoup plus fines sans augmenter la taille physique de l’antenne.
+
+\subsection{Motivation d'un radar à synthèse d'ouverture}
+
+\subsection{Positionnement}
+
+
+1. Introduction
+
+Contexte général : radar, observation tout temps, intérêt civil et militaire.
+
+Besoin d’imagerie haute résolution → limites des radars conventionnels → motivation du SAR.
+
+Positionnement spécifique : SAR embarqué sur drones, multi-capteurs, fusion et détection.
+
+2. Principes de base du radar et du SAR
+
+Rappels radar : portée, Doppler, résolution, SNR.
+
+Limites des radars conventionnels pour l’imagerie.
+speckle (chatoiement) 
+
+Principe du SAR : ouverture synthétique, compression en distance et en azimut.
+
+3. Algorithmes de traitement SAR (formation d’image)
+3.1 Compression en distance et en azimut
+3.2 Algorithmes classiques
+
+Range-Doppler
+
+Chirp Scaling
+
+ω–k (Range Migration Algorithm)
+
+Backprojection
+
+3.3 Limitations et hypothèses
+
+Trajectoire rectiligne idéale, scène plane, hypothèse cible ponctuelle.
+
+Contraintes en bande, navigation et coût calcul.
+
+3.4 Comparaison des algorithmes
+4. Avancées récentes en traitement SAR
+
+Compensation de mouvement (MOCO), autofocus.
+
+Traitements temps-fréquence et robustes.
+
+Implémentations temps réel (GPU, FPGA).
+
+Approches émergentes (IA, deep learning pour focalisation).
+
+5. SAR embarqué sur drones (UAV-SAR)
+5.1 Intérêt et spécificités
+
+Portabilité, observation basse altitude, flexibilité.
+
+5.2 Contraintes UAV
+
+Masse/énergie, vibrations, trajectoire non idéale, volume de données.
+
+5.3 Travaux académiques (ex. Pelle 2020, projets universitaires)
+5.4 Développements industriels (mini-SAR sur drones militaires et civils)
+5.5 Algorithmes adaptés
+
+Backprojection robuste, navigation assistée GNSS/IMU, correction post-traitement.
+
+6. Fusion multi-drones et SAR collaboratif
+6.1 Intérêt : couverture étendue, redondance, meilleure résolution.
+6.2 Contraintes : synchronisation temporelle, cohérence de phase, calibration inter-capteurs.
+6.3 Travaux existants : MIMO-SAR, expériences UAV multi-capteurs.
+6.4 Limites actuelles et défis pour l’avenir.
+7. Détection en imagerie SAR
+7.1 Objectif et enjeux de la détection
+
+Cibles ponctuelles vs étendues, clutter, hétérogénéité du milieu.
+
+7.2 Algorithmes classiques de détection
+
+CFAR (CA-CFAR, OS-CFAR, GO-CFAR, SO-CFAR).
+
+Détection par seuillage global et adaptatif.
+
+7.3 Limites des méthodes classiques
+
+Environnements hétérogènes, forte densité de clutter, faible SNR.
+
+7.4 Approches avancées
+
+Détection bayésienne et probabiliste.
+
+Exploitation de l’information polarimétrique/interférométrique.
+
+Apprentissage automatique (SVM, réseaux de neurones).
+
+Deep learning pour la détection et classification d’objets dans les images SAR.
+
+7.5 Évaluation des performances
+
+Probabilité de détection (Pd), taux de fausses alarmes (Pfa).
+
+Jeux de données et benchmarks (MSTAR, OpenSAR, etc.).
+
+8. Discussion et perspectives
+
+Comparaison des approches (formation image vs exploitation).
+
+Verrous scientifiques actuels : navigation précise, traitement distribué, robustesse en clutter.
+
+Perspectives : SAR multi-drones collaboratifs, IA pour fusion + détection en temps réel.
+
+9. Conclusion
+
+Synthèse des connaissances actuelles.
+
+Positionnement de ton projet par rapport à l’état de l’art.
