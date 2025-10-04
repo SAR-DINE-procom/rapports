@@ -1,9 +1,7 @@
 name: Build LaTeX Projects
 
 on:
-  push:
-    branches:
-      - base
+  workflow_dispatch:
       
 jobs:
   build:
@@ -47,3 +45,4 @@ jobs:
         with:
           name: latex-pdfs
           path: build/
+
