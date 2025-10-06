@@ -1,8 +1,13 @@
 \section{Introduction}\label{SEC:introdcution}
-Dans de nombreux domaines, l’imagerie constitue un moyen efficace d’acquérir et d’agréger rapidement un volume d’informations considérable, indispensable à la prise de décision. À titre d’exemple, les applications de suivi des changements exploitent des techniques d’imagerie afin de cartographier et d’évaluer les impacts d’une catastrophe naturelle sur une zone sinistrée. \\
-Pour l’acquisition d’images, plusieurs types de capteurs peuvent être employés. De manière intuitive, l’on pense aux capteurs photographiques, capables de détecter les ondes électromagnétiques des domaines ultraviolet, visible et infrarouge. Toutefois, ces dispositifs présentent une limitation majeure : ils ne permettent pas l’imagerie en toutes conditions, leur fonctionnement étant fortement dépendant de l’éclairement et des conditions atmosphériques. \\
-Afin de pallier cette limitation, la Royal Air Force développa, au cours de la Seconde Guerre mondiale, le premier radar aéroporté capable de produire une image radar analogique : le H2S. Ce système permit aux forces britanniques d’améliorer la précision de leurs bombardements nocturnes en détectant les reliefs et les zones urbaines, dont la représentation était affichée sur un écran cathodique. \\ 
-À la fin des années 1940, de nouvelles avancées dans les technologies d’imagerie radar furent réalisées, parmi lesquelles le radar à fauchée latérale. Ce dispositif consiste à orienter une antenne latéralement afin de capturer l’image d’une bande étendue du sol. Les premiers systèmes SLAR\footnote{Side Looking Airborn Radar ou radar à fauchée latérale} fonctionnels furent testés au début des années 1950 et, à la fin de la décennie, les premières cartes radar continues du terrain purent être produites.\\
+\subsection{Contexte général}
+Dans de nombreux domaines, l’imagerie constitue un moyen efficace d’acquérir et d’agréger rapidement un volume d’informations considérable, indispensable à la prise de décision. À titre d’exemple, les applications de suivi des changements exploitent des techniques d’imagerie afin de cartographier et d’évaluer les impacts d’une catastrophe naturelle sur une zone sinistrée. 
+
+Pour l’acquisition d’images, plusieurs types de capteurs peuvent être employés. De manière intuitive, l’on pense aux capteurs photographiques, capables de détecter les ondes électromagnétiques des domaines ultraviolet, visible et infrarouge. Toutefois, ces dispositifs présentent une limitation majeure : ils ne permettent pas l’imagerie en toutes conditions, leur fonctionnement étant fortement dépendant de l’éclairement et des conditions atmosphériques. 
+
+Afin de pallier cette limitation, la Royal Air Force développa, au cours de la Seconde Guerre mondiale, le premier radar aéroporté capable de produire une image radar analogique : le H2S. Ce système permit aux forces britanniques d’améliorer la précision de leurs bombardements nocturnes en détectant les reliefs et les zones urbaines, dont la représentation était affichée sur un écran cathodique. 
+
+À la fin des années 1940, de nouvelles avancées dans les technologies d’imagerie radar furent réalisées, parmi lesquelles le radar à fauchée latérale. Ce dispositif consiste à orienter une antenne latéralement afin de capturer l’image d’une bande étendue du sol. Les premiers systèmes SLAR\footnote{Side Looking Airborn Radar ou radar à fauchée latérale} fonctionnels furent testés au début des années 1950 et, à la fin de la décennie, les premières cartes radar continues du terrain purent être produites.
+
 \begin{figure}[ht]
     \begin{minipage}{0.45\textwidth}
         \centering
@@ -17,24 +22,30 @@ Afin de pallier cette limitation, la Royal Air Force développa, au cours de la 
         \caption{Une des premières image d'un radar à ouverture réelle acquise par un radar à fauchée latérale \cite{colin_radar_images}}
         \label{fig:first_slar_image}
     \end{minipage}
-\end{figure} \\
-Ainsi, l’imagerie radar revêt un intérêt manifeste tant dans le domaine civil que militaire. Elle se distingue notamment par sa capacité d’observation en toutes conditions météorologiques et à tout moment, garantissant une continuité d’acquisition que ne permettent pas les systèmes optiques. Par ailleurs, les propriétés propres à la technologie radar confèrent des possibilités d’analyse spécifiques. L’interférométrie des signaux, exploitant à la fois l’amplitude et la phase, permet notamment d’estimer des altitudes avec une grande précision. En outre, la complémentarité avec l’imagerie optique est particulièrement remarquable : tandis que cette dernière met en évidence les caractéristiques physico-chimiques des surfaces observées, l’imagerie radar est sensible aux propriétés géométriques des cibles, à la nature des matériaux ainsi qu’à leur état. Ces paramètres, essentiels à de nombreuses applications, demeurent souvent inaccessibles par les moyens optiques traditionnels. \\
-Bien que l’imagerie radar conventionnelle soit performante, elle présente une limite majeure : la résolution. En effet, dans le cas d’un SLAR/RAR\footnote{Real Aperture Radar ou radar à ouverture réelle}, la résolution en azimut peut être approximée par l’expression suivante :
+\end{figure} 
+
+Ainsi, l’imagerie radar revêt un intérêt manifeste tant dans le domaine civil que militaire. Elle se distingue notamment par sa capacité d’observation en toutes conditions météorologiques et à tout moment, garantissant une continuité d’acquisition que ne permettent pas les systèmes optiques. Par ailleurs, les propriétés propres à la technologie radar confèrent des possibilités d’analyse spécifiques. L’interférométrie des signaux, exploitant à la fois l’amplitude et la phase, permet notamment d’estimer des altitudes avec une grande précision. En outre, la complémentarité avec l’imagerie optique est particulièrement remarquable : tandis que cette dernière met en évidence les caractéristiques physico-chimiques des surfaces observées, l’imagerie radar est sensible aux propriétés géométriques des cibles, à la nature des matériaux ainsi qu’à leur état. Ces paramètres, essentiels à de nombreuses applications, demeurent souvent inaccessibles par les moyens optiques traditionnels. 
+
+\subsection{Motivation d'un radar à synthèse d'ouverture}
+
+Bien que l’imagerie radar conventionnelle soit performante, elle présente une limite majeure : la résolution. En effet, dans le cas d’un SLAR/RAR\footnote{Real Aperture Radar ou radar à ouverture réelle}, la résolution en azimut peut être approximée par l’expression suivante \cite{radartutorial} :
 
 \begin{equation}
-\Delta x_{az} \approx \frac{R\lambda}{L}
+R_{az} = \frac{h\times\lambda}{L\times \cos{\theta}}
 \end{equation}
 Où :
 \begin{description}
-\item[$\Delta x_{az}$] : résolution en azimut
-\item[$R$] : distance entre la cible et le radar
-\item[$\lambda$] : longueur d’onde
-\item[$L$] : longueur physique de l’antenne
+    \item[$R_{az}$] : est la résolution en azimut [m]
+    \item[$h$] : est la hauteur de l'antenne par rapport au sol [m]
+    \item[$\lambda$] : est la longueur d’onde [m]
+    \item[$L$] : est la longueur physique de l’antenne [m]
+    \item[$\theta$] : est l'angle d'incidence [°]
 \end{description}
-Cette relation montre qu’une résolution azimutale élevée nécessite une antenne de très grande dimension. Or, dans la pratique, les contraintes liées à la capacité d’emport des vecteurs aériens rendent cette solution peu réaliste. \\
+
+Cette relation montre qu’une résolution azimutale élevée nécessite une antenne de très grande dimension. Or, dans la pratique, les contraintes liées à la capacité d’emport des vecteurs aériens rendent cette solution peu réaliste. 
+
 C’est précisément pour surmonter cette limitation que le radar à synthèse d’ouverture a été développé. La partie qui suit s’attachera à présenter les motivations et les principes fondamentaux de cette technologie, qui permet d’obtenir des résolutions beaucoup plus fines sans augmenter la taille physique de l’antenne.
 
-\subsection{Motivation d'un radar à synthèse d'ouverture}
 
 \subsection{Positionnement}
 
