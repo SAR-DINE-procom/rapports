@@ -314,6 +314,9 @@
 \def\@supervisors{}
 \newcommand{\supervisors}[1]{\gdef\@supervisors{\\[0.8\baselineskip]\textbf{Encadrants :} #1}}
 
+\def\@supervisor{}
+\newcommand{\supervisor}[1]{\gdef\@supervisor{\\[0.8\baselineskip]\textbf{Encadrant :} #1}}
+
 % Définition du style des en-têtes et des pieds de page
 \newpagestyle{IMTAfancy}{%
 	\headrule % Affichage ligne de séparation de l'en-tête
@@ -352,6 +355,7 @@
 			\large
 			\@author
 			\@supervisors
+            \@supervisor
 		\end{minipage}
 	\end{textblock*}
 	
