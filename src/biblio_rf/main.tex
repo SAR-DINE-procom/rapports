@@ -120,7 +120,7 @@
 %----------------- Métadonnées du PDF (facilite le travail des moteurs de recherche) -----------
 \hypersetup{
 	pdfinfo = {
-		Author = {<Alexis COURBET>; <Mikael FRANCO>; <Maxence HUET>; <Jean TRONET>; <Samuel VIMARE>},
+		Author = {<Alexis COURBET>, <Mikael FRANCO>, <Maxence HUET>, <Jean TRONET>, <Samuel VIMARE>},
 		Title = {<Titre du document>},
 		Keywords = {<Mot-clé 1>; <Mot-clé 2>; ...}
 	}
@@ -190,7 +190,7 @@ URL: \URLimta
 } % end of \entity
 
 % Type de document
-\DocumentType{<Type de document>}  
+\DocumentType{Revue bibliographique}  
 %\DocumentType{Support de cours}
 %\DocumentType{Support de TP}
 %\DocumentType{Mémoire technique}
@@ -216,15 +216,15 @@ URL: \URLimta
 %\MentionSpeciale{\textcolor{red}{\fbox{DIFFUSION RESTREINTE}}}   
              
 
-\title{<Titre du document>}
+\title{État de l’art des architectures RF pour les radar à synthèse d'ouverture (RSO) pour plateformes autonommes multi-capteurs}
 %\title{Étude d'une forme d'onde pour communications longues-distances par le canal acoustique sous-marin}
 
 \author{
-	Alexis COURBET\and
 	Mikael FRANCO\and
 	Maxence HUET\and
-	Jean TRONET\and
-	Samuel VIMARE
+	Samuel VIMARE\and
+    Jean TRONET\and
+    Alexis COURBET
 }
 
 \supervisors{Dr. François GALLEE, Dr. Frédéric MAUSSANG, Dr. Dominique PASTOR, Dr. Christophe SINTES}
@@ -262,8 +262,8 @@ URL: \URLimta
 
 
 
-\include{templates/create_rapport/sections/introduction} 
-
+\include{src/biblio_rf/sections/introduction}
+% CHEMIN A MODIFIER
 
 %-----------------------------------DEBUT DES ANNEXES ----------------------------------
 
@@ -280,10 +280,11 @@ URL: \URLimta
 \phantomsection
 \addcontentsline{toc}{section}{\refname}
 %-----------------------------------------------------------------------------------------------
-
-\begin{thebibliography}{99}
+\bibliographystyle{plain}
+%\begin{thebibliography}{99}
+\bibliography{bibliography}
 %----------------------------------- FIN DE LA BIBLIOGRAPHIE -----------------------------------
-\end{thebibliography}
+%\end{thebibliography}
 %---------------------------------------- Do not modify ----------------------------------------
 \IMTAcoverpage
 %------------------------------------ End of do not modify -------------------------------------

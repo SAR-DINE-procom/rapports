@@ -1,2 +1,49 @@
 \section{Introduction}\label{SEC:introdcution}
-Salut
+\subsection{Contexte général}
+Au cours des dernières décennies, les radars à synthèse d’ouverture (RSO ou SAR – Synthetic Aperture Radar) se sont imposés comme des instruments essentiels pour l’observation de la Terre, la surveillance environnementale, la cartographie de précision et la reconnaissance stratégique. Contrairement aux capteurs optiques, les radars SAR offrent la capacité unique d’imager une scène indépendamment des conditions météorologiques et de l’éclairement solaire. Cette propriété en fait des outils incontournables pour les applications civiles et militaires nécessitant une disponibilité continue et une haute fiabilité.
+
+Parallèlement, l’émergence de plateformes autonomes multi-capteurs – notamment les drones (UAV), véhicules autonomes terrestres ou maritimes – a profondément transformé les paradigmes d’acquisition de données. Ces plateformes combinent différents types de capteurs (optiques, infrarouges, lidar, radar, GNSS, IMU, etc.) afin d’obtenir une perception complète et robuste de leur environnement. Dans ce contexte, l’intégration d’un radar SAR compact et performant constitue un atout stratégique, permettant la génération d’images à haute résolution et la détection de cibles à distance, tout en garantissant une capacité opérationnelle dans des conditions dégradées.
+
+Cependant, l’intégration d’un radar SAR sur une plateforme autonome impose des contraintes sévères en termes de masse, de volume, de consommation énergétique et de complexité électronique. Ces exigences influencent directement la conception de la chaîne RF (Radiofréquence), cœur du système radar, qui conditionne la qualité du signal émis et reçu, la sensibilité du récepteur et, in fine, la performance globale du système d’imagerie.
+
+\subsection{Importance de la chaîne RF dans les radars SAR}
+La chaîne RF constitue la première interface entre le monde électromagnétique et le domaine numérique. Elle regroupe l’ensemble des blocs permettant la génération, l’amplification, la transmission, la réception et le traitement analogique du signal radar. Ses performances déterminent la dynamique du système, la résolution radiométrique, le bruit de phase, ainsi que la stabilité temporelle nécessaire à la synthèse d’ouverture.
+
+Une architecture RF typique de radar SAR comprend :
+\begin{itemize}
+    \item[-] un générateur d’onde stable (souvent à base de synthétiseur de fréquence ou de VCO piloté par PLL) ; 
+    \item[-] un modulateur d’impulsions ou un générateur de chirp linéaire ;
+    \item[-] une chaîne d’émission, incluant l’amplificateur de puissance (HPA) et le réseau d’antennes ;
+    \item[-] une chaîne de réception, comprenant le mélangeur, l’amplificateur faible bruit (LNA) et les filtres d’adaptation ;
+    \item[-] un système de conversion analogique-numérique (ADC) permettant le traitement numérique des échos.
+\end{itemize}
+
+Le défi de l’architecture RF réside dans la recherche d’un compromis optimal entre largeur de bande, stabilité de fréquence, linéarité, bruit, efficacité énergétique, et intégrabilité. Ces compromis deviennent encore plus cruciaux lorsque le radar doit être embarqué sur des plateformes compactes et mobiles.
+
+\subsection{Évolution des architectures RF pour radars SAR}
+
+Historiquement, les premières générations de radars SAR utilisaient des architectures superhétérodynes analogiques, reposant sur des composants discrets et une électronique volumineuse. Les progrès rapides de la microélectronique, de la micro-ondes et des technologies de semiconducteurs (GaAs, GaN, SiGe) ont conduit à l’émergence d’architectures numérisées et miniaturisées, intégrant davantage de fonctions au sein de modules RF compacts.
+
+L’évolution s’est faite selon plusieurs axes :
+\begin{itemize}
+    \item[-] Augmentation de la bande passante : pour améliorer la résolution en distance ;
+    \item[-] Montée en fréquence : vers les bandes X, Ku, Ka et W pour réduire la taille d’antenne et accroître la finesse d’imagerie ;
+    \item[-] Intégration de l’électronique RF : vers des systèmes sur puce (RFIC, MMIC) ou des modules front-end intégrés (T/R modules) ;
+    \item[-] Reconfigurabilité : introduction d’architectures SDR (Software Defined Radar) permettant l’adaptation dynamique des paramètres radar ;
+    \item[-] Réduction de la consommation : indispensable pour les systèmes embarqués autonomes à énergie limitée.
+\end{itemize}
+Ces avancées ont ouvert la voie à des radars SAR légers, compacts et énergétiquement efficaces, compatibles avec des drones ou nanosatellites. Toutefois, la miniaturisation induit de nouveaux défis, notamment en matière de bruit de phase, d’isolation entre canaux, et de gestion thermique des amplificateurs de puissance.
+
+\subsection{Intégration sur plateformes autonomes multi-capteurs}
+
+Les plateformes autonomes embarquant plusieurs capteurs requièrent une synergie entre systèmes hétérogènes. Dans ce cadre, la conception RF doit prendre en compte :
+
+\begin{itemize}
+    \item[-] les interférences électromagnétiques (EMI) entre capteurs actifs (lidar, radar, communications) ;
+    \item[-] la synchronisation temporelle et fréquentielle entre sous-systèmes ;
+    \item[-] les contraintes mécaniques liées à l’intégration des antennes et des modules RF ;
+    \item[-] la cohabitation énergétique, la gestion thermique et la compatibilité électromagnétique (CEM).
+\end{itemize}
+De plus, les systèmes multi-capteurs modernes s’appuient sur des architectures distribuées où les données RF ou numériques sont fusionnées pour accroître la robustesse de la perception. Cela implique des architectures RF flexibles, capables de fonctionner dans des réseaux coopératifs (radars MIMO, radar-lidar fusionné, ou radar partagé entre plusieurs plateformes).
+
+Ainsi, la tendance actuelle est à la modularité et à la reconfigurabilité, permettant d’adapter dynamiquement la chaîne RF à la mission, à la topologie du capteur et à la plateforme hôte.
