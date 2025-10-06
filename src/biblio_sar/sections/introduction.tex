@@ -9,15 +9,17 @@ Afin de pallier cette limitation, la Royal Air Force développa, au cours de la 
 À la fin des années 1940, de nouvelles avancées dans les technologies d’imagerie radar furent réalisées, parmi lesquelles le radar à fauchée latérale. Ce dispositif consiste à orienter une antenne latéralement afin de capturer l’image d’une bande étendue du sol. Les premiers systèmes SLAR\footnote{Side Looking Airborn Radar ou radar à fauchée latérale} fonctionnels furent testés au début des années 1950 et, à la fin de la décennie, les premières cartes radar continues du terrain purent être produites.
 
 \begin{figure}[ht]
-    \begin{minipage}{0.45\textwidth}
+    \begin{minipage}[t]{0.45\textwidth}
         \centering
+        \vspace{0pt}
         \includegraphics[width=0.9\linewidth]{src/biblio_sar/img/H2S_zuider_zee.jpg}
         \caption{Image du radar H2S réalisée au dessus de la Zuider Zee aux Pays-Bas \cite{h2s_source}}
         \label{fig:h2s_zuider_zee}
     \end{minipage}
     \hfill
-    \begin{minipage}{0.45\textwidth}
+    \begin{minipage}[t]{0.45\textwidth}
         \centering
+        \vspace{0pt}
         \includegraphics[width=0.9\linewidth]{src/biblio_sar/img/first_SLAR_image.png}
         \caption{Une des premières image d'un radar à ouverture réelle acquise par un radar à fauchée latérale \cite{colin_radar_images}}
         \label{fig:first_slar_image}
@@ -31,11 +33,11 @@ Ainsi, l’imagerie radar revêt un intérêt manifeste tant dans le domaine civ
 Bien que l’imagerie radar conventionnelle soit performante, elle présente une limite majeure : la résolution. En effet, dans le cas d’un SLAR/RAR\footnote{Real Aperture Radar ou radar à ouverture réelle}, la résolution en azimut peut être approximée par l’expression suivante \cite{radartutorial} :
 
 \begin{equation}
-R_{az} = \frac{h\times\lambda}{L\times \cos{\theta}}
+\delta_{az} = \frac{h\times\lambda}{L\times \cos{\theta}}
 \end{equation}
 Où :
 \begin{description}
-    \item[$R_{az}$] : est la résolution en azimut [m]
+    \item[$\delta_{az}$] : est la résolution en azimut [m]
     \item[$h$] : est la hauteur de l'antenne par rapport au sol [m]
     \item[$\lambda$] : est la longueur d’onde [m]
     \item[$L$] : est la longueur physique de l’antenne [m]
