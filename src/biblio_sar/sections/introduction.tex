@@ -38,11 +38,11 @@ Bien que l’imagerie radar conventionnelle soit performante, elle présente une
 \end{equation}
 Où :
 \begin{description}
-    \item[$\delta_{az}$] : est la résolution en azimut [m]
-    \item[$h$] : est la hauteur de l'antenne par rapport au sol [m]
-    \item[$\lambda$] : est la longueur d’onde [m]
-    \item[$L$] : est la longueur physique de l’antenne [m]
-    \item[$\theta$] : est l'angle d'incidence [°]
+    \item[$\delta_{az}$] : est la résolution en azimut [$m$]
+    \item[$h$] : est la hauteur de l'antenne par rapport au sol [$m$]
+    \item[$\lambda$] : est la longueur d’onde [$m$]
+    \item[$L$] : est la longueur physique de l’antenne [$m$]
+    \item[$\theta$] : est l'angle d'incidence [\textdegree]
 \end{description}
 
 Cette relation montre qu’une résolution azimutale élevée nécessite une antenne de très grande dimension. Or, dans la pratique, les contraintes liées à la capacité d’emport des vecteurs aériens rendent cette solution peu réaliste. Ainsi, les radars à ouverture réelle (RAR) et à ouverture réelle latérale (SLAR) sont rapidement confrontés à des limites physiques qui restreignent fortement leurs performances. Leur résolution dépend directement de la taille de l’antenne et de la géométrie de visée : plus la distance entre le radar et la scène observée augmente, plus la résolution au sol se dégrade. Par conséquent, ces systèmes ne permettent pas d’obtenir des images suffisamment détaillées pour les besoins d’observation fine, ce qui limite leur emploi à des tâches de détection ou de surveillance globale où la précision spatiale n’est pas déterminante.
@@ -58,115 +58,3 @@ L’évolution des plateformes légères permet désormais d’envisager l’emb
 L’utilisation d’un essaim confère plusieurs avantages d’un point de vue opérationnel et scientifique. Elle permet de renforcer la résilience et la redondance dans la capture d’images, en particulier dans des environnements contestés, sinistrés ou difficilement accessibles. La conception de la charge utile constitue une étape préalable essentielle : la validation sur un drone unique permet ensuite d’envisager la réplication et la coordination au sein de l’essaim. Cette architecture soulève toutefois des problématiques techniques importantes, notamment en matière de multi-capteurs et de fusion de données, qui sont nécessaires pour obtenir des images radar fusionnées et cohérentes à partir des acquisitions dispersées.
 
 Les applications de ce type de système sont à la fois civiles et stratégiques. Dans le domaine civil, elles contribuent à la surveillance des écosystèmes, à la prévention des risques naturels et à la production de données fiables pour l’aménagement du territoire et la gouvernance. Dans un contexte militaire ou stratégique, l’essaim permet une cartographie et une reconnaissance précises, même dans des zones hostiles ou couvertes, tout en garantissant une redondance et une adaptabilité accrues. Cette dualité illustre le potentiel des drones SAR en essaim comme outil pertinent à la fois pour la recherche, la gestion environnementale et la défense.
-
-\newpage
-1. Introduction
-
-Contexte général : radar, observation tout temps, intérêt civil et militaire.
-
-Besoin d’imagerie haute résolution → limites des radars conventionnels → motivation du SAR.
-
-Positionnement spécifique : SAR embarqué sur drones, multi-capteurs, fusion et détection.
-
-2. Principes de base du radar et du SAR
-
-Rappels radar : portée, Doppler, résolution, SNR.
-
-Limites des radars conventionnels pour l’imagerie.
-speckle (chatoiement) 
-
-Principe du SAR : ouverture synthétique, compression en distance et en azimut.
-
-3. Algorithmes de traitement SAR (formation d’image)
-3.1 Compression en distance et en azimut
-3.2 Algorithmes classiques
-
-Range-Doppler
-
-Chirp Scaling
-
-omega–k (Range Migration Algorithm)
-
-Backprojection
-
-3.3 Limitations et hypothèses
-
-Trajectoire rectiligne idéale, scène plane, hypothèse cible ponctuelle.
-
-Contraintes en bande, navigation et coût calcul.
-
-3.4 Comparaison des algorithmes
-4. Avancées récentes en traitement SAR
-
-Compensation de mouvement (MOCO), autofocus.
-
-Traitements temps-fréquence et robustes.
-
-Implémentations temps réel (GPU, FPGA).
-
-Approches émergentes (IA, deep learning pour focalisation).
-
-5. SAR embarqué sur drones (UAV-SAR)
-5.1 Intérêt et spécificités
-
-Portabilité, observation basse altitude, flexibilité.
-
-5.2 Contraintes UAV
-
-Masse/énergie, vibrations, trajectoire non idéale, volume de données.
-
-5.3 Travaux académiques (ex. Pelle 2020, projets universitaires)
-5.4 Développements industriels (mini-SAR sur drones militaires et civils)
-5.5 Algorithmes adaptés
-
-Backprojection robuste, navigation assistée GNSS/IMU, correction post-traitement.
-
-6. Fusion multi-drones et SAR collaboratif
-6.1 Intérêt : couverture étendue, redondance, meilleure résolution.
-6.2 Contraintes : synchronisation temporelle, cohérence de phase, calibration inter-capteurs.
-6.3 Travaux existants : MIMO-SAR, expériences UAV multi-capteurs.
-6.4 Limites actuelles et défis pour l’avenir.
-7. Détection en imagerie SAR
-7.1 Objectif et enjeux de la détection
-
-Cibles ponctuelles vs étendues, clutter, hétérogénéité du milieu.
-
-7.2 Algorithmes classiques de détection
-
-CFAR (CA-CFAR, OS-CFAR, GO-CFAR, SO-CFAR).
-
-Détection par seuillage global et adaptatif.
-
-7.3 Limites des méthodes classiques
-
-Environnements hétérogènes, forte densité de clutter, faible SNR.
-
-7.4 Approches avancées
-
-Détection bayésienne et probabiliste.
-
-Exploitation de l’information polarimétrique/interférométrique.
-
-Apprentissage automatique (SVM, réseaux de neurones).
-
-Deep learning pour la détection et classification d’objets dans les images SAR.
-
-7.5 Évaluation des performances
-
-Probabilité de détection (Pd), taux de fausses alarmes (Pfa).
-
-Jeux de données et benchmarks (MSTAR, OpenSAR, etc.).
-
-8. Discussion et perspectives
-
-Comparaison des approches (formation image vs exploitation).
-
-Verrous scientifiques actuels : navigation précise, traitement distribué, robustesse en clutter.
-
-Perspectives : SAR multi-drones collaboratifs, IA pour fusion + détection en temps réel.
-
-9. Conclusion
-
-Synthèse des connaissances actuelles.
-
-Positionnement de ton projet par rapport à l’état de l’art.
