@@ -1,0 +1,28 @@
+\section{Différents algorithmes de détection}
+
+\subsection{Principe général du CFAR (Constant False Alarm Rate)}
+
+\subsubsection{Estimation du bruit}
+
+Le niveau du clutter (fouillis radar : échoss parasites) est estimé par la moyenne arithmétique des échantillons dans la fenêtre de référence donnée par : 
+\begin{equation}
+{Q}_{\text{clutter}} = \frac{1}{M} \sum_{i=1}^{M} x_i
+\end{equation}
+
+\begin{description}
+  \item[${Q}_{\text{clutter}}$ :] estimation du niveau moyen du clutter (ou du bruit de fond)
+  \item[$N$ :] nombre total de cellules de référence
+  \item[$x_i$ :] puissance mesurée dans la $i^{\text{ème}}$ cellule de référence
+\end{description}
+
+Si on considère la détection quadratique, la FDP (fonction de densité de probabilité) de la variable aléatoire à la sortie du détecteur, X, suit
+la loi Exponentielle donnée par :
+\begin{equation}
+f_X(x) = \frac{1}{2\sigma^2} e^{-x / 2\sigma^2}, \quad x \ge 0
+\end{equation}
+
+
+
+
+\subsubsection{Calcul du seuil de détection}
+\subsubsection{Probabilité de fausse alarme}

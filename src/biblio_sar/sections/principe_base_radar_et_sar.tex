@@ -1,5 +1,9 @@
 \section{Principes de bases des systèmes radar et de l'imagerie SAR}
-\subsection{Rappels radar}
+\subsection{Généralités radar}
+
+Avant d'aborder les techniques avancées d'imagerie SAR, il est nécessaire de rappeler certains concepts fondamentaux des systèmes radar. 
+
+Un système radar émet une onde électromagnétique qui se propage dans l'espace selon la directivité de l'antenne, comme le montrent les traits bleus de la figure \ref{fig:schema_explicatif_radar}. Lorsque cette onde rencontre une cible, des échos sont émis ; ce sont les traits jaunes de la même figure. Ces échos se propagent dans l'espace dans de multiples directions, avec de multiples amplitudes et phases. Ils peuvent également se heurter à d'autres surfaces, générant ainsi de nouveaux échos. Une partie des échos de l'onde incidente est captée par l'antenne du radar et analysée afin d'obtenir plusieurs informations. Il est possible d'extraire la distance relative de la cible à l'antenne, sa vitesse ou encore sa structure. 
 
 \begin{figure}[ht]
     \centering
@@ -8,38 +12,101 @@
     \label{fig:schema_explicatif_radar}
 \end{figure}
 
-
-Équation radar :
-
-Pourquoi mettre "proportionnel à" alors que l'équation radar ajoute "simplement" un facteur $\frac{1}{(4\pi)^3}$ ?
+Il est ensuite possible d'exprimer la puissance reçue par l'antenne par l'équation radar :
 
 \begin{equation}
     P_r \propto \frac{P_t \times G^2 \times \lambda^2 \sigma}{R^4}
+    \label{equation_radar}
 \end{equation}
 Où : 
 \begin{description}
     \item[$P_r$] : est la puissance reçue par l'antenne [$W$]
     \item[$P_t$] : est la puissance transmise par l'antenne [$W$]
-    \item[$G$] : est le gain de l'antenne (émission/réception) [$/$]
+    \item[$G$] : est le gain de l'antenne (émission/réception)
     \item[$\lambda$] : est la longueur d’onde [$m$]
     \item[$\sigma$] : est la surface équivalente radar [$m^2$]
-    \item[$R^4$] : est la distance entre l'antenne et la cible [$m$]
+    \item[$R$] : est la distance entre l'antenne et la cible [$m$]
 \end{description}
 
+L'onde émise l'est selon un angle d'ouverture qui détermine la directivité du faisceau. En clair, un faisceau plus étroit permettra de capter plus d'échos et d'observer plus loin, mais il est nécessaire d'avoir une approximation de la position de la cible. A l'inverse, une antenne peu directive permettra d'observer une zone au détriment de la distance. L'un pourra servir au suivi de la cible, tandis que l'autre permettra de surveiller une zone. L'angle d'ouverture peut être approximé par l'équation suivante :
 
-Antenne :
-
-Angle ouverture : 
 \begin{equation}
     \theta \approx \frac{\lambda}{L}
+    \label{approx_angle_ouverture_antenne}
 \end{equation}
 Où :
 \begin{description}
     \item[$\theta$] : est l'angle d'ouverture [\textdegree]
     \item[$\lambda$] : est la longueur d’onde [$m$]
-    \item[$L$] : est la taille physique de l'antenne [$m$]
+    \item[$L$] : est la longueurs physique de l'antenne [$m$]
 \end{description}
 
+\subsection{Formes d'ondes radar}
+La performance d’un système radar ne dépend pas uniquement de sa géométrie ou de la puissance transmise, mais également de la nature du signal émis. Le choix de la forme d’onde conditionne à la fois la portée, la résolution et la sensibilité du radar. Selon les applications, différentes formes d’onde sont employées, qu’elles soient continues ou modulées, à impulsions courtes ou à large bande.
+
+Il existe trois catégories de formes d'onde : 
+\begin{itemize}
+    \item les impulsions simples,
+    \item les impulsions modulées,
+    \item les ondes continues.
+\end{itemize}
+
+\subsubsection{Impulsions simples}
+Les impulsions simples, aussi appelées pulse, consistent en l'émission d'une impulsion courtes et puissantes de signal radar. Chaque impulsion est suivie d'une période de silence qui permet au radar d'écouter les échos des cibles. 
+
+\begin{figure}[ht]
+  \centering
+  \setlength{\unitlength}{1cm}
+  \begin{picture}(10,2)
+    \thicklines
+    \put(0,0){\line(1,0){0.25}}
+    % Première impulsion
+    \put(0.25,0){\line(0,2){2}}
+    \put(0.25,2){\line(2,0){0.5}}
+    \put(0.75,2){\line(0,-2){2}}
+    % Période de silence
+    \put(0.75,0){\line(1,0){2.5}}
+    % Deuxième impulsion
+    \put(3.25,0){\line(0,2){2}}
+    \put(3.25,2){\line(2,0){0.5}}
+    \put(3.75,2){\line(0,-2){2}}
+    % Période de silence
+    \put(3.75,0){\line(1,0){2.5}}
+
+    % Quatrième impulsion
+    \put(6.25,0){\line(0,2){2}}
+    \put(6.25,2){\line(2,0){0.5}}
+    \put(6.75,2){\line(0,-2){2}}
+
+    % Période de silence
+    \put(6.75,0){\line(1,0){2.5}}
+    
+    % Cinquième impulsion
+    \put(9.25,0){\line(0,2){2}}
+    \put(9.25,2){\line(2,0){0.5}}
+    \put(9.75,2){\line(0,-2){2}}
+
+    % Période de silence
+    \put(9.75,0){\line(1,0){0.25}}
+  \end{picture}
+  \caption{Représentation d'impulsions d'un radar}
+  \label{fig:impulsions_radar}
+\end{figure}
+
+
+
+\newpage
+plan partie : 
+Impulsions simples
+
+Impulsions modulées (chirp)
+
+Ondes continues (CW, FMCW)
+
+Rôle dans la mesure de distance et de vitesse
+
+
+%lié imagerie
 Résolution range/radial :
 
 Que veut dire le B ? Le bruit ? 
@@ -79,6 +146,134 @@ radar pulsé (impulsion ???)
 \subsection{Limites des radars conventionnels pour l'imagerie}
 
 \subsection{Principe du SAR}
+
+Plan : 2. Des radars conventionnels à la synthèse d’ouverture
+2.1 Rappels fondamentaux sur le fonctionnement radar
+
+(Section de mise en contexte technique avant d’aborder les limites des radars à ouverture réelle.)
+
+2.1.1 Principe général et équation radar
+
+Fonctionnement de base : émission d’une onde électromagnétique, réflexion par la cible, réception de l’écho.
+
+Équation radar simplifiée reliant la puissance reçue à la portée, la puissance émise, le gain d’antenne et la section efficace radar (RCS).
+
+Définition du rapport signal/bruit (SNR) et de son rôle dans la détection.
+
+2.1.2 Portée et sensibilité
+
+Définition de la portée maximale détectable.
+
+Facteurs déterminants : puissance, gains, pertes, bruit de réception.
+
+Compromis entre portée, résolution et temps d’intégration.
+
+2.1.3 Effet Doppler et mesure de vitesse
+
+Rappel du décalage Doppler dû à la composante radiale de la vitesse.
+
+Utilisation du Doppler pour la discrimination de cibles mobiles et pour la mesure de vitesse.
+
+Introduction du lien entre vitesse relative et résolution azimutale dans les systèmes d’imagerie.
+
+2.1.4 Résolution spatiale du radar
+
+Définition de la résolution en distance, dépendant de la bande passante du signal émis.
+
+Définition de la résolution en azimut, dépendant de la largeur du faisceau d’antenne.
+
+Expression de la résolution en azimut d’un radar à ouverture réelle :
+
+%δaz≈λRL
+%δ
+%az
+%	​
+
+%≈
+%L
+%λR
+%	​
+
+
+où 
+%λ
+%λ est la longueur d’onde, 
+R
+R la distance à la cible et 
+L
+L la longueur physique de l’antenne.
+
+Discussion de la dépendance forte de la résolution à la distance pour les radars à antenne réelle.
+
+2.2 Limites des radars conventionnels pour l’imagerie
+
+(Transition naturelle vers la justification du SAR.)
+
+2.2.1 Contraintes de résolution et dimensionnement d’antenne
+
+Pour obtenir une résolution fine, il faudrait une antenne très longue : contrainte matérielle majeure pour les systèmes embarqués.
+
+Difficulté de maintenir une résolution constante avec la distance (élargissement du faisceau).
+
+2.2.2 Contraintes géométriques et dynamiques
+
+Effets du mouvement de la plateforme sur la stabilité de l’image (flou, désalignement).
+
+Sensibilité aux variations de trajectoire et à la géométrie side-looking typique des radars d’imagerie.
+
+2.2.3 Bruit de speckle (chatoiement)
+
+Définition du speckle comme phénomène d’interférence cohérente entre échos élémentaires.
+
+Nature multiplicative du bruit, affectant le contraste et la lisibilité des images radar.
+
+Origine statistique : fluctuations dues à la cohérence du signal.
+
+Conséquences : difficulté d’interprétation visuelle, nécessité de traitements de réduction (moyennage multilook, filtrage adaptatif, etc.).
+
+2.3 Principe du radar à synthèse d’ouverture (SAR)
+
+(Introduction du SAR comme solution directe aux limites précédemment identifiées.)
+
+2.3.1 Concept général et ouverture synthétique
+
+Idée clé : recréer une grande antenne virtuelle en exploitant le mouvement du radar.
+
+Acquisition successive d’échos cohérents le long de la trajectoire, permettant une ouverture synthétique.
+
+Amélioration drastique de la résolution azimutale, indépendante de la distance à la cible.
+
+2.3.2 Compression en distance et en azimut
+
+Compression en distance : utilisation de signaux modulés en fréquence (chirp) pour obtenir une haute résolution sans sacrifier la portée.
+
+Compression en azimut : traitement Doppler cohérent des signaux successifs pour focaliser l’image en direction transversale.
+
+Étapes clés : formation du signal brut, filtrage de mise en phase, focalisation en azimut.
+
+2.3.3 Résultats et avantages du SAR
+
+Résolution constante et élevée, même à grande distance.
+
+Intégration cohérente du signal → amélioration du SNR.
+
+Production d’images bidimensionnelles précises et exploitables.
+
+2.4 Transition vers les techniques avancées
+
+(Préparer la suite de ta revue bibliographique.)
+
+Le SAR constitue la base des techniques d’imagerie radar modernes (InSAR, PolSAR, TomoSAR…).
+
+Ces variantes exploitent les propriétés de cohérence, polarisation et phase du signal SAR pour étendre les capacités d’analyse.
+
+Souhaites-tu que je t’écrive le texte rédigé complet correspondant à ce plan (académique, sans balisage LaTeX, dans la continuité de ton paragraphe sur les limites RAR/SLAR) ?
+Je peux te le produire directement, section par section, pour assurer la cohérence stylistique.
+
+
+
+
+
 
 Rappels radar : portée, Doppler, résolution, SNR.
 
