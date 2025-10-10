@@ -1,0 +1,41 @@
+\section{Architecture matérielle et chaînes RF d’un radar SAR embarqué}\label{SEC:Architecture matérielle et chaînes RF d’un radar SAR embarqué}
+
+\subsection{Architecture fonctionnelle globale}
+
+Chaîne émission → antenne → propagation → réception → base bande.
+
+Différences entre chaîne RF SAR pulsé et FMCW-SAR.
+
+
+\subsection{Sous-systèmes RF}
+
+Source RF / Synthétiseur : VCO, PLL, DDS, stabilité de phase critique pour SAR.
+
+Émetteur : modulateur FMCW ou impulsionnel, amplificateur de puissance (PA).
+
+Récepteur : LNA, mélangeurs, filtres, amplificateurs IF, démodulateur IQ.
+
+Conversion fréquence / Base bande : downconversion, ADC haute dynamique.
+
+
+\subsection{Antenne et front-end RF}
+
+Antennes à ouverture synthétique : antennes linéaires, réseaux patch, antennes conformes.
+
+Contraintes d’intégration (taille, masse, diagramme de rayonnement, polarisation).
+
+Antennes actives vs passives, antennes MIMO pour SAR.
+
+
+\subsection{Gestion des données}
+
+Débits très élevés (plusieurs centaines de Mo/s).
+
+Stockage embarqué (SSD industriels) ou transfert vers station au sol.
+
+
+\subsection{Alimentation et contraintes embarquées}
+
+Gestion énergétique, rendement RF.
+
+Dissipation thermique, miniaturisation et fiabilité.

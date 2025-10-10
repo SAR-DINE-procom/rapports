@@ -3,7 +3,7 @@
 
 Avant d'aborder les techniques avancées d'imagerie SAR, il est nécessaire de rappeler certains concepts fondamentaux des systèmes radar. 
 
-Un système radar émet une onde électromagnétique qui se propage dans l'espace selon la directivité de l'antenne, comme le montrent les traits bleus de la figure \ref{fig:schema_explicatif_radar}. Lorsque cette onde rencontre une cible, des échos sont émis ; ce sont les traits jaunes de la même figure. Ces échos se propagent dans l'espace dans de multiples directions, avec de multiples amplitudes et phases. Ils peuvent également se heurter à d'autres surfaces, générant ainsi de nouveaux échos. Une partie des échos de l'onde incidente est captée par l'antenne du radar et analysée afin d'obtenir plusieurs informations. Il est possible d'extraire la distance relative de la cible à l'antenne, sa vitesse ou encore sa structure. 
+Un système radar émet une onde électromagnétique qui se propage dans l'espace selon la directivité de l'antenne, comme le montrent les traits bleus de la figure \ref{fig:schema_explicatif_radar}. Lorsque cette onde rencontre une cible, des échos sont émis ; ce sont les traits jaunes de la même figure. Ces échos se propagent dans l'espace dans de multiples directions, amplitudes et phases. Ils peuvent également se heurter à d'autres surfaces, générant ainsi de nouveaux échos. Une partie des échos de l'onde incidente est captée par l'antenne du radar et analysée afin d'obtenir plusieurs informations. Il est possible d'extraire la distance relative de la cible à l'antenne, sa vitesse ou encore sa structure. 
 
 \begin{figure}[ht]
     \centering
@@ -15,8 +15,8 @@ Un système radar émet une onde électromagnétique qui se propage dans l'espac
 Il est ensuite possible d'exprimer la puissance reçue par l'antenne par l'équation radar :
 
 \begin{equation}
-    P_r \propto \frac{P_t \times G^2 \times \lambda^2 \sigma}{R^4}
-    \label{equation_radar}
+    P_r \propto \frac{P_t . G^2 . \lambda^2 \sigma}{R^4}
+    \label{eq:equation_radar}
 \end{equation}
 Où : 
 \begin{description}
@@ -32,14 +32,58 @@ L'onde émise l'est selon un angle d'ouverture qui détermine la directivité du
 
 \begin{equation}
     \theta \approx \frac{\lambda}{L}
-    \label{approx_angle_ouverture_antenne}
+    \label{eq:approx_angle_ouverture_antenne}
 \end{equation}
 Où :
 \begin{description}
     \item[$\theta$] : est l'angle d'ouverture [\textdegree]
     \item[$\lambda$] : est la longueur d’onde [$m$]
-    \item[$L$] : est la longueurs physique de l'antenne [$m$]
+    \item[$L$] : est la longueur physique de l'antenne [$m$]
 \end{description}
+
+Afin de déterminer la vitesse de la cible, on utilise l'effet Doppler-Fizeau. La figure \ref{fig:illustration_effet_doppler} l'illustre, celui-ci décrit la modification de la fréquence d'une onde observée lorsque la source et/ou l'observateur sont en mouvement relatif. Un rapprochement entre la source et l'observateur entraîne une augmentation de la fréquence perçue tandis qu'un éloignement provoque une diminution de celle-ci. La variation de fréquence correspond à la fréquence Doppler qui s'exprime telle que :
+
+\begin{equation}
+    f_d = \frac{2.\nu_r.f_0}{c_0}
+    \label{eq:frequence_doppler}
+\end{equation}
+Où :
+\begin{description}
+    \item[$f_d$] : est la fréquence Doppler [$Hz$]
+    \item[$\nu_r$] : est la vitesse relative à l'émetteur [$m.s^{-1}$]
+    \item[$f_0$] : est la fréquence émise [$Hz$] 
+    \item[$c_0$] : est la célérité d'une OEM \footnote{Onde Électro-Magnétique} dans le vide [$m.s^{-1}$] 
+\end{description}
+
+\begin{figure}[ht]
+    \centering
+    \begin{tikzpicture}
+    % --- Éléments centraux ---
+    \node (radar) at (0,0) {\scalebox{-1}[1]{\includegraphics[width=1.5cm]{src/biblio_sar/img/radar-de-vitesse.png}}};
+    % domain=1:7 -> dessine de x=1 à x=7
+    % 0.2*sin(12*(\x-1.5) r) -> {Amplitude}*sin({Fréquence}*... r)
+    \draw[black, thick, smooth] plot[domain=1:7, samples=1000] (\x, {0.4*sin(12*(\x-1.5) r)});
+    \draw[-latex, thick] (7.5,0) -- ++(1,0) node[pos=0.5, above] {\(f_o\)};
+    % --- Scénario 1 : Le véhicule s'approche ---
+    \begin{scope}[yshift=1.5cm]
+        % Onde réfléchie (fréquence plus élevée)
+        \draw[black, thick, smooth] plot[domain=1:7, samples=1000] (\x, {0.4*sin(24*(\x-1) r)});
+        \draw[-latex, thick] (0.5,0) -- ++(-1,0) node[pos=0.5, above] {\(f_o + f_d\)};
+        \node (truck_approaching) at (9,0) {\scalebox{-1}[1]{\includegraphics[width=1.5cm]{src/biblio_sar/img/truck-icon.png}}};
+        \draw[-latex, thick] (truck_approaching) -- ++(-1.5,0);
+    \end{scope}
+    % --- Scénario 2 : Le véhicule s'éloigne ---
+    \begin{scope}[yshift=-1.5cm]
+        \node (truck_receding) at (8.25,0) {\includegraphics[width=1.5cm]{src/biblio_sar/img/truck-icon.png}};
+        \draw[-latex, thick] (truck_receding) -- ++(1.5,0);
+        % Onde réfléchie (fréquence plus basse)
+        \draw[black, thick, smooth] plot[domain=1:7, samples=1000] (\x, {0.4*sin(6*(\x-1) r)});
+        \draw[-latex, thin] (0.5,0) -- ++(-1,0) node[pos=0.5, below] {\(f_o - f_d\)};
+    \end{scope}
+    \end{tikzpicture}
+    \caption{Illustration de l'effet Doppler-Fizeau}
+    \label{fig:illustration_effet_doppler}
+\end{figure}
 
 \subsection{Formes d'ondes radar}
 La performance d’un système radar ne dépend pas uniquement de sa géométrie ou de la puissance transmise, mais également de la nature du signal émis. Le choix de la forme d’onde conditionne à la fois la portée, la résolution et la sensibilité du radar. Selon les applications, différentes formes d’onde sont employées, qu’elles soient continues ou modulées, à impulsions courtes ou à large bande.
@@ -52,12 +96,31 @@ Il existe trois catégories de formes d'onde :
 \end{itemize}
 
 \subsubsection{Impulsions simples}
-Les impulsions simples, aussi appelées pulse, consistent en l'émission d'une impulsion courtes et puissantes de signal radar. Chaque impulsion est suivie d'une période de silence qui permet au radar d'écouter les échos des cibles. 
-
+Les impulsions simples, aussi appelées pulse, consistent en l'émission d'une impulsion courtes et puissantes de signal radar. Chaque impulsion est suivie d'une période de silence qui permet au radar d'écouter les échos des cibles, ces mêmes échos qui permettent de déterminer la distance et la vitesse relative de la cible au radar. La figure \ref{fig:impulsions_radar_avec_echo} permet d'illustrer le fonctionnement de cette forme d'onde.
+\FloatBarrier
+% Représentation impulsions simples avec écho
 \begin{figure}[ht]
   \centering
   \setlength{\unitlength}{1cm}
   \begin{picture}(10,2)
+    % fleche gauche
+    {\color{blue}
+        % Ligne entre l'écho et l'impulsion pour le tau_echo
+        \put(0.775,0.125){\line(0,1){0.25}}
+        \put(0.75,0.25){\line(1,0){3.25}}
+        \put(3.975,0.125){\line(0,1){0.25}}
+        \put(2.25,0.5){\makebox(0,0)[b]{$\tau_e$}}
+        % Ligne entre les deux impulsions
+        \put(0.25,1.5){\line(1,0){6}}
+        \put(0.275,1.375){\line(0,1){0.25}}
+        \put(6.225,1.375){\line(0,1){0.25}}
+        \put(3,1.75){\makebox(0,0)[b]{$T_p$}}
+        % Ligne periode pulse
+        \put(6.25,1){\line(1,0){0.5}}
+        \put(6.275,0.875){\line(0,1){0.25}}
+        \put(6.725,0.875){\line(0,1){0.25}}
+        \put(6.5,0.5){\makebox(0,0)[b]{$\tau_p$}}
+    }
     \thicklines
     \put(0,0){\line(1,0){0.25}}
     % Première impulsion
@@ -65,13 +128,15 @@ Les impulsions simples, aussi appelées pulse, consistent en l'émission d'une i
     \put(0.25,2){\line(2,0){0.5}}
     \put(0.75,2){\line(0,-2){2}}
     % Période de silence
-    \put(0.75,0){\line(1,0){2.5}}
-    % Deuxième impulsion
-    \put(3.25,0){\line(0,2){2}}
-    \put(3.25,2){\line(2,0){0.5}}
-    \put(3.75,2){\line(0,-2){2}}
+    \put(0.75,0){\line(1,0){3.25}}
+    % Echo d'une cible
+    {\color{red}
+        \put(4,0){\line(0,1){0.5}}
+        \put(4,0.5){\line(1,0){0.5}}
+        \put(4.5,0.5){\line(0,-1){0.5}}
+    }
     % Période de silence
-    \put(3.75,0){\line(1,0){2.5}}
+    \put(4.5,0){\line(1,0){1.75}}
 
     % Quatrième impulsion
     \put(6.25,0){\line(0,2){2}}
@@ -79,18 +144,170 @@ Les impulsions simples, aussi appelées pulse, consistent en l'émission d'une i
     \put(6.75,2){\line(0,-2){2}}
 
     % Période de silence
-    \put(6.75,0){\line(1,0){2.5}}
+    \put(6.75,0){\line(1,0){3.25}}
     
-    % Cinquième impulsion
-    \put(9.25,0){\line(0,2){2}}
-    \put(9.25,2){\line(2,0){0.5}}
-    \put(9.75,2){\line(0,-2){2}}
-
-    % Période de silence
-    \put(9.75,0){\line(1,0){0.25}}
   \end{picture}
-  \caption{Représentation d'impulsions d'un radar}
-  \label{fig:impulsions_radar}
+  \caption{Représentation d'impulsions simples avec un écho d'un radar}
+  \label{fig:impulsions_radar_avec_echo}
+\end{figure}
+\FloatBarrier
+
+Les impulsions et l'écho représentés dans la figure \ref{fig:impulsions_radar_avec_echo} correspondent aux périodes où une sinusoïde est émise ou captée. Pour détecter l'écho, le radar va appliquer un filtre adapté au signal reçu. Si le signal reçu comporte un écho, cette opération va faire apparaître un pic de corrélation. Ce dernier permet la mesure de $\tau_e$ qui correspond au temps nécessaire à l'écho pour être capté par le radar. Grâce à cette mesure, on peut calculer la distance relative de la cible au radar. Ce calcul n'est possible que puisque le canal de propagation est connu et constant.
+
+L'utilisation du pic de corrélation pour détecter l'écho implique que si deux cibles sont proches comparés à la durée d'impulsions, elles seront confondues. Ainsi la résolution en distance est exprimée par l'équation suivante \cite{radartutorial} :
+
+%La largeur des impulsions conditionne la résolution du radar. Plus elles sont larges, plus les cibles doivent être éloignées pour être détectées. Cependant, de larges impulsions permettent d'émettre plus de puissance et donc d'observer plus loin. A l'inverse, de fines impulsions permettront de détecter deux cibles très proches mais à faible distance \cite{radartutorial}. 
+
+\begin{equation}
+    \delta_d \geq \frac{c_0 . \tau_p}{2} = \frac{c_0}{2. B}
+    \label{eq:resolution_distance_pulse}
+\end{equation}
+Où :
+\begin{description}
+    \item[$\delta_d$] : est la résolution en distance [$m$]
+    \item[$c_0$] : est la célérité d'une OEM dans le vide [$m.s^{-1}$]
+    \item[$\tau_p$] : est la durée d'émission d'une impulsion [$s$]
+    \item[$B$] : est la bande de fréquence de l'impulsion [$Hz$]
+\end{description}
+
+Ainsi, on en déduit que pour obtenir la meilleure résolution en distance, il faut émettre une impulsion plus fine. Cependant, cette forme d'onde possède une ambiguïté concernant la distance 
+
+%Cette forme d'onde permet de mesurer la distance en calculant le temps que l'écho met à revenir après avoir rencontré une cible. En effet, puisque le canal de propagation de l'onde électromagnétique émise par le système radar est constant et que la vitesse d'une OEM dans l'air est connue et constante, il est possible de calculer la distance. Dans la figure \ref{fig:impulsions_radar_avec_echo}, l'écho d'une cible est représenté en rouge et le temps nécessaire à sa détection par $\tau_{echo}$. Elle est généralement utilisée par des radars de surveillance aérienne, météorologiques et les systèmes de navigation. 
+
+Une autre problématique de cette forme d'onde est l'ambiguïté concernant la distance relative de la cible au radar. En effet, un écho résultant d'une impulsion peut être détecté après l'impulsion suivante. Ainsi, il n'est pas possible de déterminer la distance de la cible, la résolution maximale en distance d'un radar à impulsion s'exprime de la manière suivante \cite{radartutorial} : 
+
+\begin{equation}
+    \delta_{max} = \frac{c_0 . (T_p - \tau_p)}{2}
+    \label{eq:resolution_distance_max_radar_pulse}
+\end{equation}
+Où :
+\begin{description}
+    \item[$\delta_{max}$] : est la résolution maximale en distance [$m$]
+    \item[$c_0$] : est la célérité d'une OEM dans le vide [$m.s^{-1}$]
+    \item[$T_p$] : est le temps de répétition des impulsions [$m$]
+    \item[$\tau_p$] : est la durée d'émission d'une impulsion [$s$]
+\end{description}
+
+Cette forme d'onde permet aussi d'évaluer la vitesse de la cible grâce à l'effet Doppler-Fizeau. Cependant, la résolution en vitesse s'exprime telle que : 
+
+\begin{equation}
+    \delta\nu_r = \frac{\Delta f_d.\lambda_0}{2} = \frac{\lambda_0}{2.\tau_p} = \frac{\lambda_0.B}{2}
+    \label{eq:resolution_vitesse_impulsions}
+\end{equation}
+Où :
+\begin{description}
+    \item[$\delta\nu_r$] : est la résolution en vitesse [$m.s^{-1}$]
+    \item[$\Delta f_d$] : est la différence entre les deux fréquences Doppler [$Hz$] 
+    \item[$\lambda_0$] : est la longueur d'onde de la fréquence émise [$m$] 
+    \item[$\tau_p$] : est la durée d'impulsion [$s$]
+    \item[$B$] : est la bande de fréquence de l'impulsion [$Hz$]
+\end{description}
+
+On remarque que pour obtenir une bonne résolution en vitesse, il faut une durée d'impulsion $\tau_p$ très grande. Or, c'est l'exact opposé du critère permettant l'obtention d'une bonne résolution en distance. Il faut donc réaliser un compromis entre les deux critères ou bien utiliser d'autres formes d'ondes. 
+
+\subsubsection{Impulsions modulées}
+
+[A REDIGER] Mesure de la distance et de la vitesse mais il y a une ambiguïtés entre les deux résultats, utilisés dans des systèmes radars spécifiques (surveillance maritime et applications industrielles)
+
+\begin{figure}[ht]
+    \centering
+    \setlength{\unitlength}{1cm}
+    \begin{picture}(10,2)
+
+    {\color{blue}
+        % Ligne entre l'écho et l'impulsion pour le tau_echo
+        \put(0.25,0.125){\line(0,1){0.25}}
+        \put(0.25,0.25){\line(1,0){0.5}}
+        \put(0.75,0.125){\line(0,1){0.25}}
+        \put(0.25,0.75){\makebox(0,0)[b]{$\tau_{echo}$}}
+        % Ligne entre les deux impulsions
+        \put(2,1.5){\line(1,0){2}}
+        \put(2.025,1.375){\line(0,1){0.25}}
+        \put(3.975,1.375){\line(0,1){0.25}}
+        \put(3,1.75){\makebox(0,0)[b]{$T_{total}$}}
+    }
+    \thicklines
+    % Impulsions chirp avec montée inclinée et descente verticale
+    \put(0,0){\line(1,1){2}}    % montée linéaire
+    \put(2,0){\line(0,1){2}}    % descente verticale
+
+    \put(2,0){\line(1,1){2}}
+    \put(4,0){\line(0,1){2}}
+
+    \put(4,0){\line(1,1){2}}
+    \put(6,0){\line(0,1){2}}
+
+    \put(6,0){\line(1,1){2}}
+    \put(8,0){\line(0,1){2}}
+
+    \put(8,0){\line(1,1){2}}
+    \put(10,0){\line(0,1){2}}
+
+    % signal reçu
+    {\color{red}
+    \put(0.5,0){\line(1,1){2}}    % montée linéaire
+    \put(2.5,0){\line(0,1){2}}    % descente verticale
+
+    \put(2.5,0){\line(1,1){2}}
+    \put(4.5,0){\line(0,1){2}}
+
+    \put(4.5,0){\line(1,1){2}}
+    \put(6.5,0){\line(0,1){2}}
+
+    \put(6.5,0){\line(1,1){2}}
+    \put(8.5,0){\line(0,1){2}}
+
+    \put(8.5,0){\line(1,1){1.5}}
+    %\put(10,0){\line(0,1){2}}
+    }
+    
+    \end{picture}
+    \caption{Représentation d'une impulsion Chirp et de son écho}
+    \label{fig:impulsions_chirp_avec_echo}
+\end{figure}
+
+\subsubsection{Ondes continues}
+
+[A REDIGER]Mesure simultanées vitesse et distance, utilisée dans les radars de controle de la circulation, systèmes de détection de collision et les capteurs de distance
+[TODO] Ajuster la fmcw pour ajouter un tau temporel et un changement d'amplitude
+\begin{figure}[ht]
+    \centering
+    \setlength{\unitlength}{1cm}
+    \begin{picture}(10,2)
+
+    {\color{blue}
+        % Ligne entre l'écho et l'impulsion pour le tau_echo
+        \put(0.25,0.125){\line(0,1){0.25}}
+        \put(0.25,0.25){\line(1,0){0.5}}
+        \put(0.75,0.125){\line(0,1){0.25}}
+        \put(0.25,0.75){\makebox(0,0)[b]{$\tau_{echo}$}}
+        % Ligne entre les deux impulsions
+        \put(2,2){\line(1,0){4}}
+        \put(2,1.875){\line(0,1){0.25}}
+        \put(6,1.875){\line(0,1){0.25}}
+        \put(4,1.5){\makebox(0,0)[b]{$T_{total}$}}
+    }
+    
+    \thicklines
+    % Impulsions chirp avec montée inclinée et descente verticale
+    \put(0,0){\line(1,1){2}}    % montée linéaire
+    \put(2,2){\line(1,-1){2}}    % descente linéaire
+    \put(4,0){\line(1,1){2}}    
+    \put(6,2){\line(1,-1){2}}
+    \put(8,0){\line(1,1){2}}
+
+    % signal reçu
+    {\color{red}
+    \put(0.5,0){\line(1,1){2}}    % montée linéaire
+    \put(2.5,2){\line(1,-1){2}}    % descente linéaire
+    \put(4.5,0){\line(1,1){2}}    
+    \put(6.5,2){\line(1,-1){2}}
+    \put(8.5,0){\line(1,1){1.5}}
+    }
+    
+    \end{picture}
+    \caption{Représentation de la forme d'onde FMCW et de son écho}
+    \label{fig:fmcw_avec_echo}
 \end{figure}
 
 
@@ -124,7 +341,7 @@ Où :
 Résolution en azimut/latérale :
 
 \begin{equation}
-    \delta_{az} \approx \frac{R\times \lambda}{L}
+    \delta_{az} \approx \frac{R. \lambda}{L}
 \end{equation}
 Où :
 \begin{description}
