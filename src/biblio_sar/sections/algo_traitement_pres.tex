@@ -6,7 +6,6 @@ Cette section porte sur la présentation puis la comparaison des différents alg
 s_r(t, u)=\sum_{n}{A_{0}^{2}\sigma_{n}T_{p}e^{-j\Phi}\, \sin_{c}\!\left(KT_{p}\!\left(t-\frac{\sqrt{x_{n}^{2} + (y_{n} - u)^{2}}}{c}\right)\right)\, e^{-j2k\sqrt{x_{n}^{2} + (y_{n} - u)^{2}}}\, e^{j\omega t}}
 \end{equation}
 
-
 \begin{equation}
     S_{r}(\omega, k_{u}) = \sum_n A_{0}^2\sigma_{n}H_{r}(\omega) C(k, k_{u}).e^{-j\sqrt{4k^2-k_{u}^2}x_{n}}.e^{-jk_{u}y_{n}}
 \end{equation}
@@ -21,7 +20,7 @@ L’algorithme de backprojection est une méthode fondamentale en imagerie radar
     \label{fig:recouvrement_BP}
 \end{figure}
 
-Sur la Figure \ref{fig:recouvrement_BP}, on observe que, en raison du déplacement du drone et de l'ouverture de son antenne, certaines cellules au sol sont éclairées à plusieurs reprises le long de la trajectoire. Ce principe est à la base de l'amélioration de la résolution en imagerie SAR. En effet, chaque point de la scène est observé sous plusieurs angles successifs, ce qui permet d'exploiter la diversité des mesures. Les cibles réfléchissantes produisent alors des interférences constructives lors de la sommation cohérente, tandis que le bruit et les artefacts sont atténués par moyennage, améliorant ainsi le rapport signal-sur-bruit de l'image reconstruite. \\
+Sur la Figure \ref{fig:recouvrement_BP}, on observe que, en raison du déplacement du drone et de l'ouverture de son antenne, certaines cellules au sol sont éclairées à plusieurs reprises le long de la trajectoire. Ce principe est à la base de l'amélioration de la résolution en imagerie SAR. En effet, chaque point de la scène est observé sous plusieurs angles successifs, ce qui permet d'exploiter la diversité des mesures. Les cibles réfléchissantes produisent alors des interférences constructives lors de la sommation cohérente, tandis que le bruit et les artefacts sont atténués par moyennage, améliorant ainsi le rapport signal-sur-bruit de l'image reconstruite. 
 
 Techniquement, l'algorithme standard de Backprojection, pour chaque pixel, corrige uniquement la phase selon l'expression (\ref{eq:correction_bp})
 
