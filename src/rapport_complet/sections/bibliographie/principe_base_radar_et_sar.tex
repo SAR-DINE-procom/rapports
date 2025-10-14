@@ -7,7 +7,7 @@ Un système radar émet une onde électromagnétique qui se propage dans l'espac
 
 \begin{figure}[htbp]
     \centering
-    \includegraphics[width=0.5\linewidth]{src/biblio_sar/img/schema_base_radar.png}
+    \includegraphics[width=0.5\linewidth]{src/rapport_complet/img/schema_base_radar.png}
     \caption{Schéma d'explication des bases d'un système radar}
     \label{fig:schema_explicatif_radar}
 \end{figure}
@@ -59,7 +59,7 @@ Où :
     \centering
     \begin{tikzpicture}
     % --- Éléments centraux ---
-    \node (radar) at (0,0) {\scalebox{-1}[1]{\includegraphics[width=1.5cm]{src/biblio_sar/img/radar-de-vitesse.png}}};
+    \node (radar) at (0,0) {\scalebox{-1}[1]{\includegraphics[width=1.5cm]{src/rapport_complet/img/radar-de-vitesse.png}}};
     % domain=1:7 -> dessine de x=1 à x=7
     % 0.2*sin(12*(\x-1.5) r) -> {Amplitude}*sin({Fréquence}*... r)
     \draw[black, thick, smooth] plot[domain=1:7, samples=1000] (\x, {0.4*sin(12*(\x-1.5) r)});
@@ -69,12 +69,12 @@ Où :
         % Onde réfléchie (fréquence plus élevée)
         \draw[black, thick, smooth] plot[domain=1:7, samples=1000] (\x, {0.4*sin(24*(\x-1) r)});
         \draw[-latex, thick] (0.5,0) -- ++(-1,0) node[pos=0.5, above] {\(f_o + f_d\)};
-        \node (truck_approaching) at (9,0) {\scalebox{-1}[1]{\includegraphics[width=1.5cm]{src/biblio_sar/img/truck-icon.png}}};
+        \node (truck_approaching) at (9,0) {\scalebox{-1}[1]{\includegraphics[width=1.5cm]{src/rapport_complet/img/truck-icon.png}}};
         \draw[-latex, thick] (truck_approaching) -- ++(-1.5,0);
     \end{scope}
     % --- Scénario 2 : Le véhicule s'éloigne ---
     \begin{scope}[yshift=-1.5cm]
-        \node (truck_receding) at (8.25,0) {\includegraphics[width=1.5cm]{src/biblio_sar/img/truck-icon.png}};
+        \node (truck_receding) at (8.25,0) {\includegraphics[width=1.5cm]{src/rapport_complet/img/truck-icon.png}};
         \draw[-latex, thick] (truck_receding) -- ++(1.5,0);
         % Onde réfléchie (fréquence plus basse)
         \draw[black, thick, smooth] plot[domain=1:7, samples=1000] (\x, {0.4*sin(6*(\x-1) r)});
@@ -187,60 +187,64 @@ Les radars pulsés sont généralement utilisés pour de la surveillance aérien
 \subsubsection{Impulsions modulées}
 La forme d'onde FMCW \footnote{Frequency Modulated Continuous Wave} Sawtooth utilise une modulation en dents de scie, aussi appelées "chirp", où la fréquence augmente et diminue de manière répétée comme l'illustre la figure \ref{fig:impulsions_chirp_avec_echo}. Elle permet de mesurer la distance et la vitesse mais il y a une ambiguïté entre les deux termes \cite{cumming2005}.
 
-[TODO] : Refaire la figure avec tikz pcq en natif c'est nul
 \begin{figure}[htbp]
     \centering
-    \setlength{\unitlength}{1cm}
-    \begin{picture}(10,2)
-    \thicklines
-    % Impulsions chirp avec montée inclinée et descente verticale
-    \put(0,0){\line(1,1){2}}    % montée linéaire
-    \put(2,0){\line(0,1){2}}    % descente verticale
-    \put(2,0){\line(1,1){2}}
-    \put(4,0){\line(0,1){2}}
-    \put(4,0){\line(1,1){2}}
-    \put(6,0){\line(0,1){2}}
-    \put(6,0){\line(1,1){2}}
-    \put(8,0){\line(0,1){2}}
-    \put(8,0){\line(1,1){2}}
-    \put(10,0){\line(0,1){2}}
-    % signal reçu
-    {\color{red}
-    \put(0.5,0){\line(1,1){2}}    % montée linéaire
-    \put(2.5,0){\line(0,1){2}}    % descente verticale
-    \put(2.5,0){\line(1,1){2}}
-    \put(4.5,0){\line(0,1){2}}
-    \put(4.5,0){\line(1,1){2}}
-    \put(6.5,0){\line(0,1){2}}
-    \put(6.5,0){\line(1,1){2}}
-    \put(8.5,0){\line(0,1){2}}
-    \put(8.5,0){\line(1,1){1.5}}
-    %\put(10,0){\line(0,1){2}}
-    }
-    \thinlines
-    {\color{blue}
-        % Ligne entre l'écho et l'impulsion pour le tau_echo
-    \put(0.15,0.125){\line(0,1){0.25}}
-    \put(0.15,0.25){\line(1,0){0.5}}
-    \put(0.65,0.125){\line(0,1){0.25}}
-    \put(0.25,0.75){\makebox(0,0)[b]{$\tau_{e}$}}
-        % Ligne entre les deux impulsions
-    \put(1.9,1.5){\line(1,0){2}}
-    \put(1.9,1.375){\line(0,1){0.25}}
-    \put(3.9,1.375){\line(0,1){0.25}}
-    \put(3,1.75){\makebox(0,0)[b]{$T_{s}$}}
-        % Ligne verticale pour delta f
-    \put(7,0.6){\line(0,1){0.5}}
-    \put(6.875,0.6){\line(1,0){0.25}}
-    \put(6.875,1.1){\line(1,0){0.25}}
-    \put(7.25,0){\makebox(0,0)[b]{$\Delta f = f_b$}}
-    % Ligne vertical pour Bch
-    \put(9,0){\line(0,1){2}}
-    \put(8.875,0){\line(1,0){0.25}}
-    \put(8.875,2){\line(1,0){0.25}}
-    \put(8.7,1.5){\makebox(0,0)[b]{$B_{ch}$}}
-    }
-    \end{picture}
+    \begin{tikzpicture}[
+        label/.style={font=\small, black},
+        annotation/.style={black, thick},
+        axis/.style={thick, gray!50!black}, % Couleur pour les axes
+        gridline/.style={dashed, gray} % Style pour les lignes de grille/verticales
+    ]
+        % --- Définition des paramètres ---
+        \def\Ts{3}       % Période de la rampe (T_s)
+        \def\Bch{2.5}    % Bande passante / Amplitude (B_ch)
+        \def\retard{0.6} % Retard temporel (\tau_e)
+        \def\nramps{3}   % Nombre de rampes à dessiner
+        % --- Dessin des axes ---
+        % Axe horizontal (temps)
+        \draw[-{Stealth[length=3mm]}, axis] (-0.5,0) -- (\nramps*\Ts + \Ts + 1,0) node[right,black] {$t$};
+        % Axe vertical (fréquence)
+        \draw[-{Stealth[length=3mm]}, axis] (0,-0.5) -- (0,\Bch + 0.8) node[above,black] {$f(t)$};
+        \node[below left, black] at (0,0) {0};
+        % --- Dessin des signaux et lignes verticales ---
+        \foreach \i in {0,...,\nramps} {
+            % Signal transmis (noir) - en dents de scie
+            \draw[black, thick] (\i*\Ts, 0) -- (\i*\Ts + \Ts, \Bch);
+            % Lignes verticales pour le signal noir
+            \ifnum\i<\nramps % Ne pas dessiner la dernière ligne verticale si elle sort du graphique
+                \draw[black, thick] (\i*\Ts + \Ts, 0) -- (\i*\Ts + \Ts, \Bch);
+            \fi
+        }
+        \foreach \i in {0,...,\nramps} {
+            % Signal écho (rouge) - retardé dans le temps
+            \draw[red, thick] (\i*\Ts + \retard, 0) -- (\i*\Ts + \Ts + \retard, \Bch);
+             % Lignes verticales pour le signal rouge
+             % On peut ajouter une condition si on ne veut pas qu'elles s'étendent trop loin
+             \ifnum\i<\nramps % Ne pas dessiner la dernière ligne verticale si elle sort du graphique
+                 \draw[red, thick] (\i*\Ts + \Ts + \retard, 0) -- (\i*\Ts + \Ts + \retard, \Bch);
+             \fi
+        }
+        % --- Annotations ---
+        % Annotation \tau_e (Retard temporel)
+        \draw[<->, annotation] (0, -0.3) -- (\retard, -0.3) node[midway, below, label] {$\tau_e$};
+        % Annotation T_s (Période)
+        % On la place au-dessus, entre le début de la 2ème et 3ème rampe
+        \draw[<->, annotation] (\Ts, \Bch+0.3) -- (2*\Ts, \Bch+0.3) node[midway, above, label] {$T_s$};
+        % Annotation B_ch (Bande passante)
+        % On la place à droite pour correspondre à l'image
+        \draw[<->, annotation] (-0.25, 0) -- (-0.25, \Bch) node[midway, left, label] {$B_{ch}$};
+        % Annotation \Delta f = f_b (Fréquence de battement)
+        % On choisit un point dans le temps pour montrer la différence de fréquence
+        % Positionnée au milieu de la 3ème rampe noire
+        \def\annotXpos{2*\Ts + 0.5*\Ts} 
+        % Coordonnée sur le signal noir à x = \annotXpos
+        % La rampe n°2 (i=2) va de x=2*Ts à 3*Ts. L'équation est y = (Bch/Ts) * (x - 2*Ts)
+        \coordinate (point_noir) at (\annotXpos, {(\Bch/\Ts) * (\annotXpos - 2*\Ts)});
+        % Coordonnée sur le signal rouge à x = \annotXpos
+        % L'écho de la rampe n°2 va de x=2*Ts+retard à 3*Ts+retard. L'équation est y = (Bch/\Ts) * (x - retard - 2*\Ts)
+        \coordinate (point_rouge) at (\annotXpos, {(\Bch/\Ts) * (\annotXpos - \retard - 2*\Ts)});
+        \draw[<->, annotation] (point_rouge) -- (point_noir) node[midway, below right, label] {$\Delta f = f_b$};
+    \end{tikzpicture}
     \caption{Représentation d'une impulsion Chirp et de son écho}
     \label{fig:impulsions_chirp_avec_echo}
 \end{figure}
@@ -264,9 +268,6 @@ Cette forme d'onde est par exemple utilisé dans des radar de surveillance marit
 
 Il existe une autre forme d'onde qui permet de résoudre ces limitations : la FMCW triangulaire. Illustrée par la figure \ref{fig:fmcw_avec_echo}, elle consiste en l'émission d'un chirp montant et descendant. On peut alors déterminer sans ambiguïté la distance et la vitesse en résolvant le système de fréquences de battement mesurées sur les deux rampes \cite{richards2010}.
 
-FMCW triangulaire
-[A REDIGER]Mesure simultanées vitesse et distance, utilisée dans les radars de controle de la circulation, systèmes de détection de collision et les capteurs de distance
-
 \begin{figure}[htbp]
     \centering
     \begin{tikzpicture}[label/.style={font=\small}]
@@ -280,7 +281,7 @@ FMCW triangulaire
         \draw[-{Stealth[length=3mm]}, thick] (0,-0.5) -- (0,\Amp+1) node[above] {$f(t)$};
         \node[below left] at (0,0) {0};
         % --- Signal transmis (en bleu) ---
-        \draw[blue, thick] (0,0) -- (\Tr/2, \Amp) -- (\Tr, 0) -- (1.5*\Tr, \Amp) -- (2*\Tr, 0);
+        \draw[black, thick] (0,0) -- (\Tr/2, \Amp) -- (\Tr, 0) -- (1.5*\Tr, \Amp) -- (2*\Tr, 0);
         % --- Signal reçu (en rouge) ---
         \draw[red, thick] (\retard, \doppler) -- (\Tr/2+\retard, \Amp+\doppler) -- (\Tr+\retard, \doppler) -- (1.5*\Tr+\retard, \Amp+\doppler) -- (2*\Tr+\retard, \doppler);
         % --- Annotations et lignes de repère ---
@@ -319,17 +320,218 @@ FMCW triangulaire
     \label{fig:fmcw_avec_echo}
 \end{figure}
 
+La résolution en distance peut alors s'exprimer de la manière suivante :
+
+\begin{equation}
+    \delta_d = \frac{c_0}{2.B_{ch}}
+    \label{eq:resolution_distance_fmcw_triangulaire}
+\end{equation}
+Où :
+\begin{description}
+    \item[$\delta_d$] : est la résolution en distance [$m$]
+    \item[$c_0$] : est la vitesse d'une OEM dans le vide [$m.s^{-1}$]
+    \item[$B_{ch}$] : est la bande des fréquences modulées [$Hz$]
+\end{description}
+
+Et la résolution en vitesse :
+
+\begin{equation}
+    \delta\nu_r = \frac{c_0}{2.f_0.T_r}
+    \label{eq:resolution_vitesse_fmcw_triangulaire}
+\end{equation}
+Où :
+\begin{description}
+    \item[$\delta\nu_r$] : est la résolution en vitesse [$m.s^{-1}$]
+    \item[$c_0$] : est la vitesse d'une OEM dans le vide [$m.s^{-1}$]
+    \item[$f_0$] : est la fréquence centrale [$Hz$]
+    \item[$T_r$] : est la période du signal [$s$]
+\end{description}
+
+On remarque ainsi que les deux résolutions ne sont pas inversement liées. On peut donc avoir une bonne résolution en distance et une bonne résolution en vitesse. Cependant, cet avantage doit être nuancé par la complexité de la réalisation matérielle de cette forme d'onde, d'autant plus sur une large bande. 
+
+Cette forme d'onde est généralement utilisée par des radars de contrôle de la circulation, systèmes de détection de collision et les capteurs de distance.
+
+\subsection{Rapport signal sur bruit}
+Toutes les figures et équations présentées précédemment représentent la vision théorique et sans bruit des formes d'onde. Or, dans un  système réel, le signal est perturbé par différentes sources de bruit, cette perturbation est exprimée par le rapport signal sur bruit.
+
+[TODO] equation SNR, modélisation stochastique du bruit, limites, impact sur le traitement radar.
+
+
+
+BASES SAR ALEXIS : 
+
+\section{Principe du radar SAR}\label{SEC:Principe du radar SAR}
+
+\subsection{Rappel du principe SAR}
+
+Synthèse d’ouverture par le déplacement du radar.
+
+Notions de bande azimutale, résolution, longueur d’onde, vitesse de plateforme.
+
+
+\subsection{Types de SAR}
+
+Le choix de la forme d’onde constitue un paramètre fondamental dans la conception d’un radar à synthèse d’ouverture (SAR), notamment lorsqu’il est embarqué sur une plateforme légère telle qu’un drone. Chaque forme d’onde possède des caractéristiques spécifiques qui influencent directement les performances en portée, en résolution, en complexité électronique et en robustesse face au bruit ou aux interférences \cite{richards2010principles, soumekh1999synthetic}.
+
+La forme d’onde impulsionnelle (Pulse) représente historiquement le schéma le plus simple. Elle consiste à émettre des impulsions brèves et puissantes séparées par des intervalles de silence. Ce mode offre une bonne résolution en distance si la largeur d’impulsion est courte, mais impose une puissance crête élevée, difficile à générer sur des plateformes à ressources énergétiques limitées comme les drones. De plus, l’efficacité énergétique du radar impulsionnel est faible, car l’émetteur reste inactif une grande partie du temps. Ainsi, bien que cette forme d’onde soit robuste et bien maîtrisée, elle est souvent peu adaptée aux systèmes SAR compacts embarqués sur UAV \cite{skolnik2008radar}.
+
+Les formes d’onde FMCW (Frequency Modulated Continuous Wave), en particulier les modulations en dent de scie et triangulaire, offrent une alternative attractive. Dans le cas du FMCW en dent de scie, la fréquence du signal augmente linéairement au cours du temps avant de revenir instantanément à sa valeur initiale. Ce type de modulation permet de mesurer la distance et la vitesse de la cible à partir du décalage de fréquence entre le signal émis et reçu. Son avantage principal réside dans la faible puissance crête requise et la simplicité de l’électronique d’émission \cite{ma2016compact}. Cependant, la récupération simultanée des informations de portée et de vitesse peut devenir complexe en présence de cibles multiples, et la discontinuité de la rampe peut introduire des artefacts dans le traitement SAR.
+
+Le FMCW triangulaire, quant à lui, alterne des montées et descentes de fréquence successives, ce qui permet une mesure plus précise de la vitesse radiale (via la différence de battement entre les deux pentes). Cette propriété réduit l’ambiguïté Doppler et améliore la qualité des images SAR, en particulier lorsque la plateforme est en mouvement continu, comme c’est le cas pour un drone \cite{meta2007performance}. Toutefois, cette forme d’onde nécessite un étalonnage précis du temps de montée et de descente, ainsi qu’une correction fine des non-linéarités de la modulation pour éviter la dégradation de la résolution \cite{aoki2020chirp}.
+
+Enfin, la modulation FSK (Frequency Shift Keying) repose sur une émission séquentielle de fréquences discrètes. Chaque palier correspond à une fréquence fixe pendant un court intervalle de temps. L’avantage majeur de cette approche est la simplicité du traitement de détection, ainsi que la résistance accrue au bruit et aux interférences \cite{li2018fsk}. Néanmoins, la résolution en distance est généralement inférieure à celle des modulations chirpées, et la reconstruction d’image SAR nécessite une interpolation fine des sauts fréquentiels.
+
+Dans le contexte d’un SAR embarqué sur drone, les compromis principaux concernent la consommation énergétique, la résolution en distance et en azimut, et la stabilité fréquentielle de l’émetteur. Les formes d’onde FMCW, en particulier la triangulaire, apparaissent comme un choix privilégié dans la littérature récente pour les radars embarqués légers, grâce à leur efficacité en puissance et à leur compatibilité avec des émetteurs à onde continue de faible coût. Toutefois, des études expérimentales montrent que la correction des distorsions de la rampe de fréquence demeure un défi pour garantir la qualité radiométrique et géométrique des images SAR \cite{sun2021fmcw, yang2023uavsar}.
+
+
+
+
+% Voir si les figures sont cohérentes en rapport avec celles de Maxence
+\begin{figure}[ht]
+  \centering
+  % --- Figure 1 : Pulse ---
+  \setlength{\unitlength}{1cm}
+  \begin{picture}(10,2)
+    \thicklines
+    \put(0,0){\line(1,0){0.25}}
+    \put(0.25,0){\line(0,2){2}}
+    \put(0.25,2){\line(2,0){0.5}}
+    \put(0.75,2){\line(0,-2){2}}
+    \put(0.75,0){\line(1,0){2.5}}
+    \put(3.25,0){\line(0,2){2}}
+    \put(3.25,2){\line(2,0){0.5}}
+    \put(3.75,2){\line(0,-2){2}}
+    \put(3.75,0){\line(1,0){2.5}}
+    \put(6.25,0){\line(0,2){2}}
+    \put(6.25,2){\line(2,0){0.5}}
+    \put(6.75,2){\line(0,-2){2}}
+    \put(6.75,0){\line(1,0){2.5}}
+    \put(9.25,0){\line(0,2){2}}
+    \put(9.25,2){\line(2,0){0.5}}
+    \put(9.75,2){\line(0,-2){2}}
+    \put(9.75,0){\line(1,0){0.25}}
+  \end{picture}
+  \caption*{(a) Pulse}
+
+  \vspace{1.5cm} % espace vertical entre les figures
+
+  % --- Figure 2 : Sawtooth FMCW ---
+  \setlength{\unitlength}{1cm}
+  \begin{picture}(10,2)
+    \thicklines
+    \put(0,0){\line(1,1){2}}  
+    \put(2,2){\line(0,-2){2}}  
+    \put(2,0){\line(1,1){2}}
+    \put(4,2){\line(0,-2){2}}
+    \put(4,0){\line(1,1){2}}
+    \put(6,2){\line(0,-2){2}}
+    \put(6,0){\line(1,1){2}}
+    \put(8,2){\line(0,-2){2}}
+    \put(8,0){\line(1,1){2}}
+    \put(10,2){\line(0,-2){2}}
+  \end{picture}
+  \caption*{(b) Sawtooth FMCW}
+
+  \vspace{1.5cm}
+
+  % --- Figure 3 : Triangular FMCW ---
+  \setlength{\unitlength}{1cm}
+  \begin{picture}(10,2)
+    \thicklines
+    \put(0,0){\line(1,1){2}}  
+    \put(2,2){\line(1,-1){2}} 
+    \put(4,0){\line(1,1){2}}
+    \put(6,2){\line(1,-1){2}}
+    \put(8,0){\line(1,1){2}}
+  \end{picture}
+  \caption*{(c) Triangular FMCW}
+
+  \vspace{1.5cm}
+
+  % --- Figure 4 : FSK ---
+  \setlength{\unitlength}{1cm}
+  \begin{picture}(8,3.8)
+    \thicklines
+    \put(0,1){\line(1,0){1.5}}
+    \put(1.5,1){\line(0,1){0.7}}
+    \put(1.5,1.7){\line(1,0){1.5}}
+    \put(3,1.7){\line(0,1){0.7}}
+    \put(3,2.4){\line(1,0){1.5}}
+    \put(4.5,2.4){\line(0,1){0.7}}
+    \put(4.5,3.1){\line(1,0){1.5}}
+    \put(6,3.1){\line(0,1){0.7}}
+    \put(6,3.8){\line(1,0){1}}
+    \put(7,3.8){\line(0,-1){2.8}}
+    \put(7,1){\line(1,0){1}}
+  \end{picture}
+  \caption*{(d) FSK}
+
+  \caption{Allure des formes d'ondes : (a) Pulse, (b) Sawtooth FMCW, (c) Triangular FMCW, (d) FSK.}
+  \label{fig:radar_waveforms}
+\end{figure}
+
+
+% CHECK TABLEAU
+\begin{table}[ht]
+\centering
+\begin{tabular}{|>{\centering\arraybackslash}p{2.75cm}|>{\centering\arraybackslash}p{2.75cm}|>{\centering\arraybackslash}p{2.75cm}|>{\centering\arraybackslash}p{2.75cm}|>{\centering\arraybackslash}p{2.75cm}|}\hline
+\textbf{Type de radar} & \textbf{Résolution de la distance} & \textbf{Résolution de la vitesse relative} & \textbf{Avantages} & \textbf{Inconvénients} \\
+\hline
+\textbf{Pulse} & Haute (dépend de la largeur d'impulsion)  
+$\Delta R = \frac{c T_p}{2}$  & Faible (dépend de la fréquence d'échantillonnage)
+\par $\Delta v_r = \frac{\lambda_0}{2T_p}$ & Simple à mettre en œuvre, bonne portée & Sensible aux interférences, nécessite un traitement complexe pour la vitesse \\
+\hline
+\textbf{Sawtooth FMCW} & Modérée (dépend de la pente de la rampe)
+$\Delta R = \frac{c}{2 B_{ch}}$ & Modérée (dépend de la fréquence de répétition) 
+$\Delta v_r = \frac{c}{2 T_r}$ & Peut mesurer la distance et la vitesse simultanément, mais ambiguïté & Moins efficace que le triangular FMCW pour la vitesse\\
+\hline
+\textbf{Triangular FMCW} & Très haute (dépend de la largeur de bande)
+$\Delta R = \frac{c}{2 B_{ch}}$ & Très haute (peut mesurer des vitesses relatives avec précision) 
+$\Delta v_r = \frac{c}{2 T_r}$ & Excellente résolution de distance et de vitesse & Complexité de mise en œuvre, coût plus élevé, résolution entre multiples cibles \\
+\hline
+\textbf{FSK} & Bonne (dépend du saut de fréquence)
+$\Delta R = \frac{c}{2 B_{ch}}$ & Bonne (dépend du temps d'intégration)
+$\Delta v_r = \frac{c}{2 T_{obs}}$ & Simple traitement du signal, faible sensibilité au bruit & Résolution moindre que FMCW, complexité pour cibles multiples \\
+\hline
+\end{tabular}
+\caption{Tableau comparatif des formes d'ondes}
+\end{table}
+
+
+\subsection{Contraintes liées à la plateforme drone}
+
+Mouvements instables, vibrations, trajectoire non rectiligne.
+
+Gestion du temps et synchronisation (INS/GNSS, compensation de mouvement).
+
+
+\subsection{Performances visées}
+
+Résolution en distance et azimut.
+
+Portée, rapport signal/bruit, dynamique.
+
+
+[TODO] : DEGAGER LA BIBLIO DANS BIBLIOGRAPHY.BIB
+
+\bigskip
+\noindent\textbf{Références bibliographiques simulées :}
+\begin{thebibliography}{9}
+\bibitem{richards2010principles} M. A. Richards, \textit{Principles of Modern Radar: Basic Principles}, SciTech, 2010.
+\bibitem{soumekh1999synthetic} M. Soumekh, \textit{Synthetic Aperture Radar Signal Processing}, Wiley, 1999.
+\bibitem{skolnik2008radar} M. I. Skolnik, \textit{Radar Handbook}, 3rd ed., McGraw-Hill, 2008.
+\bibitem{ma2016compact} J. Ma et al., “Compact FMCW SAR for UAV-based remote sensing,” \textit{IEEE Trans. Geosci. Remote Sens.}, vol. 54, no. 12, 2016.
+\bibitem{meta2007performance} A. Meta et al., “Performance analysis of FMCW SAR,” \textit{IEEE Trans. Geosci. Remote Sens.}, vol. 45, no. 11, 2007.
+\bibitem{aoki2020chirp} T. Aoki and Y. Sugimoto, “Chirp linearization in low-cost FMCW radar,” \textit{IEEE Sensors Journal}, vol. 20, no. 22, 2020.
+\bibitem{li2018fsk} W. Li et al., “FSK-based radar waveform for low-power SAR systems,” \textit{Electronics Letters}, vol. 54, no. 10, 2018.
+\bibitem{sun2021fmcw} Y. Sun et al., “FMCW SAR imaging on UAV platforms: System design and calibration,” \textit{Remote Sensing}, vol. 13, no. 3, 2021.
+\bibitem{yang2023uavsar} L. Yang et al., “Recent advances in lightweight UAV SAR systems,” \textit{IEEE Aerospace and Electronic Systems Magazine}, vol. 38, no. 1, 2023.
+\end{thebibliography}
+
+
 
 
 \newpage
-plan partie : 
-Impulsions simples
-
-Impulsions modulées (chirp)
-
-Ondes continues (CW, FMCW)
-
-Rôle dans la mesure de distance et de vitesse
 
 
 %lié imagerie
@@ -614,3 +816,8 @@ Perspectives : SAR multi-drones collaboratifs, IA pour fusion + détection en te
 Synthèse des connaissances actuelles.
 
 Positionnement de ton projet par rapport à l’état de l’art.
+
+
+
+
+

@@ -106,6 +106,14 @@
 
 \usepackage{framed}	% Permet de surligner les résultats importants
 
+\usepackage{placeins}
+\usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{arrows.meta}
+\usetikzlibrary{positioning}
+\usetikzlibrary{decorations.pathreplacing}
+\usetikzlibrary{decorations.pathmorphing}
 % L'option "copyright" affiche la licence Creative Common en 4eme de couverture
 % Les informations de copyright sont paramétrables, ci-dessous :
 
@@ -120,8 +128,8 @@
 %----------------- Métadonnées du PDF (facilite le travail des moteurs de recherche) -----------
 \hypersetup{
 	pdfinfo = {
-		Author = {<Alexis COURBET>, <Mikael FRANCO>, <Maxence HUET>, <Jean TRONET>, <Samuel VIMARE>},
-		Title = {<Titre du document>},
+		Author = {<Alexis COURBET>; <Mikael FRANCO>; <Maxence HUET>; <Jean TRONET>; <Samuel VIMARE>},
+		Title = {<RAPPORT COMPLET>},
 		Keywords = {<Mot-clé 1>; <Mot-clé 2>; ...}
 	}
 }
@@ -190,7 +198,7 @@ URL: \URLimta
 } % end of \entity
 
 % Type de document
-\DocumentType{Revue bibliographique}  
+\DocumentType{Rapport de projet}  
 %\DocumentType{Support de cours}
 %\DocumentType{Support de TP}
 %\DocumentType{Mémoire technique}
@@ -216,15 +224,19 @@ URL: \URLimta
 %\MentionSpeciale{\textcolor{red}{\fbox{DIFFUSION RESTREINTE}}}   
              
 
-\title{État de l’art des architectures RF pour les radar à synthèse d'ouverture (RSO) pour plateformes autonommes multi-capteurs}
+\title{SAR'DINE : imagerie radar à synthèse d'ouverture (RSO) par des plateformes autonomes multicapteurs}
+
+%\title{Étude d'une forme d'onde pour communications longues-distances par le canal acoustique sous-marin}
 
 \author{
 	Alexis COURBET\and
-    Jean TRONET\and
-    Samuel VIMARE
+	Mikael FRANCO\and
+	Maxence HUET\and
+	Jean TRONET\and
+	Samuel VIMARE
 }
 
-\supervisor{Dr. François GALLEE}
+\supervisors{Dr. François GALLEE, Dr. Frédéric MAUSSANG, Dr. Dominique PASTOR, Dr. Christophe SINTES}
 
 
 % Numéro de version du document, affiché sur la couverture
@@ -259,22 +271,282 @@ URL: \URLimta
 
 
 
-\include{src/biblio_rf/sections/introduction}
-\include{src/biblio_rf/sections/principe_radar_sar}
-\include{src/biblio_rf/sections/archi_hard_RF}
-\include{src/biblio_rf/sections/sar_commerciaux}
-\include{src/biblio_rf/sections/tendances}
-\include{src/biblio_rf/sections/conclusion}
-% CHEMIN A MODIFIER
+\include{src/sections/introduction}
 
-%-----------------------------------DEBUT DES ANNEXES ----------------------------------
+\subsection{Résultats}\label{sec:SS_STRU2}
 
+D'après \cite{[Lichtfouse2012]}, une possible structure de présentation des résultats comporte:
+
+\begin{enumerate}
+	\item la description des résultats (observations);
+	\item la discussion des résultats (interprétations);
+	\item la déduction des résultats (conclusions).
+\end{enumerate}
+
+\subsection{Conclusions}\label{sec:SS_STRU3}
+
+D'après \cite{[Lichtfouse2012]}, une possible structure d'une conclusion consiste à:
+
+\begin{itemize} % Rappel des résultats majeurs
+	\item énumérer les principaux résultats:
+	\begin{enumerate}
+		\item Résultat 1 \ldots
+		\item Résultat 2 \ldots
+		\item Résultat 3 \ldots
+	\end{enumerate}
+	\item énumérer les principales interprétations:
+	\begin{enumerate}
+		\item Interprétation 1 \ldots
+		\item Interprétation 2 \ldots
+		\item Interprétation 3 \ldots
+	\end{enumerate}
+	\item énumérer les principales conclusions:
+	\begin{enumerate}
+		\item Conclusions 1 \ldots
+		\item Conclusions 2 \ldots
+		\item Conclusions 3 \ldots
+	\end{enumerate}
+	\item dégager des perspectives (travaux futurs), le cas échéant.
+\end{itemize}
+
+\newpage
+\section{Exemples d'équation}\label{sec:S_EQ}
+
+Cette section présente des exemples de format d'équation.
+
+\subsection{Équation sur une ligne}\label{sec:SS_EQ1}
+
+Exemple d'édition d'équation sur une ligne :
+
+\begin{equation}
+\label{E_AA_OFDM_BB_TMD_RX3_FREQ4}
+Y(f) = \frac{1}{\sqrt{T}}\sum_{p=0}^{P-1}\sum_{k=-\infty}^{+\infty}\sum_{n=0}^{N-1}\frac{1}{a_k^{(p)}}
+       e^{-j 2\pi\frac{n}{T}\tau_0^{(p)}}e^{j\Phi_0^{(p)}}
+			 e^{-j2\pi \frac{f}{a_k^{(p)}}(kT+\tau_0^{(p)})}
+			 d_k^{(n)}G_e(\frac{f-f_{d,k}^{(p)}}{a_k^{(p)}}-\frac{n}{T}).
+\end{equation}
+
+\subsection{Équation avec accolades}\label{sec:SS_EQ2}
+
+Autre exemple d'édition d'équation avec accolades et texte :
+
+\begin{equation}
+\label{E_RX_DETECT_DP4}
+\textup{E}\{|y_k^{(n,p)}|^2\} = \underbrace{\textup{E}\{|\gamma_{k}^{(0, p)}|^2\} \textup{E}\{|d_k^{(n)}|^2\}}_{signal}
++\underbrace{\sum_{\stackrel{n'=0}{n'\neq n}}^{N-1}\textup{E}\{|\gamma_{k}^{(n'-n, p)}|^2\} \textup{E}\{|d_{k}^{(n')}|^2\}
++\textup{E}\{|w_k^{(n,p)}|^2\}}_{bruit}.
+\end{equation}
+
+\subsection{Équation multi-lignes}\label{sec:SS_EQ3}
+
+Exemple d'écriture d'équation sur plusieurs lignes avec alignement des termes (environnement \emph{aligned} du package \emph{amsmath}) :
+
+\begin{equation}
+	\label{E_MOD_PULSE_FIN_TRAIN_SED}
+	\begin{aligned}
+		|S(f)|^2 = &(\frac{AWL}{\sqrt{2}T_r})^2sinc_{\pi}^2[(f-f_0)W]\\
+		&(\sum_{k=-\infty}^{+\infty}sinc_{\pi}[(f-f_0-\frac{k}{T_r})L])^2
+	\end{aligned}
+\end{equation}
+
+\subsection{Valeurs multiples}\label{sec:SS_EQ4}
+
+Exemple d'écriture d'équations avec multiples valeurs possibles à droite :
+
+\begin{equation}
+	\label{E_PULSE}
+	p_W(t)= 
+	\{
+	\begin{array}{cc}
+		A,  &-\frac{W}{2} \leq t \leq \frac{W}{2}\\
+		0,  &\text{otherwise}
+	\end{array}
+\end{equation}
+
+
+\subsection{Matrices et vecteurs}\label{sec:SS_EQ6}
+
+Exemple d'édition d'une expression matricielle :
+
+\begin{equation}
+\mathbf{\Gamma_k^{(p)}} = 
+\left(
+\begin{array}{cccc}
+	\gamma_{k}^{(0, p)} 		&\gamma_{k}^{(1, p)} 			&\ldots &\gamma_{k}^{(N-1, p)} \\
+	\gamma_{k}^{(-1, p)}		&\gamma_{k}^{(0, p)} 			&\ldots &\vdots								 \\
+	\vdots              		&\vdots              			&\ddots &\vdots                \\
+	\gamma_{k}^{(-(N-1), p)}&\gamma_{k}^{(-(N-2), p)}	&\ldots &\gamma_{k}^{(0, p)}
+\end{array}
+\right).
+\end{equation}
+
+Exemple d'édition d'expression vectorielle :
+
+\begin{equation}
+\label{E_RX_DETECT_DP3M}
+\mathbf{y_k^{(p)}} = e^{j\Phi_0^{(p)}}\big(\mathbf{\Gamma_k^{(p)}}\otimes \mathbf{\Phi^{(p)}}\big)\mathbf{d_k} + \mathbf{w_k^{(p)}},
+\end{equation}
+
+\begin{equation}
+\label{E_RX_WK_VECT}
+\mathbf{w_k^{(p)}} = [w_k^{(0,p)},...,w_k^{(n,p)},...,w_k^{(N-1,p)}]^T.
+\end{equation}
+
+\newpage
+\section{Exemples de figure}\label{sec:S_FIG}
+
+Exemple de figure au format \texttt{*.png} (de préférence), possiblement \texttt{*.jpg} (Figure \ref{fig:F_STRUCT_TRAME_TX}):
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=14cm]{src/rapport_complet/img/structure_trame_tx.jpg}
+\caption{Structure de la trame à l'émission}\label{fig:F_STRUCT_TRAME_TX}
+\end{figure}
+
+\section{Exemples d'environnement}\label{sec:S_ENV}
+
+Cette section présente différents exemples d'environnement pour la mise en exergue d'équation ou de texte dans le corps d'un document.
+
+\subsection{Environnement "Shaded"}\label{sec:SS_ENV1}
+
+L'environnement "Shaded" permet le surlignage d'un texte ou d'une équation pour la mise en évidence d'un résultat  comme par exemple l'étape finale d'un calcul:
+
+\definecolor{shadecolor}{gray}{0.95}
+\begin{shaded}
+	\begin{equation}
+		\label{E_SIGN_RX_BB_FREQ}
+		Y(f) = \sum_{p=0}^{P-1}\frac{1}{a^{(p)}} e^{j\Phi_0^{(p)}}e^{-j2\pi \left(\frac{f-f_d^{(p)}}{a^{(p)}}\right)\tau_0^{(p)}}
+		X\left(\frac{f-f_d^{(p)}}{a^{(p)}}\right).
+	\end{equation}
+\end{shaded}
+
+
+\subsection{Environnement "Beamer"}\label{sec:SS_ENV2}
+
+L'environnement "Beamer" permet l'encart d'un  texte ou d'une équation permettant la mise en évidence d'une définition ou du résultat d'un calcul:
+
+\subsubsection{Sur 1 colonne}\label{sec:SSS_ENV2}
+
+Exemple de définition éditée dans un bloc de style \emph{Beamer} sur une colonne :
+
+\begin{beamerblock}{Définition}
+$B=(B_t)_{t\in\Rset_+}$ \`a valeurs r\'eelles est un {\bf mouvement brownien} (ou {\bf processus de Wiener}) issu de $x$ si
+\begin{enumerate} 
+\item $B_0=x$ 
+\item $0\leq t_i\leq t_j \Rightarrow B_{t_j}-B_{t_i}\sim \mathcal{N}(0,\sigma^2(t_j-t_i))$
+\item $0\leq t_i\leq t_j\leq t_k\leq t_l \Rightarrow \Eset[(B_{t_j}-B_{t_i})(B_{t_l}-B_{t_k})]=0$
+\end{enumerate}
+\end{beamerblock}
+
+\subsubsection{Sur 2 colonnes}\label{sec:SSS_ENV3}
+
+Exemple de 2 équations éditées dans 2 blocs de style \emph{Beamer} sur 2 colonnes : Une bouzasse monumentale 
+
+\begin{multicols}{2}
+	
+	\begin{beamerblock}{\centering{Coarse Cross-correlation}}
+		\begin{equation}
+		A_c^{(m)} = \sum_{i=0}^{N_c-1}u_k^{(m+i)}u_k^{*(m+i+N_c)}.
+		\end{equation}
+	\end{beamerblock}
+	
+	\begin{beamerblock}{\centering{Fine Cross-correlation}}
+		\begin{equation}
+		A_f^{(m)} = \sum_{i=0}^{N_c-1}u_k^{(m+i)}u_k^{*(m+i+N_{f\prime})}.
+		\end{equation}
+	\end{beamerblock}
+	
+\end{multicols}
+
+\newpage
+\section{Exemples de tableau}\label{sec:S_TAB}
+
+Exemple de tableau simple avec légende:
+
+\begin{table}[htb]
+	\centering
+	\begin{tabular}{lcc}
+		\toprule
+		\textbf{Nom}             & \textbf{Type} & \textbf{Nombre d'heures} \\ \midrule
+		FIG MTS 203P (com. num.) &    Module     &            10            \\
+		FIP RT323 (codage)       &    Module     &            10            \\
+		FIP MGP320 (projet S5)   &      UV       &            15            \\
+		FIG F4B301 (codage)      &      UV       &            20            \\ \bottomrule
+	\end{tabular}
+	\caption{Exemple de tableau (données factices)} \label{tab:T_ENSEIGNEMENT}
+\end{table}
+
+\newpage
+\section{Exemples de texte}\label{sec:S_TEXT}
+
+Cette section présente différents exemples de texte.
+
+\subsection{Texte sur 2 colonnes}\label{sec:SS_TEXT1}
+
+Exemple d'un texte édité sur deux colonnes:
+
+\begin{multicols}{2}
+	Voici un exemple de texte édité sur 2 colonnes dans le modèle de document de rapport de recherche IMT Atlantique. Ce modèle est édité en langage \LaTeX{} adapté à la rédaction de documents scientifiques contenant, notamment, des équations et des figures.
+\end{multicols}
+
+\subsection{Note de pied de page}\label{sec:SS_TEXT2}
+
+Exemple de note de pied de page : OFDM\footnote{Orthogonal Frequency Division Multiplexing}.
+
+\subsection{Icônes de paragraphe}\label{sec:SS_TEXT3}
+
+Cette section présente des exemples de mise en valeur d'un message sous la forme d'un bloc de texte signalé par une icône et délimité par une ligne verticale \cite{[URL_LATEX1]}.
+
+\notebox{Exemple d'information: ceci est un message d'information, ceci est un message d'information, ceci est un message d'information, ceci est un message d'information, ceci est un message d'information, ceci est un message d'information, ceci est un message d'information, ceci est un message d'information,...}
+
+\tipbox{Exemple de suggestion: ceci est un message de suggestion, ceci est un message de suggestion, ceci est un message de suggestion, ceci est un message de suggestion, ceci est un message de suggestion, ceci est un message de suggestion, ceci est un message de suggestion, ceci est un message de suggestion,...}
+
+\warningbox{Exemple d'avertissement: ceci est un message d'avertissement, ceci est un message d'avertissement, ceci est un message d'avertissement, ceci est un message d'avertissement, ceci est un message d'avertissement, ceci est un message d'avertissement, ceci est un message d'avertissement, ceci est un message d'avertissement,...}
+
+\cautionbox{Exemple de mise en garde: ceci est un message de mise en garde, ceci est un message de mise en garde, ceci est un message de mise en garde, ceci est un message de mise en garde, ceci est un message de mise en garde, ceci est un message de mise en garde, ceci est un message de mise en garde, ceci est un message de mise en garde,...}
+
+\importantbox{Exemple de message important: ceci est un message important, ceci est un message important, ceci est un message important, ceci est un message important, ceci est un message important, ceci est un message important, ceci est un message important, ceci est un message important,...}
+
+
+\newpage
+%--------------------------------------- DEBUT DES ANNEXES --------------------------------------
+\newpage
 \begin{IMTAannexes}
-		
+	
+%-------------------------------------------- ANNEXE 1  -----------------------------------------
+	
 \IMTAannexe{Exemple d'annexe}\label{sec:S_ANN_EX}
-\end{IMTAannexes}
-%-----------------------------------FIN DES ANNEXES ----------------------------------
 
+Un exemple d'annexe.
+\section{Première partie}
+
+
+\subsection{Sous-section}
+\subsection{Sous-section}
+
+\section{Deuxième partie}
+
+\subsection{Sous-section}
+\subsection{Sous-section}
+
+%-------------------------------------------- ANNEXE 2  -----------------------------------------
+
+\IMTAannexe{Autre annexe}\label{sec:S_ANN_EX2}
+
+Un autre exemple d'annexe.
+\section{Première partie}
+
+
+\subsection{Sous-section}
+\subsection{Sous-section}
+
+\section{Deuxième partie}
+
+\subsection{Sous-section}
+\subsection{Sous-section}
+
+%------------------------------------- -- FIN DES ANNEXES --------------------------------------
+\end{IMTAannexes}
 
 %-----------------------------------DEBUT DE LA BIBLIOGRAPHIE ----------------------------------
 \newpage
@@ -282,11 +554,15 @@ URL: \URLimta
 \phantomsection
 \addcontentsline{toc}{section}{\refname}
 %-----------------------------------------------------------------------------------------------
-\bibliographystyle{plain}
-%\begin{thebibliography}{99}
-\bibliography{bibliography}
+
+\begin{thebibliography}{99}
+\bibitem{[Lichtfouse2012]} Eric Lichtfouse, \emph{Rédiger pour être publié}, Springer, $2^{eme}$ édition, 2012
+ (cote bibliothèque IMT Atlantique Brest : $0.343$ LICH).
+ 
+\bibitem{[URL_LATEX1]} \href{https://www.latex-fr.net/3_composition/texte/paragraphes/encadrer_du_texte}{LaTeX FAQ - Encadrer ou mettre en valeur du texte}
+ 
 %----------------------------------- FIN DE LA BIBLIOGRAPHIE -----------------------------------
-%\end{thebibliography}
+\end{thebibliography}
 %---------------------------------------- Do not modify ----------------------------------------
 \IMTAcoverpage
 %------------------------------------ End of do not modify -------------------------------------

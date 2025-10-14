@@ -1,5 +1,102 @@
-\section{Introduction}\label{sec:SS_STRU1}
+\section{Introduction}\label{SEC:introdcution}
+\subsection{Contexte général}
+Dans de nombreux domaines, l’imagerie constitue un moyen efficace d’acquérir et d’agréger rapidement un volume d’informations considérable, indispensable à la prise de décision. À titre d’exemple, les applications de suivi des changements exploitent des techniques d’imagerie afin de cartographier et d’évaluer les impacts d’une catastrophe naturelle sur une zone sinistrée. 
 
+Pour l’acquisition d’images, plusieurs types de capteurs peuvent être employés. De manière intuitive, on pense aux capteurs optiques, capables de détecter les ondes électromagnétiques des domaines ultraviolet, visible et infrarouge. Toutefois, ces dispositifs présentent une limitation majeure : ils ne permettent pas l’imagerie dans toutes les conditions, leur fonctionnement étant fortement dépendant de l’éclairement et des hydrométéores. 
+
+Afin de pallier cette limitation, la Royal Air Force développa, au cours de la Seconde Guerre mondiale, le premier radar aéroporté capable de produire une image radar analogique : le H2S \footnote{Signification de l'acronyme inconnue, aussi appelé Stinky.}. Ce système permit aux forces britanniques d’améliorer la précision de leurs bombardements nocturnes en détectant les reliefs et les zones urbaines, dont la représentation était affichée sur un écran cathodique. 
+
+À la fin des années 1940, de nouvelles avancées dans les technologies d’imagerie radar furent réalisées, parmi lesquelles le radar à fauchée latérale. Ce dispositif consiste à orienter une antenne latéralement afin de capturer l’image d’une bande étendue du sol. Les premiers systèmes SLAR \footnote{Side Looking Airborn Radar ou radar à fauchée latérale} fonctionnels furent testés au début des années 1950 et, à la fin de la décennie, les premières cartes radar continues du terrain purent être produites.
+
+\begin{figure}[ht]
+    \begin{minipage}[t]{0.45\textwidth}
+        \centering
+        \vspace{0pt}
+        \includegraphics[width=0.9\linewidth]{src/rapport_complet/img/H2S_zuider_zee.jpg}
+        \caption{Image du radar H2S réalisée au dessus de la Zuider Zee aux Pays-Bas \cite{h2s_source}}
+        \label{fig:h2s_zuider_zee}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[t]{0.45\textwidth}
+        \centering
+        \vspace{0pt}
+        \includegraphics[width=0.9\linewidth]{src/rapport_complet/img/first_SLAR_image.png}
+        \caption{Une des premières image d'un radar à ouverture réelle acquise par un radar à fauchée latérale \cite{colin_radar_images}}
+        \label{fig:first_slar_image}
+    \end{minipage}
+\end{figure} 
+
+
+Ainsi, l’imagerie radar revêt un intérêt manifeste tant dans le domaine civil que militaire. Elle se distingue notamment par sa capacité d’observation en toutes conditions météorologiques, garantissant une continuité d’acquisition que les systèmes optiques ne permettent pas. Par ailleurs, les propriétés propres à la technologie radar confèrent des possibilités d’analyse spécifiques. L’interférométrie des signaux, exploitant à la fois l’amplitude et la phase, permet notamment d’estimer des altitudes avec une grande précision. En outre, la complémentarité avec l’imagerie optique est particulièrement remarquable : tandis que cette dernière met en évidence les caractéristiques physico-chimiques des surfaces observées, l’imagerie radar est sensible aux propriétés géométriques des cibles, à la nature des matériaux ainsi qu’à leur état. Ces paramètres, essentiels à de nombreuses applications, demeurent souvent inaccessibles par les moyens optiques traditionnels. 
+
+\subsection{Motivation d'un radar à synthèse d'ouverture}
+
+
+
+Bien que l’imagerie radar conventionnelle possède des avantages significatifs par rapport à l'imagerie optique, elle présente une limite majeure : la résolution. En effet, dans le cas d’un SLAR/RAR \footnote{Real Aperture Radar ou radar à ouverture réelle}, la résolution en azimut s'exprime de la manière suivante \cite{radartutorial} :
+
+\begin{equation}
+\delta_{az} = \frac{h\times\lambda}{L\times \cos{\theta}}
+\label{eq:resolution_azimut_rar}
+\end{equation}
+Où :
+\begin{description}
+    \item[$\delta_{az}$] : est la résolution en azimut [$m$]
+    \item[$h$] : est la hauteur de l'antenne par rapport au sol [$m$]
+    \item[$\lambda$] : est la longueur d’onde [$m$]
+    \item[$L$] : est la longueur physique de l’antenne [$m$]
+    \item[$\theta$] : est l'angle d'incidence [\textdegree]
+\end{description}
+
+Cette relation montre que pour obtenir une meilleure résolution, il faut une antenne plus longue. Or, dans la pratique, les contraintes liées à la capacité d’emport des vecteurs aériens rendent cette solution peu réaliste. Ainsi, les radars à ouverture réelle (RAR) et à ouverture réelle latérale (SLAR) sont rapidement confrontés à des limites physiques qui restreignent fortement leurs performances. Leur résolution dépend directement de la taille de l’antenne et de la géométrie de visée : plus la distance entre le radar et la scène observée augmente, plus la résolution au sol se dégrade. Par conséquent, ces systèmes ne permettent pas d’obtenir des images suffisamment détaillées pour les besoins d’observation fine, ce qui limite leur emploi à des tâches de détection ou de surveillance globale où la précision spatiale n’est pas déterminante.
+
+De nombreuses applications modernes d’imagerie radar ne peuvent donc pas être réalisées avec des systèmes RAR ou SLAR. La cartographie de haute résolution, la caractérisation des structures au sol, la génération de modèles numériques de terrain, ainsi que les techniques d’interférométrie et de polarimétrie exigent une stabilité de phase et une résolution métrique à submétrique \cite{hforsten_polarimetric_sar_drone, tupin_monradar} qu’un radar à ouverture réelle ne peut atteindre. Le développement du radar à synthèse d’ouverture (SAR \footnote{Synthetic Aperture Radar}/RSO \footnote{Radar à Synthèse d'Ouverture}) a précisément permis de dépasser ces limitations en reproduisant, par traitement du signal, l’effet d’une antenne de grande dimension, ouvrant ainsi la voie à l’imagerie détaillée depuis des plateformes aériennes et spatiales, pour des applications allant de la topographie à la surveillance environnementale.
+
+\subsection{Positionnement}
+
+Depuis le début des années 2010, le développement des drones de petite taille a connu une adoption à grande échelle pour des applications industrielles. Initialement utilisés à des fins militaires ou récréatives, ces systèmes ont rapidement trouvé leur place dans des secteurs tels que l’énergie, la construction, l’agriculture et la logistique, permettant la surveillance des infrastructures, la cartographie 3D et la gestion de sites sensibles. Cette évolution a été rendue possible grâce aux progrès technologiques — miniaturisation des capteurs, automatisation des vols, stabilisation des images et intégration de l’intelligence artificielle — qui ont transformé les drones en outils fiables et efficaces pour des missions industrielles complexes, complétant ainsi les capacités offertes par les radars aéroportés classiques \cite{wikipedia_drone,wikipedia_dji_matrice,foxtech_drone}.
+
+L’évolution des plateformes légères permet désormais d’envisager l’embarquement de radars à synthèse d’ouverture (SAR) sur des drones, offrant la possibilité de réaliser des acquisitions d’images à haute résolution et des cartographies détaillées de zones ciblées. Dans ce contexte, le déploiement d’un essaim de drones apparaît comme une approche pertinente : chaque plateforme transporte une charge utile autonome intégrant le radar, laquelle assure la collecte et le stockage local des données. Le traitement et la fusion des informations sont réalisés après la mission, ce qui limite les contraintes liées aux communications en temps réel et simplifie la planification des opérations.
+
+L’utilisation d’un essaim confère plusieurs avantages d’un point de vue opérationnel et scientifique. Elle permet de renforcer la résilience et la redondance dans la capture d’images, en particulier dans des environnements contestés, sinistrés ou difficilement accessibles. La conception de la charge utile constitue une étape préalable essentielle : la validation sur un drone unique permet ensuite d’envisager la réplication et la coordination au sein de l’essaim. Cette architecture soulève toutefois des problématiques techniques importantes, notamment en matière de multi-capteurs et de fusion de données, qui sont nécessaires pour obtenir des images radar fusionnées et cohérentes à partir des acquisitions dispersées.
+
+Les applications de ce type de système sont à la fois civiles et stratégiques. Dans le domaine civil, elles contribuent à la surveillance des écosystèmes, à la prévention des risques naturels et à la production de données fiables pour l’aménagement du territoire et la gouvernance. Dans un contexte militaire ou stratégique, l’essaim permet une cartographie et une reconnaissance précises, même dans des zones hostiles ou couvertes, tout en garantissant une redondance et une adaptabilité accrues. Cette dualité illustre le potentiel des drones SAR en essaim comme outil pertinent à la fois pour la recherche, la gestion environnementale et la défense.
+
+
+
+
+
+INTRODUCTION BY ALEXIS : 
+section{Introduction} label{SEC:introdcution}
+
+subsection{Contexte et motivation}
+
+Intérêt croissant du radar SAR pour les drones : cartographie 2D/3D, surveillance, détection de cibles au sol, reconnaissance de terrain.
+
+Avantages du SAR : haute résolution indépendante de la distance, fonctionnement tout temps.
+
+
+subsection{Spécificités du radar SAR par rapport aux autres radars}
+
+Principe de la synthèse d’ouverture et comparaison avec les radars FMCW ou pulsés classiques.
+
+Contraintes liées au mouvement du porteur (plateforme drone).
+
+
+subsection{Problématique}
+
+Comment concevoir une chaîne RF et une architecture matérielle SAR adaptées aux contraintes embarquées (masse, énergie, stabilité) ?
+
+
+subsection{Objectifs de l’étude bibliographique}
+
+Analyser les architectures SAR adaptées aux drones.
+
+Étudier la chaîne RF, le front-end, et la partie traitement embarqué.
+
+Identifier les technologies et tendances actuelles.
+
+INTRODUCTION DU TEMPLATE
 D'après \cite{[Lichtfouse2012]}, une possible structure d'une introduction contient:
 \begin{enumerate}
 	\item l'explication du contexte d'étude ou de la problématique annoncés dans le résumé avec l'arrière

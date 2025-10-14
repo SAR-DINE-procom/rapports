@@ -7,9 +7,9 @@ une forme classique d'algorithme adaptatif utilisée dans les radars pour isoler
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\textwidth]{src/biblio_sar/img/cellule_CFAR.jpg}
+    \includegraphics[width=0.6\textwidth]{src/rapport_complet/img/cellule_CFAR.jpg}
     \caption{Cellule de détection CFAR}
-    \label{fig:image_radar}
+    \label{fig:image_radar_CFAR}
 \end{figure}
 
 
@@ -39,10 +39,6 @@ f_X(x) = \frac{1}{2\sigma^2} e^{-x / 2\sigma^2}, \quad x \ge 0
 \end{equation}
 
 
-
-
-
-
 \subsubsection{Calcul du seuil de détection}
 
 Le seuil (seuil adaptatif) de détection correspond au niveau à partir duquel on estime qu'une cible est détectée. Il s'écrit comme : 
@@ -51,7 +47,6 @@ T = \alpha Q
 \end{equation}
 
 \subsubsection{Probabilité de fausse alarme et Probabilité de détection}
-
 
 \paragraph{Probabilité de fausse alarme (\(P_{\text{fa}}\))}  
 La probabilité de fausse alarme correspond à la probabilité qu'une mesure dépasse le seuil de détection alors qu'aucune cible n'est présente.  
