@@ -1,6 +1,6 @@
-\section{Différents algorithmes de détection}
+\subsection{Différents algorithmes de détection}
 
-\subsection{Principe du CA-CFAR (cell-averaging Constant False Alarm Rate)}
+\subsubsection{Principe du CA-CFAR (cell-averaging Constant False Alarm Rate)}
 
 La détection CFAR "Constant False Alarm Rate" fait référence à
 une forme classique d'algorithme adaptatif utilisée dans les radars pour isoler le signal retour d'une cible d'un bruit de fond important, de brouillage et d'interférences. Le principe de cet algorithme est de tester une cellule (Cell Under Test : CUT) afin de savoir si une cible est présente ou s'il s'agit uniquement de bruit ou d'interférence. Pour cela, on estime le niveau de bruit de fond à l'aide des cellules adjacentes à la CUT, ces cellules sont appelées Cellules de Références (Reference Cells : RC). Pour éviter que les résultats soient faussés par la puissance reçue dans la CUT, on élimine du calcul les cellules immédiatement adjacentes (Guard Cells).Une cible est considérée présente dans la CUT si son signal est à la fois supérieur aux cellules adjacentes et au niveau de puissance moyen calculé. Voici un schéma explicatif des cellules de détection dans le cadre de la détection CFAR : 
@@ -19,7 +19,7 @@ une forme classique d'algorithme adaptatif utilisée dans les radars pour isoler
 
 
 
-\subsubsection{Estimation du bruit}
+\paragraph{Estimation du bruit}
 
 Le niveau du clutter (fouillis radar : échos parasites) est estimé par la moyenne arithmétique des échantillons dans la fenêtre de référence donnée par \cite{fstech_chapitre5_cfar}: 
 \begin{equation}
@@ -39,16 +39,16 @@ f_X(x) = \frac{1}{2\sigma^2} e^{-x / 2\sigma^2}, \quad x \ge 0
 \end{equation}
 
 
-\subsubsection{Calcul du seuil de détection}
+\paragraph{Calcul du seuil de détection}
 
 Le seuil (seuil adaptatif) de détection correspond au niveau à partir duquel on estime qu'une cible est détectée. Il s'écrit comme : 
 \begin{equation}
 T = \alpha Q
 \end{equation}
 
-\subsubsection{Probabilité de fausse alarme et Probabilité de détection}
+\paragraph{Probabilité de fausse alarme et Probabilité de détection}
 
-\paragraph{Probabilité de fausse alarme (\(P_{\text{fa}}\))}  
+\subparagraph{Probabilité de fausse alarme (\(P_{\text{fa}}\))}  
 La probabilité de fausse alarme correspond à la probabilité qu'une mesure dépasse le seuil de détection alors qu'aucune cible n'est présente.  
 Autrement dit, c'est la probabilité que le détecteur décide à tort qu'il y a une cible, alors que le signal observé provient uniquement du bruit.
 
@@ -60,7 +60,7 @@ où \( H_0 \) représente l'hypothèse \textit{« absence de cible »}.
 
 \vspace{1em}
 
-\paragraph{Probabilité de détection (\(P_{\text{d}}\))}  
+\subparagraph{Probabilité de détection (\(P_{\text{d}}\))}  
 La probabilité de détection correspond à la probabilité qu'une mesure dépasse le seuil de détection lorsqu'une cible est effectivement présente.  
 C'est donc la probabilité que le détecteur prenne la bonne décision en présence d'un signal utile.
 
