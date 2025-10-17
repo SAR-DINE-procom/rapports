@@ -1,5 +1,5 @@
-\section{Introduction}\label{SEC:introdcution}
-\subsection{Contexte général}
+\chapter{Introduction}\label{SEC:introdcution}
+\paragraph{Contexte général}
 Dans de nombreux domaines, l’imagerie constitue un moyen efficace d’acquérir et d’agréger rapidement un volume d’informations considérable, indispensable à la prise de décision. À titre d’exemple, les applications de suivi des changements exploitent des techniques d’imagerie afin de cartographier et d’évaluer les impacts d’une catastrophe naturelle sur une zone sinistrée. 
 
 Pour l’acquisition d’images, plusieurs types de capteurs peuvent être employés. De manière intuitive, on pense aux capteurs optiques, capables de détecter les ondes électromagnétiques des domaines ultraviolet, visible et infrarouge. Toutefois, ces dispositifs présentent une limitation majeure : ils ne permettent pas l’imagerie dans toutes les conditions, leur fonctionnement étant fortement dépendant de l’éclairement et des hydrométéores. 
@@ -29,7 +29,7 @@ Afin de pallier cette limitation, la Royal Air Force développa, au cours de la 
 
 Ainsi, l’imagerie radar revêt un intérêt manifeste tant dans le domaine civil que militaire. Elle se distingue notamment par sa capacité d’observation en toutes conditions météorologiques, garantissant une continuité d’acquisition que les systèmes optiques ne permettent pas. Par ailleurs, les propriétés propres à la technologie radar confèrent des possibilités d’analyse spécifiques. L’interférométrie des signaux, exploitant à la fois l’amplitude et la phase, permet notamment d’estimer des altitudes avec une grande précision. En outre, la complémentarité avec l’imagerie optique est particulièrement remarquable : tandis que cette dernière met en évidence les caractéristiques physico-chimiques des surfaces observées, l’imagerie radar est sensible aux propriétés géométriques des cibles, à la nature des matériaux ainsi qu’à leur état. Ces paramètres, essentiels à de nombreuses applications, demeurent souvent inaccessibles par les moyens optiques traditionnels. 
 
-\subsection{Motivation d'un radar à synthèse d'ouverture}
+\paragraph{Motivation d'un radar à synthèse d'ouverture}
 
 
 
@@ -52,7 +52,7 @@ Cette relation montre que pour obtenir une meilleure résolution, il faut une an
 
 De nombreuses applications modernes d’imagerie radar ne peuvent donc pas être réalisées avec des systèmes RAR ou SLAR. La cartographie de haute résolution, la caractérisation des structures au sol, la génération de modèles numériques de terrain, ainsi que les techniques d’interférométrie et de polarimétrie exigent une stabilité de phase et une résolution métrique à submétrique \cite{hforsten_polarimetric_sar_drone, tupin_monradar} qu’un radar à ouverture réelle ne peut atteindre. Le développement du radar à synthèse d’ouverture (SAR \footnote{Synthetic Aperture Radar}/RSO \footnote{Radar à Synthèse d'Ouverture}) a précisément permis de dépasser ces limitations en reproduisant, par traitement du signal, l’effet d’une antenne de grande dimension, ouvrant ainsi la voie à l’imagerie détaillée depuis des plateformes aériennes et spatiales, pour des applications allant de la topographie à la surveillance environnementale.
 
-\subsection{Positionnement}
+\paragraph{Positionnement}
 
 Depuis le début des années 2010, le développement des drones de petite taille a connu une adoption à grande échelle pour des applications industrielles. Initialement utilisés à des fins militaires ou récréatives, ces systèmes ont rapidement trouvé leur place dans des secteurs tels que l’énergie, la construction, l’agriculture et la logistique, permettant la surveillance des infrastructures, la cartographie 3D et la gestion de sites sensibles. Cette évolution a été rendue possible grâce aux progrès technologiques — miniaturisation des capteurs, automatisation des vols, stabilisation des images et intégration de l’intelligence artificielle — qui ont transformé les drones en outils fiables et efficaces pour des missions industrielles complexes, complétant ainsi les capacités offertes par les radars aéroportés classiques \cite{wikipedia_drone,wikipedia_dji_matrice,foxtech_drone}.
 
@@ -96,12 +96,30 @@ Analyser les architectures SAR adaptées aux drones.
 
 Identifier les technologies et tendances actuelles.
 
-INTRODUCTION DU TEMPLATE
-D'après \cite{[Lichtfouse2012]}, une possible structure d'une introduction contient:
-\begin{enumerate}
-	\item l'explication du contexte d'étude ou de la problématique annoncés dans le résumé avec l'arrière
-	plan et les enjeux;
-	\item l'annonce de ce qui est étudié et fait dans le contexte d'étude ou pour tenter de résoudre la
-	\item l'annonce des différentes parties du document : « dans un premier temps nous étudions... », « dans
-	un deuxième temps nous abordons... », etc.
-\end{enumerate}
+%INTRODUCTION DU TEMPLATE
+%D'après \cite{[Lichtfouse2012]}, une possible structure d'une introduction contient:
+%\begin{enumerate}
+%	\item l'explication du contexte d'étude ou de la problématique annoncés dans le résumé avec l'arrière
+%	plan et les enjeux;
+%	\item l'annonce de ce qui est étudié et fait dans le contexte d'étude ou pour tenter de résoudre la
+%	\item l'annonce des différentes parties du document : « dans un premier temps nous étudions... », « dans
+%	un deuxième temps nous abordons... », etc.
+%\end{enumerate}
+
+
+
+1. Introduction
+2. principes généraux
+2.1 Principes radar (formes d'ondes, architecture RF?, matrices temps lent temps rapide, applications (tres bref))
+2.2 Principes SAR (cf pres 2/10 pour plan, explication acronyme, explication résolution, les algo azimut distance, pourquoi on regarde sur le coté et pas en dessous, applications(tres bref))
+3. Etat de l'art
+3.1 Architecture matérielle et chaine RF d'un radar SAR embarqué)
+3.1.1 à 3.1.6 cf plan actuel
+3.2 Chaîne de traitement
+3.2.1 Modélisation du bruit
+3.2.2 Différents algorithmes SAR
+3.2.3 Différents algorithmes de détection
+3.2.4 Différents algorithmes d'autofocus
+3.3 Systèmes existants
+4 LE PROJET (cf macron)
+

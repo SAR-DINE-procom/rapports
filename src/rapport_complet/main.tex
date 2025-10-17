@@ -91,7 +91,7 @@
 %                                    DEBUT DU FICHIER D'EDITION
 %-----------------------------------------------------------------------------------------------
 
-\documentclass[11pt,a4paper,french]{article}
+\documentclass[11pt,a4paper,french]{report}
 
 \usepackage{babel}
 \usepackage[utf8]{inputenc}
@@ -270,13 +270,33 @@ URL: \URLimta
 %                                   CORPS DU DOCUMENT (please modify)
 %---------------------------------------------------------------------------------------------
 
+%chapter
+%   section
+%       subsection
+%           subsubsection
+%               paragraph
+%                   subparagraph
+
+
 \include{src/rapport_complet/sections/introduction}
-\include{src/rapport_complet/sections/bibliographie/principe_base_radar_et_sar}
-\include{src/rapport_complet/sections/bibliographie/archi_hard_RF}
-\include{src/rapport_complet/sections/bibliographie/algo_traitement_pres}
-\include{src/rapport_complet/sections/bibliographie/algo_detection}
-\include{src/rapport_complet/sections/bibliographie/sar_commerciaux}
-\include{src/rapport_complet/sections/bibliographie/tendances}
+
+\include{src/rapport_complet/sections/principe_generaux}
+    \include{src/rapport_complet/sections/principes_generaux/principes_radar}
+    \include{src/rapport_complet/sections/principes_generaux/principes_sar}
+
+\include{src/rapport_complet/sections/etat_de_lart}
+    \include{src/rapport_complet/sections/etat_de_lart/RF/archi_hard_RF}
+    \include{src/rapport_complet/sections/etat_de_lart/traitement/chaine_de_traitement}
+        \include{src/rapport_complet/sections/etat_de_lart/traitement/modelisation_bruit}
+        \include{src/rapport_complet/sections/etat_de_lart/traitement/algo_traitement}
+        \include{src/rapport_complet/sections/etat_de_lart/traitement/algo_detection}
+        \include{src/rapport_complet/sections/etat_de_lart/traitement/algo_autofocus}
+    \include{src/rapport_complet/sections/etat_de_lart/sar_commerciaux}
+
+\include{src/rapport_complet/sections/projet}
+
+
+%\include{src/rapport_complet/sections/bibliographie/tendances}
 %...
 
 %-----------------------------------DEBUT DES ANNEXES ----------------------------------
