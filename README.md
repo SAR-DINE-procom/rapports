@@ -9,7 +9,8 @@
 - Après modification du code sur Overleaf, **synchroniser** avec GitHub :  
   `Menu → GitHub → Push`.
 - Débutez votre message de commit avec votre nom :  
-  `[Maxence] Rédaction de la première partie de l'introduction`. 
+  `[Maxence] Rédaction de la première partie de l'introduction`.
+- Chaque partie doit avoir son répertoire et chaque sous-partie son fichier (s'inspirer de l'existant).
 
 ## Créer un nouveau rapport
 
