@@ -433,7 +433,7 @@ Jusqu'à présent, la description des principes s'est faîte en suivant l'hypoth
 
 Tout d'abord, il est important de définir les termes qui seront utilisés par la suite. Le signal correspond à ce que l'on veut ce qui correspond aux échos dans le cas des radars actifs. Le bruit quant à lui correspond à toutes les perturbations qui peuvent impacter le signal. On y retrouve par exemple les interférences d'autres systèmes ou d'hydrométéores mais aussi le bruit intrinsèque aux équipements comme le bruit thermique.
 
-D'un point de vue haut niveau, l'impact du bruit sur un système se caractérise par le rapport signal sur bruit (RSB \footnote{Rapport Signal sur Bruit}/SNR \footnote{Signal to Noise Ratio}). La dégradation du RSB se caractérise par le facteur de bruit.
+D'un point de vue haut niveau, l'impact du bruit sur un système se caractérise par le rapport signal sur bruit (RSB \footnote{Rapport Signal sur Bruit}/SNR \footnote{Signal to Noise Ratio}). La dégradation du RSB au travers d'un dispositif/système se caractérise par le facteur de bruit.
 
 \noindent Le RSB s'exprime simplement de la manière suivante :
 
@@ -450,9 +450,7 @@ Où :
 
 Les puissances exprimées ici sont généralement les puissances moyennes, cela implique qu'un bruit impulsionnel sera mal caractérisé par ce rapport. 
 
-[TODO] Faire schéma montrant l'évaluation du niveau de bruit par rapport au niveau de signal (cf cours radar ope)
-
-Le facteur de bruit s'exprime de la manière suivante : 
+\noindent Le facteur de bruit s'exprime de la manière suivante : 
 
 \begin{equation}
     F = \frac{(S/N)_e}{(S/N)_s} = \frac{N_s}{G.N_e}
@@ -465,18 +463,131 @@ Où :
     \item[$N_x$] : La puissance du bruit, en entrée pour $x=e$, en sortie pour $x=s$ [$W$]
     \item[$G$] : Le gain du dispositif traversé
 \end{description}
+\vspace{1em}
 
-[TODO] Expliquer équation, composant passif f = attenuation du composant, composant actif f = donnee constructeur,  puis introduire la formule de FRIIS et les implications
+Le facteur de bruit représente donc le rapport entre le RSB en entrée et le RSB en sortie. La deuxième partie de l'équation permet de définir $F$ par rapport à une référence de bruit thermique en entrée à $T_0 = 290 \degree K$, tel que $N_e = k.T_0.B$ avec $k$ la constante de Boltzmann et $B$ la bande de fréquence observée. Par ailleurs, on peut alors exprimer la température équivalente de bruit tel que :
+
+\begin{equation}
+    T_{eq} = (F-1).T_0 
+    \label{eq:temp_eq_de_bruit}
+\end{equation}
+Où :
+\begin{description}
+    \item[$T_{eq}$] : La température équivalente de bruit [$\degree K$] 
+    \item[$F$] : Le facteur de bruit
+    \item[$T_0$] : La température de référence ($290 \degree K$) [$\degree K$]
+\end{description}
+
+De plus, le facteur de bruit d'un composant passif correspond à l'atténuation du composant tandis que pour un composant actif, il s'agit d'une donnée constructeur.
+
+Une autre manière permettant d'aborder le rapport signal sur bruit et du facteur de bruit consiste à l'observer graphiquement. Considérons la figure \ref{fig:illus_snr_facteur_de_bruit}, cette dernière représente un système simple composé d'une antenne, d'un support de propagation et d'un amplificateur. La figure \ref{fig:snr_degradation} représente l'évolution du signal et du bruit à mesure que l'on se déplace au travers du système.
+
+\FloatBarrier
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\linewidth]{src/rapport_complet/img/schema_facteur_bruit.png}
+    \caption{Système permettant l'explication du SNR et du facteur de bruit}
+    \label{fig:illus_snr_facteur_de_bruit}
+\end{figure}
+\FloatBarrier
+
+\begin{figure}[htbp]
+    \centering 
+    \begin{tikzpicture}
+        % Graphique 1 : Bon rapport S/B
+        \begin{scope}[xshift=0cm]
+            % Axes
+            \draw[->] (0,0) -- (3,0);
+            \draw[->] (0,0) -- (0,3.5);
+            % Lignes de référence signal
+            \foreach \y in {0.5, 1.0, 1.5, 2.0, 2.5, 3.0} {
+                \draw[dashed, gray] (0,\y) -- (3,\y);
+            }
+            % Signal (S_ant)
+            \draw[line width=2pt, blue] (0.8,0.6) rectangle (1.0,2.5);
+            \draw[line width=2pt, blue] (1.8,0.6) rectangle (2.0,1.5);
+            \node[left, blue, yshift=-0.5cm] at (0,3) {$S_{ant}$};
+            % Bruit (N_ant)
+            \draw[line width=1.5pt, red] (0,0.6) -- (2.5,0.6) node[left, red, xshift=-2.5cm, yshift=0.2cm] {$N_{ant}$};
+        \end{scope}
+        % Graphique 2 : Rapport S/B dégradé
+        \begin{scope}[xshift=4cm]
+            % Axes
+            \draw[->] (0,0) -- (3,0);
+            \draw[->] (0,0) -- (0,3.5);
+            % Lignes de référence signal
+            \foreach \y in {0.5, 1.0, 1.5, 2.0, 2.5, 3.0} {
+                \draw[dashed, gray] (0,\y) -- (3,\y);
+            }
+            % Signal (S2)
+            \draw[line width=2pt, blue] (0.8,0.9) rectangle (1.0,2.2);
+            \draw[line width=2pt, blue] (1.8,0.9) rectangle (2.0,1.2);
+            \node[left, blue, yshift=-0.5cm] at (0,3) {$S_2$};
+            % Bruit (N2)
+            \draw[line width=1.5pt, red] (0,0.9) -- (2.5,0.9) node[left, red, xshift=-2.5cm, yshift=0.2cm] {$N_2$};
+        \end{scope}
+        % Graphique 3 : Rapport S/B fortement dégradé
+        \begin{scope}[xshift=8cm]
+            % Axes
+            \draw[->] (0,0) -- (3,0);
+            \draw[->] (0,0) -- (0,3.5);
+            % Lignes de référence signal
+            \foreach \y in {0.5, 1.0, 1.5, 2.0, 2.5, 3.0} {
+                \draw[dashed, gray] (0,\y) -- (3,\y);
+            }
+            % Signal (S3)
+            \draw[line width=2pt, blue] (0.8,1.8) rectangle (1,2.8);
+            % Le deuxième pic est trop proche du bruit pour être clairement visible
+            \node[above, blue, xshift=-0.3cm, yshift=-0.5cm] at (0,3) {$S_3$};
+            % Bruit (N3)
+            \draw[line width=1.5pt, red] (0,1.8) -- (2.5,1.8) node[left, red, xshift=-2.5cm, yshift=0.2cm] {$N_3$};
+        \end{scope}
+    \end{tikzpicture}
+    \caption{Illustration de la dégradation du SNR au travers d'un système}
+    \label{fig:snr_degradation}
+\end{figure}
+
+On remarque alors qu'à mesure que le signal progresse à travers le système, plus il est atténué, et plus le bruit augmente en fonction de l'atténuation. Le dernier composant amplifie également le bruit ; il n'est plus possible de distinguer une partie du signal. Le RSB s'est donc dégradé à mesure que le signal a progressé dans ce système. 
+
+Un point important facilitant l'étude des facteurs de bruit d'un système est la possibilité de les mettre en cascade. Pour cela, on commence par représenter élément de la chaîne par son gain et son facteur de bruit. Grâce à la formule de FRIIS pour le bruit, on est capable d'exprimer à la fois le gain total et le facteur de bruit total d'un système. 
+
+Le gain total s'exprime ainsi \cite{Friis1944Noise} :  
+\begin{equation}
+    G_T = G_1.G_2.\dots.G_n
+    \label{eq:gain_total}
+\end{equation}
+Où :
+\begin{description}
+    \item[$G_T$] : Le gain total
+    \item[$G_x$] : Le gain de l'élément $x$
+\end{description}
+\vspace{1em}
+
+Et le facteur de bruit total \cite{Friis1944Noise} :
+\begin{equation}
+    F_T = F_1 + \frac{F_2 - 1}{G_1} + \frac{F_3 - 1}{G_1.G_2} + \dots + \frac{F_n - 1}{\Pi_{k=1}^{n-1} G_k}
+    \label{eq:formule_friis_bruit}
+\end{equation}
+Où :
+\begin{description}
+    \item[$F_T$] : Le facteur de bruit total
+    \item[$F_x$] : Le facteur de bruit de l'élément $x$
+    \item[$G_x$] : Le gain de l'élément $x$
+\end{description}
+\vspace{1em}
+
+On remarque que la première source de bruit du système sera la plus impactante sur le RSB, il faut donc choisir avec attention le premier élément d'une chaîne RF.
 
 \subsection{Architecture matérielle}
 % Pertinence ? Si oui à quel niveau on descend ?
-\subsection{Matrices temps lent et temps rapide}
 
 \subsection{Applications}
-% Bref paragraphe sur les applications et transition sur la partie suivante. (finir par l'imagerie dans les applications)
 
-fmcw triangulaire : Cette forme d'onde est généralement utilisée par des radars de contrôle de la circulation, systèmes de détection de collision et les capteurs de distance.
+Les radars pulsés occupent une place centrale dans la surveillance à grande échelle. Grâce à leur capacité à mesurer avec précision la distance et la vitesse des cibles, ils sont largement utilisés dans la surveillance aérienne, les relevés météorologiques et les systèmes de navigation. Leur principe, basé sur l’émission brève d’impulsions suivie d’une mesure du temps d’écho, constitue également la base de nombreuses techniques d’imagerie haute résolution, comme le radar à synthèse d’ouverture (SAR). 
 
-sawtooth : Cette forme d'onde est par exemple utilisé dans des radar de surveillance maritime ou des applications industrielles.
+Les radars à onde Sawtooth sont privilégiés dans des contextes nécessitant une observation continue et fiable, tels que la surveillance maritime ou certaines applications industrielles. Leur modulation linéaire en fréquence permet une estimation stable des distances et des vitesses, essentielle à la détection d’objets mobiles dans des environnements complexes.
 
-Pulse : Les radars pulsés sont généralement utilisés pour de la surveillance aérienne, les relevés météorologiques et les systèmes de navigations.
+Enfin, les systèmes FMCW triangulaires se distinguent par leur précision et leur compacité. Utilisés dans les radars de contrôle de la circulation, les systèmes anticollision et les capteurs de distance, ils offrent des mesures fines de portée tout en s’adaptant aux environnements dynamiques. 
+
+L’exploitation de ces différentes formes d’ondes trouve un prolongement naturel dans les applications d’imagerie radar, où la combinaison de résolutions spatiale et temporelle permet de reconstituer des représentations détaillées des scènes observées.
+

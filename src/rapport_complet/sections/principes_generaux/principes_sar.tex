@@ -4,6 +4,63 @@
 % Citer les résolutions exprimées par la partie précédente et transition vers SAR
 \subsection{Principe général du SAR}
 % Explication acronyme, expliquer pourquoi on regarde sur le côté et pas en dessous
+
+\subsubsection{Matrices temps lent / temps rapide}
+
+L’imagerie radar repose sur l’acquisition et le traitement cohérent d’un grand nombre d’échos radar enregistrés au cours du déplacement de la plateforme (satellite, avion ou drone). Pour représenter ces données « brutes », on introduit naturellement une structure matricielle dite \textit{temps lent / temps rapide}. Cette représentation constitue la base de la compréhension des mécanismes de focalisation, de filtrage et d’amélioration de la résolution des images radar \cite{tupin_monradar}.
+
+\paragraph{Définition du temps rapide et du temps lent}
+
+Lors d’une acquisition, chaque impulsion électromagnétique est émise à une fréquence de répétition fixe (Pulse Repetition Frequency, PRF). Deux échelles de temps gouvernent alors le signal mesuré :
+
+\begin{itemize}
+\item Le \textbf{temps rapide} ou \textit{fast time}, noté $t$, correspond au temps d’aller‑retour du signal entre l’antenne et les cibles après chaque émission. Il est directement lié à la distance radiale $r$ entre la plateforme et la scène observée, selon la loi :
+\begin{equation}
+    r = \frac{c_0.t}{2}
+    \label{eq:temps_rapide}
+\end{equation}
+où $c_0$ est la célérité de la lumière. Le temps rapide décrit donc l’axe \textbf{range} (ou distance) de l’image radar.
+
+\item Le \textbf{temps lent} ou \textit{slow time}, noté $\eta$, est défini comme la variable d’acquisition correspondant au déplacement de la plateforme le long de sa trajectoire. Il indexe les différentes impulsions successives émises et permet d’explorer la dimension azimutale (direction de défilement). Le temps lent traduit donc le \textbf{mouvement du capteur} et la variation de l’angle de visée \cite{tupin_monradar}.
+\end{itemize}
+\vspace{1em}
+
+Ainsi, les données radar brutes peuvent être disposées sous la forme d’une \textit{matrice bidimensionnelle} $S(t, \eta)$, chaque ligne représentant une impulsion enregistrée au temps lent $\eta_i$, et chaque colonne correspondant aux échantillons en temps rapide $t_j$ :
+\begin{equation}
+    S = 
+    \begin{bmatrix}
+       s(t_1,\eta_1) & s(t_2,\eta_1) & \dots & s(t_N,\eta_1) \\
+        s(t_1,\eta_2) & s(t_2,\eta_2) & \dots & s(t_N,\eta_2) \\
+        \vdots & \vdots & \ddots & \vdots \\
+        s(t_1,\eta_M) & s(t_2,\eta_M) & \dots & s(t_N,\eta_M) 
+    \end{bmatrix}
+    \label{eq:matrice_tps_lent_tps_rapide}
+\end{equation}
+
+Cette matrice constitue l’objet fondamental du traitement de signal d'image radar.
+
+\paragraph{Interprétation physique}
+
+Chaque ligne (constante en temps lent) correspond au signal reçu pour une seule impulsion radar : elle décrit la \textit{réponse en distance} de la scène à un instant donné. En revanche, chaque colonne (constante en temps rapide) retrace la variation temporelle du signal rétrodiffusé par une même cible au fil du déplacement de la plateforme. Cette évolution en $\eta$ se traduit par une modulation de phase Doppler :
+\[
+s(t_0,\eta) \approx A \exp\!\left( j \frac{4\pi R(\eta)}{\lambda} \right),
+\]
+où $R(\eta)$ est la distance instantanée entre la cible et l’antenne et $\lambda$ la longueur d’onde. Cette modulation est à la base du principe de la synthèse d’ouverture : les variations de phase en temps lent permettent de reconstruire une ouverture équivalente à une antenne de grande dimension \cite{tupin_monradar}.
+
+\paragraph{Utilisation pour la focalisation SAR}
+
+L’objectif du traitement SAR est de transformer la matrice $S(t,\eta)$ en une image complexe focalisée $I(x,y)$. Deux étapes principales sont nécessaires :
+
+\begin{enumerate}
+\item La \textbf{compression en distance} (ou en temps rapide) s’effectue via un filtrage adapté selon la forme d’onde émise, généralement une rampe linéaire de fréquence (chirp). Elle permet d’obtenir une haute résolution radiale.
+
+\item La \textbf{compression en azimut} (ou en temps lent) repose sur le traitement cohérent de la modulation Doppler. Un filtrage adéquat le long de $\eta$ reconstitue l’ouverture synthétique et améliore la résolution azimutale.
+\end{enumerate}
+
+Ces deux dimensions sont souvent traitées par transformées de Fourier successives (Range–Doppler ou Chirp Scaling Algorithm). L’analyse dans l’espace temps lent – temps rapide constitue donc le point de départ de toutes les méthodes modernes de traitement SAR, qu’il s’agisse de traitement monostatique, interférométrique (InSAR) ou polarimétrique (PolSAR).
+
+En résumé, la matrice temps lent / temps rapide représente le cœur de la modélisation du système SAR. Le temps rapide traduit l’information spatiale en distance, tandis que le temps lent décrit la dynamique de l’acquisition le long de la trajectoire. Ce cadre bidimensionnel permet d’exploiter la cohérence de phase du signal pour synthétiser une ouverture virtuelle de grande dimension et produire des images à haute résolution, indépendantes de la taille physique de l’antenne.
+
 \subsection{Construction d'une carte distance / temps}
 % internet + notes mikael
 \subsection{Construction d'une carte distance / Doppler}
