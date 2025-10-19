@@ -85,6 +85,10 @@ Où :
     \label{fig:illustration_effet_doppler}
 \end{figure}
 
+
+
+% OK ^^^^^^^
+
 \subsection{Formes d'ondes radar}
 La performance d’un système radar ne dépend pas uniquement de sa géométrie ou de la puissance transmise, mais également de la nature du signal émis. Le choix de la forme d’onde conditionne à la fois la portée, la résolution et la sensibilité du radar. Selon les applications, différentes formes d’onde sont employées, qu’elles soient continues ou modulées, à impulsions courtes ou à large bande.
 
@@ -375,7 +379,7 @@ Notions de bande azimutale, résolution, longueur d’onde, vitesse de plateform
 
 \subsection{Choix de la forme d'onde}
 
-Le choix de la forme d’onde constitue un paramètre fondamental dans la conception d’un radar à synthèse d’ouverture (SAR), notamment lorsqu’il est embarqué sur une plateforme légère telle qu’un drone. Chaque forme d’onde possède des caractéristiques spécifiques qui influencent directement les performances en portée, en résolution, en complexité électronique et en robustesse face au bruit ou aux interférences \cite{richards2010principles, soumekh1999synthetic}. C'est pourquoi nous allons étudier quatre formes d'ondes répandues dans le domaine radar, puis les comparer pour déterminer celle à privilégier dans notre cas.
+Le choix de la forme d’onde constitue un paramètre fondamental dans la conception d’un radar à synthèse d’ouverture (SAR), notamment lorsqu’il est embarqué sur une plateforme légère telle qu’un drone. Chaque forme d’onde possède des caractéristiques spécifiques qui influencent directement les performances en portée, en résolution, en complexité électronique et en robustesse face au bruit ou aux interférences \cite{richards2010, soumekh1999synthetic}. C'est pourquoi nous allons étudier quatre formes d'ondes répandues dans le domaine radar, puis les comparer pour déterminer celle à privilégier dans notre cas.
 
 La forme d’onde impulsionnelle (Pulse) représente historiquement le schéma le plus simple. Elle consiste à émettre des impulsions brèves et puissantes séparées par des intervalles de silence. Ce mode offre une bonne résolution en distance si la largeur d’impulsion est courte, mais impose une puissance crête élevée, difficile à générer sur des plateformes à ressources énergétiques limitées comme les drones. De plus, l’efficacité énergétique du radar impulsionnel est faible, car l’émetteur reste inactif une grande partie du temps. Ainsi, bien que cette forme d’onde soit robuste et bien maîtrisée, elle est souvent peu adaptée aux systèmes SAR compacts embarqués sur UAV \cite{skolnik2008radar}.
 
@@ -503,7 +507,7 @@ Dans le contexte d’un SAR embarqué sur drone, les compromis principaux concer
 \end{table}
 
 %A REFAIRE BILBIO DANS BIB  
-\begin{thebibliography}{9} \bibitem{richards2010principles} M. A. Richards, \textit{Principles of Modern Radar: Basic Principles}, SciTech, 2010. \bibitem{soumekh1999synthetic} M. Soumekh, \textit{Synthetic Aperture Radar Signal Processing}, Wiley, 1999. \bibitem{skolnik2008radar} M. I. Skolnik, \textit{Radar Handbook}, 3rd ed., McGraw-Hill, 2008. \bibitem{ma2016compact} J. Ma et al., “Compact FMCW SAR for UAV-based remote sensing,” \textit{IEEE Trans. Geosci. Remote Sens.}, vol. 54, no. 12, 2016. \bibitem{meta2007performance} A. Meta et al., “Performance analysis of FMCW SAR,” \textit{IEEE Trans. Geosci. Remote Sens.}, vol. 45, no. 11, 2007. \bibitem{aoki2020chirp} T. Aoki and Y. Sugimoto, “Chirp linearization in low-cost FMCW radar,” \textit{IEEE Sensors Journal}, vol. 20, no. 22, 2020. \bibitem{li2018fsk} W. Li et al., “FSK-based radar waveform for low-power SAR systems,” \textit{Electronics Letters}, vol. 54, no. 10, 2018. \bibitem{sun2021fmcw} Y. Sun et al., “FMCW SAR imaging on UAV platforms: System design and calibration,” \textit{Remote Sensing}, vol. 13, no. 3, 2021. \bibitem{yang2023uavsar} L. Yang et al., “Recent advances in lightweight UAV SAR systems,” \textit{IEEE Aerospace and Electronic Systems Magazine}, vol. 38, no. 1, 2023. \end{thebibliography}
+%\begin{thebibliography}{9} \bibitem{richards2010principles} M. A. Richards, \textit{Principles of Modern Radar: Basic Principles}, SciTech, 2010. \bibitem{soumekh1999synthetic} M. Soumekh, \textit{Synthetic Aperture Radar Signal Processing}, Wiley, 1999. \bibitem{skolnik2008radar} M. I. Skolnik, \textit{Radar Handbook}, 3rd ed., McGraw-Hill, 2008. \bibitem{ma2016compact} J. Ma et al., “Compact FMCW SAR for UAV-based remote sensing,” \textit{IEEE Trans. Geosci. Remote Sens.}, vol. 54, no. 12, 2016. \bibitem{meta2007performance} A. Meta et al., “Performance analysis of FMCW SAR,” \textit{IEEE Trans. Geosci. Remote Sens.}, vol. 45, no. 11, 2007. \bibitem{aoki2020chirp} T. Aoki and Y. Sugimoto, “Chirp linearization in low-cost FMCW radar,” \textit{IEEE Sensors Journal}, vol. 20, no. 22, 2020. \bibitem{li2018fsk} W. Li et al., “FSK-based radar waveform for low-power SAR systems,” \textit{Electronics Letters}, vol. 54, no. 10, 2018. \bibitem{sun2021fmcw} Y. Sun et al., “FMCW SAR imaging on UAV platforms: System design and calibration,” \textit{Remote Sensing}, vol. 13, no. 3, 2021. \bibitem{yang2023uavsar} L. Yang et al., “Recent advances in lightweight UAV SAR systems,” \textit{IEEE Aerospace and Electronic Systems Magazine}, vol. 38, no. 1, 2023. \end{thebibliography}
 
 
 
@@ -521,8 +525,6 @@ Résolution en distance et azimut.
 
 Portée, rapport signal/bruit, dynamique.
 
-
-[TODO] : DEGAGER LA BIBLIO DANS BIBLIOGRAPHY.BIB
 
 
 

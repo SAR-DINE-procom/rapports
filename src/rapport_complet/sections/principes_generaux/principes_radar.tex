@@ -2,11 +2,481 @@
 % La proposition de ce plan peut-être adapté selon les avis, notamment sur la partie hardware
 \subsection{Généralités}
 % S'inspirer de l'existant, ajuster (ajouter le SNR brievement)
+
+Avant d'aborder les techniques avancées d'imagerie SAR, il est nécessaire de rappeler certains concepts fondamentaux des systèmes radar. 
+
+Un système radar émet une onde électromagnétique qui se propage dans l'espace selon la directivité de l'antenne, comme le montrent les rectangles noirs de la figure \ref{fig:schema_base_radar}. Lorsque cette onde rencontre une cible, des échos sont émis ; ce sont les rectangles rouges de la même figure. Ces échos se propagent dans l'espace dans de multiples directions, amplitudes et phases. Ils peuvent également se heurter à d'autres surfaces, générant ainsi de nouveaux échos. Une partie des échos de l'onde incidente est captée par l'antenne du radar et analysée afin d'obtenir plusieurs informations. Il est possible d'extraire la distance relative de la cible à l'antenne, sa vitesse ou encore sa structure \cite{skolnik2001}. 
+
+%\begin{figure}[htbp]
+%    \centering
+%    \includegraphics[width=0.5\linewidth]{src/rapport_complet/img/schema_base_radar.png}
+%    \caption{Schéma d'explication des bases d'un système radar}
+%    \label{fig:schema_explicatif_radar}
+%\end{figure}
+
+\begin{figure}[htbp] 
+    \centering 
+    \begin{tikzpicture}
+    % Définir les styles
+    \tikzset{
+        % Faisceau émis : ÉPAISSI ET ESPACÉ
+        radar beam/.style={black, line width=7.5pt, opacity=0.75, dash pattern=on 10pt off 30pt},
+        % Écho principal : PLUS VISIBLE ET ESPACÉ
+        echo beam/.style={red, line width=10pt, opacity=0.75, dash pattern=on 10pt off 30pt},
+        % Échos diffractés : PLUS VISIBLES ET ESPACÉS
+        diffracted echo/.style={red, line width=5pt, opacity=0.75, dash pattern=on 10pt off 30pt},
+        ground/.style={draw=green!50!black, thick},
+        axis/.style={gray, thin, ->},
+        annotation/.style={black, font=\small},
+        angle arc/.style={draw=gray, thick, ->, shorten < = 2pt, shorten > = 2pt}
+    }
+    % --- Variable pour l'angle de l'antenne ---
+    \def\RadarAngle{25} % C'EST LA VARIABLE À AJUSTER (en degrés)
+    % Sol
+    \draw[ground] (0,0) -- (10,0) node[below right, annotation] {Sol};
+    % Antenne (partie fixe)
+    \draw[thick] (0.2, 0.5) -- (0.8, 0.5) -- (1, 0) -- (0, 0) -- cycle; % Base
+    \draw[thick] (0.5, 0.5) -- (0.5, 1.5); % Support vertical     
+    % \node at (0.5, 3.2) [above, annotation] {Antenne Radar};     
+    % Définition du point de pivot de l'antenne
+    \coordinate (radar_pivot) at (0.5, 1.5);
+    % --- Partie rotative de l'antenne (Bras + Parabole) ---
+    % (INCHANGÉ, comme demandé)
+    \begin{scope}[shift={(radar_pivot)}, rotate=\RadarAngle]
+        % Le bras qui tient le point focal (longueur 0.5cm)
+        \draw[thick] (0,0) -- (0.5, 0);    
+        % La parabole
+        \draw[thick] (0.75, 0.65) arc (130:230:0.8cm and 0.8cm);    
+        % Définir le point focal RELATIF au pivot
+        \coordinate (radar_focal_point_relative) at (0.5, 0);      
+    \end{scope} % Fin de la partie rotative
+    % Point focal (émission/réception) en coordonnées absolues
+    \coordinate (radar_focal_point) at ($(radar_pivot) + (\RadarAngle:0.5cm)$);
+    % Position de l'avion (cible)
+    \coordinate (avion_pos) at (8, 5);
+    % Inclure l'image de l'avion
+    \node (avion_node) at (avion_pos) {\includegraphics[width=2cm]{src/rapport_complet/img/avion.jpg}};
+    % Faisceau émis (style mis à jour)
+    \draw[radar beam] (radar_focal_point) -- (avion_pos);          
+    % --- Échos de retour ---
+    % L'écho principal qui revient à l'antenne
+    \draw[echo beam] (avion_pos) -- (radar_focal_point);      
+    % NOUVEAU : Échos diffractés (simples)
+    \draw[diffracted echo] (avion_pos) -- ++(-5, 3);    % Vers le haut à gauche leger
+    \draw[diffracted echo] (avion_pos) -- ++(-8, 0);  % horizontal à gauche
+    \draw[diffracted echo] (avion_pos) -- ++(2.5, -5);  % Vers le bas à droite
+    \draw[diffracted echo] (avion_pos) -- ++(-4, -4.75);    % Vers le bas à gauche
+    % Annotation de la distance relative
+    \draw[<->, black, thin] (radar_focal_point) -- node[above, sloped, annotation] {($R$)} (avion_pos);
+    % Ligne d'élévation (Altitude)
+    \draw[black, thin, densely dotted] (avion_pos) -- (avion_pos |- 0,0) node[below] {$P$};
+    \draw[<->, black, thin] (avion_pos |- 0,0) -- node[right, annotation] {($h_{av}$)} (avion_pos);
+    % Angle du radar (angle de site)
+    \coordinate (horizontal_end) at ($(radar_focal_point) + (7.5,0)$);    
+    \draw[black, dashed] (radar_focal_point) -- (horizontal_end); % Ligne horizontale à partir du foyer    
+    \draw[angle arc, black] ($(radar_focal_point) + (2.5,0)$) arc (0:\RadarAngle:2.5cm) node[midway, right, annotation] {($\theta_a$)};
+    % Ligne et annotation h_ant (décalées de 1 sur la droite)
+    \draw[<->, black, thin] ($(radar_focal_point |- 0,0) + (1,0)$) -- node[right=1pt, annotation] {($h_{ant}$)} ($(radar_focal_point) + (1,0)$);
+    \draw[<->, blue, thin] ($(avion_pos |- horizontal_end) + (-0.05,0)$) -- node[left, annotation, blue] {($h_{av_{relative}}$)} ($(avion_pos)+(-0.05,0)$);
+\end{tikzpicture}
+    \caption{Bases d'un radar}
+    \label{fig:schema_base_radar}
+\end{figure}
+
+\noindent Il est ensuite possible d'exprimer la puissance reçue par l'antenne par l'équation radar \cite{richards2010} :
+
+\begin{equation}
+    P_r = \frac{P_t . G^2 . \lambda^2. \sigma}{(4.\pi)^3 R^4}
+    \label{eq:equation_radar}
+\end{equation}
+Où : 
+\begin{description}
+    \item[$P_r$] : est la puissance reçue par l'antenne [$W$]
+    \item[$P_t$] : est la puissance transmise par l'antenne [$W$]
+    \item[$G$] : est le gain de l'antenne (émission/réception)
+    \item[$\lambda$] : est la longueur d’onde [$m$]
+    \item[$\sigma$] : est la surface équivalente radar [$m^2$]
+    \item[$R$] : est la distance entre l'antenne et la cible [$m$]
+\end{description}
+\vspace{1em}
+
+L'onde émise l'est selon un angle d'ouverture qui détermine la directivité du faisceau. En clair, un faisceau plus étroit permettra de capter plus d'échos et d'observer plus loin, mais il est nécessaire d'avoir une approximation de la position de la cible. A l'inverse, une antenne peu directive permettra d'observer une zone au détriment de la distance. L'un pourra servir au suivi de la cible, tandis que l'autre permettra de surveiller une zone. L'angle d'ouverture peut être approximé par l'équation suivante :
+
+\begin{equation}
+    \theta \approx \frac{\lambda}{L}
+    \label{eq:approx_angle_ouverture_antenne}
+\end{equation}
+Où :
+\begin{description}
+    \item[$\theta$] : est l'angle d'ouverture [$rad$]
+    \item[$\lambda$] : est la longueur d’onde [$m$]
+    \item[$L$] : est la longueur physique de l'antenne [$m$]
+\end{description}
+\vspace{1em}
+
+Afin de déterminer la vitesse de la cible, on utilise l'effet Doppler-Fizeau \cite{skolnik2001}. La figure \ref{fig:illustration_effet_doppler} l'illustre, celui-ci décrit la modification de la fréquence d'une onde observée lorsque la source et/ou l'observateur sont en mouvement relatif. Un rapprochement entre la source et l'observateur entraîne une augmentation de la fréquence perçue tandis qu'un éloignement provoque une diminution de celle-ci. La variation de fréquence correspond à la fréquence Doppler qui s'exprime telle que :
+
+\begin{equation}
+    f_d = \frac{2.\nu_r.f_0}{c_0}
+    \label{eq:frequence_doppler}
+\end{equation}
+Où :
+\begin{description}
+    \item[$f_d$] : est la fréquence Doppler [$Hz$]
+    \item[$\nu_r$] : est la vitesse relative à l'émetteur [$m.s^{-1}$]
+    \item[$f_0$] : est la fréquence émise [$Hz$] 
+    \item[$c_0$] : est la célérité d'une OEM \footnote{Onde Électro-Magnétique} dans le vide [$m.s^{-1}$] 
+\end{description}
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}
+    % --- Éléments centraux ---
+    \node (radar) at (0,0) {\scalebox{-1}[1]{\includegraphics[width=1.5cm]{src/rapport_complet/img/radar-de-vitesse.png}}};
+    % domain=1:7 -> dessine de x=1 à x=7
+    % 0.2*sin(12*(\x-1.5) r) -> {Amplitude}*sin({Fréquence}*... r)
+    \draw[black, thick, smooth] plot[domain=1:7, samples=1000] (\x, {0.4*sin(12*(\x-1.5) r)});
+    \draw[-latex, thick] (7.5,0) -- ++(1,0) node[pos=0.5, above] {\(f_o\)};
+    % --- Scénario 1 : Le véhicule s'approche ---
+    \begin{scope}[yshift=1.5cm]
+        % Onde réfléchie (fréquence plus élevée)
+        \draw[black, thick, smooth] plot[domain=1:7, samples=1000] (\x, {0.4*sin(24*(\x-1) r)});
+        \draw[-latex, thick] (0.5,0) -- ++(-1,0) node[pos=0.5, above] {\(f_o + f_d\)};
+        \node (truck_approaching) at (9,0) {\scalebox{-1}[1]{\includegraphics[width=1.5cm]{src/rapport_complet/img/truck-icon.png}}};
+        \draw[-latex, thick] (truck_approaching) -- ++(-1.5,0);
+    \end{scope}
+    % --- Scénario 2 : Le véhicule s'éloigne ---
+    \begin{scope}[yshift=-1.5cm]
+        \node (truck_receding) at (8.25,0) {\includegraphics[width=1.5cm]{src/rapport_complet/img/truck-icon.png}};
+        \draw[-latex, thick] (truck_receding) -- ++(1.5,0);
+        % Onde réfléchie (fréquence plus basse)
+        \draw[black, thick, smooth] plot[domain=1:7, samples=1000] (\x, {0.4*sin(6*(\x-1) r)});
+        \draw[-latex, thin] (0.5,0) -- ++(-1,0) node[pos=0.5, below] {\(f_o - f_d\)};
+    \end{scope}
+    \end{tikzpicture}
+    \caption{Illustration de l'effet Doppler-Fizeau}
+    \label{fig:illustration_effet_doppler}
+\end{figure}
+
 \subsection{Formes d'ondes}
+
+La performance d’un système radar ne dépend pas uniquement de sa géométrie ou de la puissance transmise, mais également de la nature du signal émis. Le choix de la forme d’onde conditionne à la fois la portée, la résolution et la sensibilité du radar. Selon les applications, différentes formes d’onde sont employées, qu’elles soient continues ou modulées, à impulsions courtes ou à large bande.
+
+Il existe trois catégories de formes d'onde : 
+\begin{itemize}
+    \item les impulsions simples,
+    \item les impulsions modulées,
+    \item les ondes continues.
+\end{itemize}
+
+\subsubsection{Impulsions simples}
+Les impulsions simples, aussi appelées pulse, consistent en l'émission d'une impulsion courtes et puissantes de signal radar. Chaque impulsion est suivie d'une période de silence qui permet au radar d'écouter les échos des cibles, ces mêmes échos qui permettent de déterminer la distance et la vitesse relative de la cible au radar. La figure \ref{fig:impulsions_radar_avec_echo} permet d'illustrer le fonctionnement de cette forme d'onde.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[label/.style={font=\small}]
+        % --- Définition des paramètres ---
+        \def\periodeTp{7}             % Période de répétition des impulsions (Tp)
+        \def\largeurImpulsion{0.3}    % Largeur de l'impulsion (τp)
+        \def\retardEcho{4}            % Retard de l'écho (τe)
+        \def\amplitudeEmise{3}        % Amplitude de l'impulsion émise
+        \def\amplitudeEcho{0.5}       % Amplitude de l'écho
+        \def\xstart{1}                % Position de départ pour le dessin
+        % --- Dessin des axes ---
+        \draw[-{Stealth[length=3mm]}, thick] (-0.5, 0) -- (\xstart+\periodeTp+\largeurImpulsion+1.5, 0) node[below] {$t$};
+        \draw[-{Stealth[length=3mm]}, thick] (0, -1) -- (0, \amplitudeEmise+1) node[left] {Amplitude};
+        \node[below left] at (0,0) {0};
+        % --- Dessin des signaux ---
+        % Ligne de base et impulsions émises (noir)
+        \draw[thick] (\xstart-1, 0) -- (\xstart, 0)
+            -- (\xstart, \amplitudeEmise) -- (\xstart+\largeurImpulsion, \amplitudeEmise) -- (\xstart+\largeurImpulsion, 0) -- (\xstart+\periodeTp, 0) -- (\xstart+\periodeTp, \amplitudeEmise) -- (\xstart+\periodeTp+\largeurImpulsion, \amplitudeEmise) -- (\xstart+\periodeTp+\largeurImpulsion, 0) -- (\xstart+\periodeTp+\largeurImpulsion+1, 0);
+        % Impulsion de l'écho (rouge)
+        \draw[thick, red] (\xstart+\retardEcho, 0) -- (\xstart+\retardEcho, \amplitudeEcho) -- (\xstart+\retardEcho+\largeurImpulsion, \amplitudeEcho) -- (\xstart+\retardEcho+\largeurImpulsion, 0);
+        % --- Annotations ---
+        % Annotation de Tp (Période de répétition)
+        \draw[dashed, gray] (\xstart, \amplitudeEmise) -- (\xstart, \amplitudeEmise+0.5) -- (\xstart+\periodeTp, \amplitudeEmise+0.5) -- (\xstart+\periodeTp, \amplitudeEmise);
+        \node[label, above] at (\xstart+\periodeTp/2, \amplitudeEmise+0.5) {$T_p$};
+        % Annotation de τe (Retard de l'écho)
+        \draw[dashed, gray] (\xstart+\largeurImpulsion, 0) -- (\xstart+\largeurImpulsion, -0.7) -- (\xstart+\retardEcho, -0.7) -- (\xstart+\retardEcho, 0);
+        \node[label, below] at (\xstart+\largeurImpulsion+\retardEcho/2, -0.7) {$\tau_e$};
+        % Annotation de τp (Largeur de l'impulsion) - CORRIGÉ
+        \draw[dashed, gray] (\xstart, \amplitudeEmise) -- (\xstart, \amplitudeEmise+1) -- (\xstart+\largeurImpulsion, \amplitudeEmise+1) -- (\xstart+\largeurImpulsion, \amplitudeEmise);
+        \node[label, above] at (\xstart+\largeurImpulsion/2, \amplitudeEmise+1) {$\tau_p$};
+    \end{tikzpicture}
+    \caption{Représentation d'impulsions simples avec un écho d'un radar}
+    \label{fig:impulsions_radar_avec_echo}
+\end{figure}
+
+Les impulsions et l'écho représentés dans la figure \ref{fig:impulsions_radar_avec_echo} correspondent aux périodes où une sinusoïde est émise ou captée. Pour détecter l'écho, le radar va appliquer un filtre adapté au signal reçu. Si le signal reçu comporte un écho, cette opération va faire apparaître un pic de corrélation. Ce dernier permet la mesure de $\tau_e$ qui correspond au temps nécessaire à l'écho pour être capté par le radar. Grâce à cette mesure, on peut calculer la distance relative de la cible au radar. Ce calcul n'est possible que puisque le canal de propagation est connu et constant.
+
+L'utilisation du pic de corrélation pour détecter l'écho implique que si deux cibles sont proches comparés à la durée d'impulsions, elles seront confondues. Ainsi la résolution en distance est exprimée par l'équation suivante \cite{richards2010, radartutorial} :
+
+\begin{equation}
+    \delta_d \geq \frac{c_0 . \tau_p}{2} = \frac{c_0}{2. B}
+    \label{eq:resolution_distance_pulse}
+\end{equation}
+Où :
+\begin{description}
+    \item[$\delta_d$] : est la résolution en distance [$m$]
+    \item[$c_0$] : est la célérité d'une OEM dans le vide [$m.s^{-1}$]
+    \item[$\tau_p$] : est la durée d'émission d'une impulsion [$s$]
+    \item[$B$] : est la bande de fréquence de l'impulsion [$Hz$]
+\end{description}
+\vspace{1em}
+
+Ainsi, on en déduit que pour obtenir la meilleure résolution en distance, il faut émettre une impulsion plus fine. Cependant, cette forme d'onde possède une ambiguïté concernant la distance 
+
+Une autre problématique de cette forme d'onde est l'ambiguïté concernant la distance relative de la cible au radar. En effet, un écho résultant d'une impulsion peut être détecté après l'impulsion suivante. Ainsi, il n'est pas possible de déterminer la distance de la cible, la portée maximale non ambiguë d'un radar à impulsion s'exprime de la manière suivante \cite{skolnik2001,radartutorial} : 
+
+\begin{equation}
+    \delta_{max} = \frac{c_0 . (T_p - \tau_p)}{2}
+    \label{eq:resolution_distance_max_radar_pulse}
+\end{equation}
+Où :
+\begin{description}
+    \item[$\delta_{max}$] : est la portée maximale non ambiguë [$m$]
+    \item[$c_0$] : est la célérité d'une OEM dans le vide [$m.s^{-1}$]
+    \item[$T_p$] : est le temps de répétition des impulsions [$s$]
+    \item[$\tau_p$] : est la durée d'émission d'une impulsion [$s$]
+\end{description}
+\vspace{1em}
+
+Cette forme d'onde permet aussi d'évaluer la vitesse de la cible grâce à l'effet Doppler-Fizeau. Cependant, la résolution en vitesse s'exprime telle que : 
+
+\begin{equation}
+    \delta\nu_r = \frac{\Delta f_d.\lambda_0}{2} = \frac{\lambda_0}{2.\tau_p} = \frac{\lambda_0.B}{2}
+    \label{eq:resolution_vitesse_impulsions}
+\end{equation}
+Où :
+\begin{description}
+    \item[$\delta\nu_r$] : est la résolution en vitesse [$m.s^{-1}$]
+    \item[$\Delta f_d$] : est la différence entre les deux fréquences Doppler [$Hz$] 
+    \item[$\lambda_0$] : est la longueur d'onde de la fréquence émise [$m$] 
+    \item[$\tau_p$] : est la durée d'impulsion [$s$]
+    \item[$B$] : est la bande de fréquence de l'impulsion [$Hz$]
+\end{description}
+\vspace{1em}
+
+On remarque que pour obtenir une bonne résolution en vitesse, il faut une durée d'impulsion $\tau_p$ très grande. Or, c'est l'exact opposé du critère permettant l'obtention d'une bonne résolution en distance. Il faut donc réaliser un compromis entre les deux critères ou bien utiliser d'autres formes d'ondes \cite{richards2010}. 
+
+\subsubsection{Impulsions modulées}
+La forme d'onde FMCW \footnote{Frequency Modulated Continuous Wave} Sawtooth utilise une modulation en dents de scie, aussi appelées "chirp", où la fréquence augmente et diminue de manière répétée comme l'illustre la figure \ref{fig:impulsions_chirp_avec_echo}. Elle permet de mesurer la distance et la vitesse mais il y a une ambiguïté entre les deux termes \cite{cumming2005}.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[
+        label/.style={font=\small, black},
+        annotation/.style={black, thick},
+        axis/.style={thick, gray!50!black}, % Couleur pour les axes
+        gridline/.style={dashed, gray} % Style pour les lignes de grille/verticales
+    ]
+        % --- Définition des paramètres ---
+        \def\Ts{3}       % Période de la rampe (T_s)
+        \def\Bch{2.5}    % Bande passante / Amplitude (B_ch)
+        \def\retard{0.6} % Retard temporel (\tau_e)
+        \def\nramps{3}   % Nombre de rampes à dessiner
+        % --- Dessin des axes ---
+        % Axe horizontal (temps)
+        \draw[-{Stealth[length=3mm]}, axis] (-0.5,0) -- (\nramps*\Ts + \Ts + 1,0) node[right,black] {$t$};
+        % Axe vertical (fréquence)
+        \draw[-{Stealth[length=3mm]}, axis] (0,-0.5) -- (0,\Bch + 0.8) node[above,black] {$f(t)$};
+        \node[below left, black] at (0,0) {0};
+        % --- Dessin des signaux et lignes verticales ---
+        \foreach \i in {0,...,\nramps} {
+            % Signal transmis (noir) - en dents de scie
+            \draw[black, thick] (\i*\Ts, 0) -- (\i*\Ts + \Ts, \Bch);
+            % Lignes verticales pour le signal noir
+            \ifnum\i<\nramps % Ne pas dessiner la dernière ligne verticale si elle sort du graphique
+                \draw[black, thick] (\i*\Ts + \Ts, 0) -- (\i*\Ts + \Ts, \Bch);
+            \fi
+        }
+        \foreach \i in {0,...,\nramps} {
+            % Signal écho (rouge) - retardé dans le temps
+            \draw[red, thick] (\i*\Ts + \retard, 0) -- (\i*\Ts + \Ts + \retard, \Bch);
+             % Lignes verticales pour le signal rouge
+             % On peut ajouter une condition si on ne veut pas qu'elles s'étendent trop loin
+             \ifnum\i<\nramps % Ne pas dessiner la dernière ligne verticale si elle sort du graphique
+                 \draw[red, thick] (\i*\Ts + \Ts + \retard, 0) -- (\i*\Ts + \Ts + \retard, \Bch);
+             \fi
+        }
+        % --- Annotations ---
+        % Annotation \tau_e (Retard temporel)
+        \draw[<->, annotation] (0, -0.3) -- (\retard, -0.3) node[midway, below, label] {$\tau_e$};
+        % Annotation T_s (Période)
+        % On la place au-dessus, entre le début de la 2ème et 3ème rampe
+        \draw[<->, annotation] (\Ts, \Bch+0.3) -- (2*\Ts, \Bch+0.3) node[midway, above, label] {$T_s$};
+        % Annotation B_ch (Bande passante)
+        % On la place à droite pour correspondre à l'image
+        \draw[<->, annotation] (-0.25, 0) -- (-0.25, \Bch) node[midway, left, label] {$B_{ch}$};
+        % Annotation \Delta f = f_b (Fréquence de battement)
+        % On choisit un point dans le temps pour montrer la différence de fréquence
+        % Positionnée au milieu de la 3ème rampe noire
+        \def\annotXpos{2*\Ts + 0.5*\Ts} 
+        % Coordonnée sur le signal noir à x = \annotXpos
+        % La rampe n°2 (i=2) va de x=2*Ts à 3*Ts. L'équation est y = (Bch/Ts) * (x - 2*Ts)
+        \coordinate (point_noir) at (\annotXpos, {(\Bch/\Ts) * (\annotXpos - 2*\Ts)});
+        % Coordonnée sur le signal rouge à x = \annotXpos
+        % L'écho de la rampe n°2 va de x=2*Ts+retard à 3*Ts+retard. L'équation est y = (Bch/\Ts) * (x - retard - 2*\Ts)
+        \coordinate (point_rouge) at (\annotXpos, {(\Bch/\Ts) * (\annotXpos - \retard - 2*\Ts)});
+        \draw[<->, annotation] (point_rouge) -- (point_noir) node[midway, below right, label] {$\Delta f = f_b$};
+    \end{tikzpicture}
+    \caption{Représentation d'une impulsion Chirp et de son écho}
+    \label{fig:impulsions_chirp_avec_echo}
+\end{figure}
+
+Comme pour les impulsions, la détection de l'écho s'effectue avec un filtre adapté. Cependant la résolution en distance n'est plus la même. En effet, la modulation Sawtooth modifie la fréquence sur la bande $B_{ch}$ ce qui permet d'avoir un pic de corrélation plus marqué et donc plus simple à détecter même lorsque deux cibles sont proches. La résolution est alors \cite{cumming2005} : 
+
+\begin{equation}
+    \delta_d = \frac{c_0}{2.B_{ch}}
+    \label{eq:resolution_en_distance_chirp}
+\end{equation}
+Où :
+\begin{description}
+    \item[$\delta_d$] : est la résolution en distance [$m$]
+    \item[$c_0$] : est la célérité d'une OEM dans le vide [$m.s^{-1}$]
+    \item[$B_{ch}$] : est la bande des fréquences modulées du chirp [$Hz$]
+\end{description}
+\vspace{1em}
+
+On remarque alors que plus la bande de fréquence du chirp est grande, meilleure est la résolution (i.e. plus faible). De plus, pour mesurer une vitesse grâce à une OEM, on utilise l'effet Doppler-Fizeau qui modifie la fréquence en fonction de la vitesse comme explicité par l'équation (\ref{eq:frequence_doppler}). Or dans le cas de la modulation Sawtooth, on utilise la modulation de fréquence pour émettre notre signal. Ainsi, la modification de la fréquence due à la vitesse change la corrélation entre le filtre adapté et le signal reçu, ce qui apporte une ambiguïté entre la distance et la vitesse.
+
+Il existe une autre forme d'onde qui permet de résoudre ces limitations : la FMCW triangulaire. Illustrée par la figure \ref{fig:fmcw_avec_echo}, elle consiste en l'émission d'un chirp montant et descendant. On peut alors déterminer sans ambiguïté la distance et la vitesse en résolvant le système de fréquences de battement mesurées sur les deux rampes \cite{richards2010}.
+
+\begin{figure}[htbp]
+    \centering
+    \begin{tikzpicture}[label/.style={font=\small}]
+        % --- Définition des paramètres ---
+        \def\Tr{5}      % Période de la rampe (T_r)
+        \def\Amp{2.5}    % Amplitude (correspond à B_ch / 2)
+        \def\retard{0.8} % Retard temporel (\tau_e)
+        \def\doppler{0.3} % Décalage en fréquence (f_d)
+        % --- Dessin des axes ---
+        \draw[-{Stealth[length=3mm]}, thick] (-0.5,0) -- (2.2*\Tr,0) node[right] {$t$};
+        \draw[-{Stealth[length=3mm]}, thick] (0,-0.5) -- (0,\Amp+1) node[above] {$f(t)$};
+        \node[below left] at (0,0) {0};
+        % --- Signal transmis (en bleu) ---
+        \draw[black, thick] (0,0) -- (\Tr/2, \Amp) -- (\Tr, 0) -- (1.5*\Tr, \Amp) -- (2*\Tr, 0);
+        % --- Signal reçu (en rouge) ---
+        \draw[red, thick] (\retard, \doppler) -- (\Tr/2+\retard, \Amp+\doppler) -- (\Tr+\retard, \doppler) -- (1.5*\Tr+\retard, \Amp+\doppler) -- (2*\Tr+\retard, \doppler);
+        % --- Annotations et lignes de repère ---
+        % Lignes pointillées et ticks sur l'axe des temps (VERSION SIMPLIFIÉE)
+        \foreach \pos/\labeltext in {\retard/\tau_e, \Tr/T_r} {\draw[dashed, gray] (\pos, -0.1) -- (\pos,0);\node[below, label] at (\pos, -0.1) {$\labeltext$};}
+        % Annotation de B_ch
+        \draw[<->, thick] (-0.3, 0) -- (-0.3, \Amp) node[midway, left, label] {$B_{ch}$};
+        % --- Annotation du retard (\tau) ---
+        % Lignes pointillées partant du sommet de chaque signal
+        \draw[dashed, gray] (\Tr/2, \Amp) -- (\Tr/2, \Amp+1); % Ligne du pic bleu
+        \draw[dashed, gray] (\Tr/2+\retard, \Amp+\doppler) -- (\Tr/2+\retard, \Amp+1); % Ligne du pic rouge
+        % Ligne horizontale supérieure et le label
+        \draw[dashed, gray] (\Tr/2, \Amp+1) -- (\Tr/2+\retard, \Amp+1);
+        \node[above, label] at (\Tr/2+\retard/2, \Amp+1) {$\tau_e$};
+        % --- Annotation de f_d ---
+        \def\fdXpos{\Tr/2+\retard+1} % Position en x de la flèche f_d (décalée de 1)
+        % Ligne pointillée du pic bleu jusqu'à la flèche f_d
+        \draw[dashed, gray] (\Tr/2, \Amp) -- (\fdXpos, \Amp);
+        % Ligne pointillée du pic rouge jusqu'à la flèche f_d
+        \draw[dashed, gray] (\Tr/2+\retard, \Amp+\doppler) -- (\fdXpos, \Amp+\doppler);
+        % La flèche f_d, décalée vers la droite
+        \draw[<->] (\fdXpos, \Amp) -- (\fdXpos, \Amp+\doppler) node[midway, right, label] {$f_d$};
+        % Annotation des fréquences de battement (fb_up et fb_dw)
+        % f_b^up
+        \def\upPos{1.5} % Position en x pour l'annotation
+        \coordinate (A) at (\upPos, {(\Amp/(\Tr/2))*(\upPos - \retard) + \doppler});
+        \coordinate (B) at (\upPos, {(\Amp/(\Tr/2))*\upPos});
+        \draw[<->, thick] (A) -- (B) node[midway, below right, label] {$f_b^{up}$};
+        % f_b^dw
+        \def\dwPos{4} % Position en x pour l'annotation
+        \coordinate (C) at (\dwPos, {\Amp+\doppler - (\Amp/(\Tr/2))*(\dwPos - \Tr/2 - \retard)});
+        \coordinate (D) at (\dwPos, {\Amp - (\Amp/(\Tr/2))*(\dwPos - \Tr/2)});
+        \draw[<->, thick] (C) -- (D) node[midway, below right, label] {$f_b^{dw}$};
+    \end{tikzpicture}
+    \caption{Représentation de la forme d'onde FMCW et d'un écho}
+    \label{fig:fmcw_avec_echo}
+\end{figure}
+
+\noindent La résolution en distance peut alors s'exprimer de la manière suivante :
+
+\begin{equation}
+    \delta_d = \frac{c_0}{2.B_{ch}}
+    \label{eq:resolution_distance_fmcw_triangulaire}
+\end{equation}
+Où :
+\begin{description}
+    \item[$\delta_d$] : est la résolution en distance [$m$]
+    \item[$c_0$] : est la vitesse d'une OEM dans le vide [$m.s^{-1}$]
+    \item[$B_{ch}$] : est la bande des fréquences modulées [$Hz$]
+\end{description}
+\vspace{1em}
+
+\noindent Et la résolution en vitesse :
+
+\begin{equation}
+    \delta\nu_r = \frac{c_0}{2.f_0.T_r}
+    \label{eq:resolution_vitesse_fmcw_triangulaire}
+\end{equation}
+Où :
+\begin{description}
+    \item[$\delta\nu_r$] : est la résolution en vitesse [$m.s^{-1}$]
+    \item[$c_0$] : est la vitesse d'une OEM dans le vide [$m.s^{-1}$]
+    \item[$f_0$] : est la fréquence centrale [$Hz$]
+    \item[$T_r$] : est la période du signal [$s$]
+\end{description}
+\vspace{1em}
+
+On remarque ainsi que les deux résolutions ne sont pas inversement liées. On peut donc avoir une bonne résolution en distance et une bonne résolution en vitesse. Cependant, cet avantage doit être nuancé par la complexité de la réalisation matérielle de cette forme d'onde, d'autant plus sur une large bande. 
+
 % Combinaison travaux Maxence et Alexis
+
+\subsection{Le bruit}
+
+Jusqu'à présent, la description des principes s'est faîte en suivant l'hypothèse d'un bruit non existant. Or, il n'est évidemment pas réaliste d'étudier un système sans prendre en compte ce phénomène. Le bruit sera abordé de manière très sommaire dans cette partie et sera détaillé par la suite dans l'état de l'art, dans la partie \ref{subsec:modelisation_bruit}. 
+
+Tout d'abord, il est important de définir les termes qui seront utilisés par la suite. Le signal correspond à ce que l'on veut ce qui correspond aux échos dans le cas des radars actifs. Le bruit quant à lui correspond à toutes les perturbations qui peuvent impacter le signal. On y retrouve par exemple les interférences d'autres systèmes ou d'hydrométéores mais aussi le bruit intrinsèque aux équipements comme le bruit thermique.
+
+D'un point de vue haut niveau, l'impact du bruit sur un système se caractérise par le rapport signal sur bruit (RSB \footnote{Rapport Signal sur Bruit}/SNR \footnote{Signal to Noise Ratio}). La dégradation du RSB se caractérise par le facteur de bruit.
+
+\noindent Le RSB s'exprime simplement de la manière suivante :
+
+\begin{equation}
+    SNR = \frac{P_{signal}}{P_{bruit}}
+    \label{eq:snr}
+\end{equation}
+Où :
+\begin{description}
+    \item[$P_{signal}$] : La puissance du signal [$W$]
+    \item[$P_{bruit}$] : La puissance du bruit [$W$]
+\end{description}
+\vspace{1em}
+
+Les puissances exprimées ici sont généralement les puissances moyennes, cela implique qu'un bruit impulsionnel sera mal caractérisé par ce rapport. 
+
+[TODO] Faire schéma montrant l'évaluation du niveau de bruit par rapport au niveau de signal (cf cours radar ope)
+
+Le facteur de bruit s'exprime de la manière suivante : 
+
+\begin{equation}
+    F = \frac{(S/N)_e}{(S/N)_s} = \frac{N_s}{G.N_e}
+    \label{eq:facteur_de_bruit}
+\end{equation}
+Où :
+\begin{description}
+    \item[$F$] : Le facteur de bruit
+    \item[$S_x$] : La puissance du signal, en entrée pour $x=e$, en sortie pour $x=s$ [$W$]
+    \item[$N_x$] : La puissance du bruit, en entrée pour $x=e$, en sortie pour $x=s$ [$W$]
+    \item[$G$] : Le gain du dispositif traversé
+\end{description}
+
+[TODO] Expliquer équation, composant passif f = attenuation du composant, composant actif f = donnee constructeur,  puis introduire la formule de FRIIS et les implications
+
 \subsection{Architecture matérielle}
 % Pertinence ? Si oui à quel niveau on descend ?
 \subsection{Matrices temps lent et temps rapide}
 
 \subsection{Applications}
 % Bref paragraphe sur les applications et transition sur la partie suivante. (finir par l'imagerie dans les applications)
+
+fmcw triangulaire : Cette forme d'onde est généralement utilisée par des radars de contrôle de la circulation, systèmes de détection de collision et les capteurs de distance.
+
+sawtooth : Cette forme d'onde est par exemple utilisé dans des radar de surveillance maritime ou des applications industrielles.
+
+Pulse : Les radars pulsés sont généralement utilisés pour de la surveillance aérienne, les relevés météorologiques et les systèmes de navigations.

@@ -1,8 +1,7 @@
 \subsection{Différents algorithmes de synthèse d'ouverture}
-Cette section porte sur la présentation puis la comparaison des différents algorithmes de formation d'image de radar à synthèse d'ouverture. L'objectif est de réaliser un choix sur l'algorithme que nous allons utiliser. ...........
-\subsubsection{Range-Doppler Algorithm (RDA)}
-L'algorithme Range-Doppler (RDA) est une méthode très répandue en formation d'image SAR, développée à la fin des années 1970. Son principe repose sur deux étapes principales : la compression en distance pour obtenir une résolution fine en portée, suivie d'une transformée de Fourier Doppler en azimut permettant de séparer puis de compresser les différentes fréquences Doppler induites par le mouvement relatif radar-cible. Le RDA corrige ensuite la migration des cellules de portée via une interpolation (RCMC) dans le domaine fréquentiel. Cette approche exploite la séparable approximation entre le traitement en distance et en azimut, offrant un bon compromis entre efficacité de calcul et qualité d'image, mais nécessite une trajectoire quasi-linéaire et stable pour conserver la cohérence de phase nécessaire à la formation précise des images. \cite{krieger1998digital}
-\paragraph{La compresion en distance}
+Cette section porte sur la présentation puis la comparaison des différents algorithmes de formation d'image de radar à synthèse d'ouverture. [TO DO: partie projet - hypothèse => Choix de l'algorithme ]
+
+\subsubsection{La compresion en distance} \label{subsubsec:compression_dist}
 L'opération de compression en distance dans les algorithmes de traitement SAR est uen étape qui consiste à améliorer la résolution en distance de notre système par une technique de traitement. \\
 Pour expliquer ce principe, on considère un radar pulsée non modulé en fréquence. 
 \noindent On part de l'expression classique 
@@ -31,6 +30,7 @@ A \, e^{j 2\pi \left(\nu_0 + \tfrac{1}{2} \tfrac{\Delta \nu}{T}(t - T)\right)t},
 \end{equation}
 On a alors l'expression du signal de référence par 
 \begin{equation}
+\label{eq: signal_ref}
 s'(t)= 
 \begin{cases}
 A \, e^{j 2\pi \left(\nu_0 + \tfrac{1}{2} \tfrac{\Delta \nu}{T}t\right)t}, & \text{si } -\frac{T}{2} \le t < \frac{T}{2}, \\[6pt]
@@ -60,11 +60,122 @@ En réinjectant ce résultat dans l'expression \ref{eq: delta_r}, on obtient l'e
 \begin{equation}
     \delta_r=\frac{c}{2B}
 \end{equation}
-D'où le résultat de l'expression [ref]. On vient de démontrer l'intérêt des méthodes de compression en distance pour l'amélioration de la résolution en distance. 
+D'où le résultat de l'expression [ref]. On vient de démontrer l'intérêt des méthodes de compression en distance pour l'amélioration de la résolution en distance. A noter qu'en pratique, on travaille en fréquentiel, l'opération de convolution dans le domaine temporel devient alors un produit simple. 
+\subsubsection{Range-Doppler Algorithm (RDA)}
+L'algorithme Range-Doppler (RDA) est une méthode très répandue en formation d'image SAR, développée à la fin des années 1970. Son principe repose sur deux étapes principales : la compression en distance pour obtenir une résolution fine en portée, suivie d'une transformée de Fourier Doppler en azimut permettant de séparer puis de compresser les différentes fréquences Doppler induites par le mouvement relatif radar-cible. Le RDA corrige ensuite la migration des cellules de portée via une interpolation (RCMC) dans le domaine fréquentiel. Cette approche exploite la séparable approximation entre le traitement en distance et en azimut, offrant un bon compromis entre efficacité de calcul et qualité d'image, mais nécessite une trajectoire quasi-linéaire et stable pour conserver la cohérence de phase nécessaire à la formation précise des images. \cite{krieger1998digital} \\ 
+L'article cité \cite{WiSPNET2025RangeDoppler}  étudie la performance de l’algorithme Range-Doppler dans la formation d’images issues du radar à ouverture synthétique appliqué à des zones semi-urbaines. Dans un premier temps, le fonctionnement de l'algorithme est présenté, il est décris dans la Figure \ref{fig:flux_rda}. On y voit que deux approches sont possibles. Dans les deux cas, une première opération de compression en distance est réalisée (comme décrite en \ref{subsubsec:compression_dist}). Ensuite, la première version réalise une compression directe en azimut pour former l'image finale. La deuxième va réaliser une deuxième correction en distance avant de réaliser un traitement en azimut en deux temps. 
 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\linewidth]{src/rapport_complet/img/flux_RDApng.png}
+    \caption{Diagramme de flux de l'algorithme RDA}
+    \label{fig:flux_rda}
+\end{figure}
+\paragraph{Première version: compression directe en azimut}
+Cette étape est sensiblement similaire à l'opération décrite en \ref{subsubsec:compression_dist}, à la différence que l'on peut remplacer l'expression \ref{eq: signal_ref} par l'expression (en fréquentiel) suivante \cite{WiSPNET2025RangeDoppler}
+\begin{equation}    
+    H_a = \exp\!\left( j \, \frac{4 \pi f_0}{c \, R_{0r} \, D} \right)
+\end{equation}
+Avec: 
+\begin{itemize}
+    \item $R_{0r} = (R_c + \frac{c}{2B}) \cos{\theta}$ [m]: La distance radiale projetée au sol ($\theta$ étant l'angle formé entre le faisceau et la trajectoire du porteur) 
+    \item $D = \sqrt{1 - \left( \frac{c.PRF}{2f_0v}\right)}$[Hz/s]: Le Doppler rate, traduit la vitesse à laquelle le décalage Doppler évolue sur l’axe d’acquisition radar.
+\end{itemize}
+
+\paragraph{Deuxième version: Correction additionnelles en distance et azimut}
+La première opération est la correction secondaire en distance. L'objectif de cette partie est de corrigé un phénomène de couplage distance-azimut causé par un angle de dépoitement (\textit{squint}) important. Cet angle est celui formé par la normale au déplacement du porteur et le faisceau, comme représenté sur la figure \ref{fig:squint}. 
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.5\linewidth]{src/rapport_complet/img/squint.png}
+    \caption{Représentation de l'angle de dépointage}
+    \label{fig:squint}
+\end{figure}
+\FloatBarrier
+Dans notre cas, cet angle étant nul, ce phénomène de couplage est nul. Toutefois, cette opération fait également une compensation sur des effets de la migration de cellule. Ici encore, on réalise un filtrage adapté, mais cette fois ci, l'expression (dans le domaien fréquentiel) est la suivante \cite{WiSPNET2025RangeDoppler}
+\begin{equation}
+    H_{\mathrm{src}} = \exp\left(-\mathrm{j}\,\frac{\pi f_r^2}{K_{\mathrm{src}}}\right)
+\end{equation}
+Avec: 
+\begin{itemize}
+    \item $K_{src}$ [$s^{-2}$]: Le chirp rate pour la correction secondaire en distance, dépend de la fréquence centrale, du Doppler rate, de la vitesse, de la célérité, du PRF. 
+    \item $f_r = \frac{B}{N_r}$ [Hz]: La résolution fréquentielle en distance. 
+\end{itemize}
+
+Ensuite, pour corriger la migration de cellule, on réalise une interpolation dans le domaine fréquentiel (une méthode avec l'interpolation de Stolt est détaillée à \ref{subsubsec:rma}) avec l'expression suivante \cite{WiSPNET2025RangeDoppler}
+\begin{equation}
+    S_r'=S_r.M
+\end{equation}
+Avec: 
+\begin{itemize}
+    \item M: la matrice d'interpolation. 
+\end{itemize}
+Ensuite, on réalise la compression en azimut avec la même méthode que détaillée dans la première version de l'algorithme. \\ 
+Les résultats des deux versions on été analysés dans \cite{WiSPNET2025RangeDoppler}. Le contexte d'environement ne nous concerne pas pour l'instant, mais la visualisation des deux images ( Figure \ref{fig:rda_v1} et Figure \ref{fig:rda_v2}) est intéressante. 
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{src/rapport_complet/img/m6-p6-m-large.png}
+        \caption{Image obtenue avec la première version de l'algorithme}
+        \label{fig:rda_v1}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{src/rapport_complet/img/m8-p6-m-large.png}
+        \caption{Image obtenue avec la deuxième version de l'algorithme}
+        \label{fig:rda_v2}
+    \end{minipage}
+\end{figure}
+\FloatBarrier
+Avec une scène aussi dense, on apperçois bien la différence entre les deux figures. En effet, on voit que là où la seconde image est nette, la première est plus flou et présente quelques artefacts. Cela témoigne de l'intérêt de la deuxième méthode si l'objectif est d'avoir une image de bonne qualité. En parallèle, cette méthode rend le traitement plus lourd. 
 \subsubsection{Chirp-Scaling Algorithm (CSA)}
-\subsubsection{Range-Migration Algorithm (RMA) - $\omega-k$}
+Le rôle du CSA est de compenser les variations non linéaires de phase engendrées par la géométrie de prise de vue en les corrigeant directement dans le domaine fréquentiel grâce à un redimensionnement du signal, appelé chirp scaling. Le traitement débute dans le domaine (portée, Doppler) par cette mise à l’échelle du chirp, qui linéarise la relation entre portée et azimut et prépare la compensation de la migration de cellule de portée. Ensuite, dans le domaine fréquentiel 2D, intervient l’étape de correction de la migration de cellule et de mise au point en portée, où la courbure principale de la trajectoire est corrigée et le signal est comprimé pour obtenir la focalisation en distance. Enfin, une correction de phase résiduelle et une focalisation azimutale sont réalisées dans le domaine (portée, Doppler) pour affiner la restitution de phase, supprimer les couplages restants et effectuer la compression finale en azimut, produisant une image SAR focalisée à haute résolution.
 
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[scale=0.4]{src/rapport_complet/img/flux_CSA.drawio.png}
+        \caption{Diagramme de flux du \textit{Chirp Scaling Algorithm}}
+        \label{fig:csa_flux}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{src/rapport_complet/img/csa_egalisation.PNG}
+        \caption{Égalisation des courbures en portée}
+        \label{fig:csa_eq}
+    \end{minipage}
+\end{figure}
+\FloatBarrier
+La première correction de phase, $\Phi_1$, met en œuvre le chirp scaling proprement dit. Elle agit dans le domaine (portée, Doppler) et sert à rendre linéaire la relation entre la fréquence Doppler et la phase du signal (Figure \ref{fig:csa_eq}). Concrètement, cette opération applique une fonction de phase dépendant à la fois de la fréquence en portée et de la fréquence Doppler, qui « redimensionne » le chirp du signal pour chaque cellule de portée. Cela permet d’éliminer le couplage entre portée et azimut, de sorte que les contributions d’une même cible restent alignées en portée lorsque le capteur se déplace. En d’autres termes, $\Phi_1$ prépare la correction de migration de cellule de portée (RCMC) en la rendant réalisable sans interpolation. L'expression du terme $\Phi_1$ est donnée par 
+\begin{equation}
+    \Phi_1(\tau, \nu, r_{ref}) = \exp \left( -j\pi K_s(\nu, r_{ref}) C_s(\nu)( \tau - \tau_{ref}(\nu))^2 \right)
+\end{equation}
+Avec: 
+\begin{itemize}
+    \item $\tau_{ref}(\nu)$ [s]: est le temps de trajet du signal radar pour la portée de référence en fonction de la fréquence Doppler. 
+    \item $K_s(\nu, r_{ref})$: Coefficient de chirp scaling 
+    \item $C_s(\nu)$: est une fonction de correction de courbure ou de décalage introduite par le déplacement Doppler. 
+\end{itemize}
+\vspace{2em}
+La seconde correction, $\Phi_2$, agit dans le domaine fréquentiel bidimensionnel (2D FFT). Son
+rôle est de réaliser la correction de migration de portée globale (Bulk RCMC) ainsi que la
+focalisation en portée (range compression). Elle compense la courbure principale de la trajectoire
+de portée, c’est-à-dire la variation quadratique du temps de propagation en fonction de la
+position du radar. La fonction de phase $\Phi_2$ aligne ainsi toutes les composantes
+fréquentielles correspondant à une même distance au sol. À l’issue de cette correction, le signal
+est focalisé en portée et prêt pour le traitement azimutal. [Expression ]
+\begin{equation}
+    \Phi_2(\nu_0, \nu, r_{ref}) = \exp \left( -j\pi K_s(\nu, r_{ref}) C_s(\nu)( \tau - \tau_{ref}) \right)
+\end{equation}
+La troisième correction, $\Phi_3$, s’applique à nouveau dans le domaine (portée, Doppler) aprèsla compression en portée. Cette étape traite les phases résiduelles dues aux approximationsprécédentes et aux variations de phase causées par la trajectoire réelle de la cible. Elle permetd’égaliser les fréquences Doppler de manière précise avant la compression azimutale finale.$\Phi_3$ assure donc la focalisation complète de l’image SAR, restituant à chaque cible uneréponse ponctuelle nette et symétrique
+\subsubsection{Range Migration Algorithm (RMA) - $\omega-k$}
+1. Compression dist 
+2. Compression azimut signal ref 
+3. Interpolation de stolt 
+4. IFFT 2D 
 \begin{equation}
 s_r(t, u)=\sum_{n}{A_{0}^{2}\sigma_{n}T_{p}e^{-j\Phi}\, \sin_{c}\!\left(KT_{p}\!\left(t-\frac{\sqrt{x_{n}^{2} + (y_{n} - u)^{2}}}{c}\right)\right)\, e^{-j2k\sqrt{x_{n}^{2} + (y_{n} - u)^{2}}}\, e^{j\omega t}}
 \end{equation}
