@@ -1,8 +1,26 @@
 \subsection{Systèmes existants}
 \subsubsection{SAR commerciaux miniaturisés}
 
-[TODO] Prendre un exemple commercial et un exemple de petite taille (par exemple le finlandais) et rentrer dans les détails de chacun.
-Ta biblio a été déplacée dans bibliography.bib, pour citer tu fais \cite{NOM_biblio} et comme ça ça mettra le numéro de la biblio à laquelle ça fait appel, et si tu ne l'appelles pas, elle ne sera pas cité à la fin de la page, ça évite d'encombrer le doc et on gère les entrées biblio dans un seul fichier.
+Les systèmes radar à synthèse d’ouverture (SAR) embarqués sur drones couvrent aujourd’hui un spectre large allant des solutions professionnelles intégrées aux prototypes de recherche plus légers et ouverts.  
+Afin d’illustrer cette diversité, deux exemples représentatifs sont analysés ci-dessous :  
+une solution commerciale aboutie, destinée à des usages militaires et industriels, et une solution expérimentale compacte développée à titre individuel.
+
+Le \textbf{radar SAR militaire commercial} (par exemple le \emph{HUSSAR Drone SAR} de SpaceForest ou les modules de type MPR-12) illustre une approche centrée sur la robustesse et la performance opérationnelle.  
+Fonctionnant typiquement en bande X ou Ku, ces systèmes offrent des portées d’imagerie de l’ordre de plusieurs kilomètres (jusqu’à 10–15 km) avec une résolution décimétrique.  
+Leur architecture intègre un émetteur-récepteur radar, un traitement embarqué temps réel et une antenne planarisée à fort gain.  
+Leur masse (souvent supérieure à 5 kg) et leur consommation énergétique imposent l’usage de plateformes de drones de catégorie moyenne à lourde.  
+Ces radars sont optimisés pour des vols stables et des missions de reconnaissance, de surveillance ou de cartographie à longue distance, avec un traitement propriétaire encapsulé et des interfaces utilisateur simplifiées \cite{HUSSAR2025}.
+
+À l’opposé, le \textbf{SAR miniature expérimental de Forstén} \cite{Forsten2025} illustre les avancées obtenues à partir de moyens réduits.  
+Développé sur un petit drone FPV, ce système opère à environ 6 GHz (bande C) et utilise une antenne patch imprimée d’une vingtaine de centimètres.  
+Sa portée d’imagerie ne dépasse pas quelques centaines de mètres, mais il met en œuvre une chaîne de traitement complète : formation d’image par rétro-projection factorisée, autofocus généralisé (GPGA), correction tridimensionnelle de trajectoire et calibration polarimétrique complète (HH, HV, VH, VV).  
+L’ensemble est traité sur GPU en post-traitement via un logiciel open-source.  
+Cette approche démontre la faisabilité d’un SAR fonctionnel à faible coût et à fort potentiel d’expérimentation, au détriment toutefois de la robustesse mécanique et de la répétabilité métrologique.
+
+En résumé, le radar commercial privilégie la \emph{fiabilité opérationnelle} et la \emph{portée}, tandis que le système expérimental vise la \emph{souplesse logicielle} et la \emph{démonstration scientifique}.  
+Ces deux architectures encadrent le domaine des SAR miniaturisés : l’une adaptée à l’usage tactique et la production d’images calibrées, l’autre à la recherche et au prototypage d’algorithmes.
+
+\vspace{1em}
 
 Le tableau suivant présente les différentes caractéristiques des solutions similaires au projet disponibles dans le commerce :  
 

@@ -4,9 +4,7 @@
 
 \subsubsection{Environnement et propagation RF}
 
-Le spectre des ondes électromagnétiques s’étend jusqu’à des fréquences de l’ordre de $10^24$ Hz. Cette bande de fréquence très large est divisée en "sous bandes" afin de prendre en compte les différentes propriétés physiques des ondes qui la composent. Le découpage en sous bandes a été effectué à l’origine selon des critères "historiques", modifiés ensuite pour respecter une nomenclature internationale. Cependant, la désignation traditionnelle des sous bandes est régulièrement utilisée dans la littérature consacrée au sujet.
-
-En résumé nous considérerons les valeurs suivantes:
+Le spectre des ondes électromagnétiques s’étend jusqu’à des fréquences de l’ordre de $10^{24}$ Hz. Cette bande de fréquence très large est divisée en "sous bandes" afin de prendre en compte les différentes propriétés physiques des ondes qui la composent. Le découpage en sous bandes a été effectué à l’origine selon des critères historiques, modifiés ensuite pour respecter une nomenclature internationale. Cependant, la désignation traditionnelle des sous bandes est régulièrement utilisée dans la littérature consacrée au sujet. En résumé nous considérerons les valeurs suivantes :
 
 \begin{figure}[ht]
     \centering
@@ -15,18 +13,16 @@ En résumé nous considérerons les valeurs suivantes:
     \label{fig:image_onde_et_freq}
 \end{figure}
 
-Les radars peuvent donc émettre dans une large bande de fréquences. Plus la fréquence d’un radar est haute, plus elle est affectée par des conditions météorologiques telles que la pluie, les nuages ou l'atmoshphère. Cependant, une fréquence plus haute permet d’améliorer la précision de l’équipement radar qui l’émet. En effet, il est promordial de prendre en compte ces elements environnementaux dans le contexte du projet, lors des choix d'architectures. Dans le cas d'un radar travaillant à haute altitude et/ou avec cible à haute altitude, comme des radars embarqués sur missile air-air à longue portée par exemple ou des radar de défense aérien, l'onde électromagnétique passant dans l’atmosphère est en partie absorbée par les composantes de celle-ci, cette absorption peut même être totale dans certains cas. L’énergie ainsi transférée au milieu absorbant va y causer différents effets, dont son réchauffement et la réémission d’une partie de l’énergie dans une longueur d’onde différente. De plus le phénomène d'absorption dépend de la fréquence utilisée. En effet, l’oxygène, la vapeur d’eau et les précipitations ont toutes une fréquence de résonnance qui dépend de leurs dimensions. Lorsque la longueur d’onde utilisée est la même que celle de résonance de ces deux molécules, une bonne partie de l’énergie du faisceau sert à les faire vibrer.
+Les radars peuvent donc émettre dans une large bande de fréquences. Plus la fréquence de fonctionnement d’un radar est haute, plus elle est affectée par des conditions météorologiques telles que la pluie, les nuages ou l'atmoshphère. Cependant, une fréquence plus haute permet d’améliorer la précision de l’équipement radar qui l’émet. En effet, il est promordial de prendre en compte ces éléments environnementaux dans le contexte du projet lors des choix d'architectures. Dans le cas d'un radar travaillant à haute altitude et/ou avec cible à haute altitude, comme des radars embarqués sur missile air-air à longue portée ou des radar de défense aérien par exemple, l'onde électromagnétique passant dans l’atmosphère est en partie absorbée par les composantes de celle-ci. Cette absorption peut même être totale dans certains cas. L’énergie ainsi transférée au milieu absorbant va y causer différents effets, dont son réchauffement et la réémission d’une partie de l’énergie dans une longueur d’onde différente. De plus, le phénomène d'absorption dépend de la fréquence utilisée. En effet, l’oxygène, la vapeur d’eau et les précipitations ont toutes une fréquence de résonance qui dépend de leurs dimensions. Lorsque la longueur d’onde utilisée est la même que celle de résonance de ces deux molécules, une bonne partie de l’énergie du faisceau sert à les faire vibrer.
 
-On peut voir sur le graphique que l’absorption varie avec le milieu absorbant. L’oxygène a un faible taux d’absorption jusqu’à ce qu’on rencontre sa zone de résonnance au-dessus de 60 GHz. Celle de la vapeur d’eau se situe autour de 20 à 30 GHz. Celle de l’eau liquide est importante sous 10 GHz. Cette absorption reliée aux précipitations dépend aussi de leur intensité.
+On peut voir sur la figure \ref{fig:image_atmosphere} que l’absorption varie avec le milieu absorbant. L’oxygène a un faible taux d’absorption jusqu’à ce qu’on rencontre sa zone de résonnance au-dessus de 60 GHz. Celle de la vapeur d’eau se situe autour de 20 à 30 GHz. Celle de l’eau liquide est importante sous 10 GHz. Cette absorption reliée aux précipitations dépend aussi de leur intensité. L’atténuation du signal dépend donc de la fréquence utilisée et de la longueur du trajet dans le milieu absorbant. Le tout peut varier également avec la température du milieu. L’air est très peu absorbant mais la molécule d’eau l’est. Plus la longueur d’onde porteuse du faisceau radar se rapproche de celle des gouttes d’eau (0,1 à 7 millimètres), plus le dipôle de ces molécules sera excité et plus l’onde sera atténuée par la précipitation rencontrée.
 
-\begin{figure}[ht]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{src/rapport_complet/img/atmosphere.png}
+    \includegraphics[width=0.4\textwidth]{src/rapport_complet/img/atmosphere.png}
     \caption{Absorption d’une onde électromagnétique par l’atmosphère et ses composantes}
     \label{fig:image_atmosphere}
 \end{figure}
-
-L’atténuation du signal dépend donc de la fréquence utilisée et de la longueur du trajet dans le milieu absorbant. Le tout peut varier également avec la température du milieu. L’air est très peu absorbant mais la molécule d’eau l’est. Plus la longueur d’onde porteuse du faisceau radar se rapproche de celle des gouttes d’eau (0,1 à 7 millimètres), plus le dipôle de ces molécules sera excité et plus l’onde sera atténuée par la précipitation rencontrée.
 
 \begin{figure}[ht]
     \centering
@@ -35,8 +31,10 @@ L’atténuation du signal dépend donc de la fréquence utilisée et de la long
     \label{fig:image_pluie}
 \end{figure}
 
-Ce diagramme montre l’effet de l’atténuation du signal radar par la pluie à différente longueurs d’onde. Le cas utilisé est celui d’un orage de 20 kilomètres de diamètre, dont le taux de précipitations augmente linéairement jusqu’au centre, à 100 mm/h, puis diminue linéairement de l’autre côté. La ligne en bleu représente la courbe théorique normalisée du signal non atténué faisant un aller-retour à travers l’orage. La courbe en violet est celle observable avec un radar utilisant la bande S (10 cm). Les courbes suivantes, en jaune et cyan, sont respectivement le signal de retour pour des radars de bandes C (5 cm) et X (3 cm). La différence avec le signal théorique est de plus en plus grande très grande à mesure que la longueur d’onde raccourcit à cause de l’absorption d’une partie grandissante de l’énergie par les molécules d’eau. Le diagramme montre également que l’atténuation varie avec le taux de précipitations: le faisceau de bande X est totalement absorbée dès 20 mm/h, celui de bande C à partir de 60 mm/h mais la perte est négligeable pour le faisceau de bande S, même dans le pic de précipitations.
-L’atténuation est donc généralement minime dans la neige, même pour la bande X. Dans la pluie faible à modérée, la bande X est affectée significativement mais la bande C l’est encore peu. Par contre, dans la pluie forte, seule la bande S a une perte minime. C’est pour ces raisons que les radars météorologique de bande S, plus coûteux, sont utilisés dans les régions où des orages/pluies intenses se produisent une bonne partie de l’année: les Tropiques, le sud des États-Unis ou de l’Europe, etc. Les radars de bande C sont un bon compromis pour les régions tempérées où le taux de précipitations est le plus souvent faible à modéré. Les radars de bande X ne servent que pour la courte portée à cause de la forte atténuation de leur signal.
+La figure \ref{fig:image_pluie} montre l'effet de l’atténuation du signal radar par la pluie à différente longueurs d’onde. Le cas utilisé est celui d’un orage de 20 kilomètres de diamètre, dont le taux de précipitations augmente linéairement jusqu’au centre, à 100 mm/h, puis diminue linéairement de l’autre côté. La ligne en bleu représente la courbe théorique normalisée du signal non atténué faisant un aller-retour à travers l’orage. La courbe en violet est celle observable avec un radar utilisant la bande S (10 cm). Les courbes suivantes, en jaune et cyan, sont respectivement le signal de retour pour des radars de bandes C (5 cm) et X (3 cm). La différence avec le signal théorique est de plus en plus grande très grande à mesure que la longueur d’onde raccourcit à cause de l’absorption d’une partie grandissante de l’énergie par les molécules d’eau. 
+
+Le diagramme montre également que l’atténuation varie avec le taux de précipitations: le faisceau de bande X est totalement absorbée dès 20 mm/h, celui de bande C à partir de 60 mm/h mais la perte est négligeable pour le faisceau de bande S, même dans le pic de précipitations.
+L’atténuation est donc généralement minime dans la neige, même pour la bande X. Dans la pluie faible à modérée, la bande X est affectée significativement mais la bande C l’est encore peu. Par contre, dans la pluie forte, seule la bande S a une perte minime. C’est pour ces raisons que les radars météorologique de bande S, plus coûteux, sont utilisés dans les régions où des orages/pluies intenses se produisent une bonne partie de l’année: les Tropiques, le sud des États-Unis ou de l’Europe, etc. Les radars de bande C sont un bon compromis pour les régions tempérées où le taux de précipitations est le plus souvent faible à modéré. Les radars de bande X ne servent que pour la courte portée à cause de la forte atténuation de leur signal. \cite{radartutorial}
 
 \subsubsection{Architecture radar}
 
@@ -48,7 +46,7 @@ L'émetteur radar doit présenter les caractéristiques techniques et opération
     \item L'émetteur doit présenter une stabilité RF élevée afin de répondre aux exigences en matière de traitement du signal;
     \item L'émetteur doit être efficace, fiable et facile à entretenir, et la durée de vie et le coût du dispositif de sortie doivent être acceptables.
 \end{enumerate}
-Le récepteur radar doit présenter les caractéristiques techniques et opérationnelles suivantes :
+Quant à lui, le récepteur radar doit présenter les caractéristiques techniques et opérationnelles suivantes :
 \begin{enumerate}
   \item Le récepteur doit posséder une sensibilité suffisante pour détecter des signaux de faible puissance provenant de cibles éloignées;
   \item Le récepteur doit avoir une bande passante adaptée à la largeur spectrale du signal émis afin d'assurer une détection correcte;
@@ -63,22 +61,85 @@ L'architecture RF varie dépendamment de tous ces facteurs, ci-dessous, deux exe
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=1.0\textwidth]{src/rapport_complet/img/schéma block fmcw vs pulse.png}
+    \includegraphics[width=1\textwidth]{src/rapport_complet/img/schéma block fmcw vs pulse.png}
     \caption{Schéma block FMCW (gauche) et pulse (droite)}
     \label{fig:image_schema_block}
 \end{figure}
+\newpage
 
-Étant donné que les radars à impulsions avec antenne commutée ne peuvent pas émettre et recevoir simultanément, la durée maximale des impulsions est limitée par le temps nécessaire à l'impulsion pour atteindre la cible et revenir. Avec une distance minimale de 100 m, par exemple, la durée maximale de l'impulsion pour ne perdre aucune partie de celle-ci n'est que de 670 ns. Comme le radar à impulsions doit répartir le temps de mesure entre l'émission et la réception, cela réduit la puissance d'émission moyenne et diminue le rapport signal/bruit. Un grand nombre d'impulsions très courtes complique également la formation de l'image. Le temps nécessaire à la formation de l'image SAR est proportionnel au nombre d'impulsions, et une durée d'impulsion maximale très courte nécessite d'en transmettre un très grand nombre pour obtenir une image avec un bon rapport signal/bruit.
+Étant donné que les radars à impulsions avec antenne commutée ne peuvent pas émettre et recevoir simultanément, la durée maximale des impulsions est limitée par le temps nécessaire à l'impulsion pour atteindre la cible et revenir. Avec une distance minimale de 100 m, par exemple, la durée maximale de l'impulsion pour ne perdre aucune partie de celle-ci n'est que de 670 ns \[
+\tau_{\text{max}} = \frac{2 R_{\text{min}}}{c} = \frac{2 \times 100}{3 \times 10^{8}} \approx 6.7 \times 10^{-7}\ \text{s} = 670\ \text{ns}
+\]
+Comme le radar à impulsions doit répartir le temps de mesure entre l'émission et la réception, cela réduit la puissance d'émission moyenne et diminue le rapport signal/bruit. Un grand nombre d'impulsions très courtes complique également la formation de l'image. Le temps nécessaire à la formation de l'image SAR est proportionnel au nombre d'impulsions, et une durée d'impulsion maximale très courte nécessite d'en transmettre un très grand nombre pour obtenir une image avec un bon rapport signal/bruit.
 
-Quant à lui, le radar FMCW peut émettre et recevoir simultanément, ce qui améliore le rapport signal/bruit. La longueur maximale du balayage n'est limitée que par les exigences de vitesse d'échantillonnage de l'ouverture synthétique, mais elle peut atteindre plusieurs centaines de µs. Contrairement au radar à impulsions, il existe également une exigence de longueur minimale de balayage, car le signal réfléchi est mélangé au signal émis et doit donc être reçu pendant que le balayage est encore en cours d'émission. Une longueur de balayage longue permet de collecter beaucoup plus de puissance réfléchie par balayage. Le radar à impulsions pourrait également utiliser des antennes TX et RX séparées afin que cela ne pose pas de problème, mais cela supprimerait ses avantages par rapport au radar FMCW, moins coûteux à mettre en œuvre. Des antennes d'émission et de réception séparées nécessitent plus d'espace, mais en raison de la grande longueur maximale, il devrait être possible de placer deux petites antennes côte à côte sous le drone.
-
-En général, le radar FMCW présente un avantage pour les applications à courte portée et les plateformes à déplacement lent. Le radar à impulsions est nécessaire lorsque la portée requise est longue (plus de quelques kilomètres). 
+Quant à lui, le radar FMCW peut émettre et recevoir simultanément, ce qui améliore le rapport signal/bruit. La longueur maximale du balayage n'est limitée que par les exigences de vitesse d'échantillonnage de l'ouverture synthétique, mais elle peut atteindre plusieurs centaines de µs. Contrairement au radar à impulsions, il existe également une exigence de longueur minimale de balayage, car le signal réfléchi est mélangé au signal émis et doit donc être reçu pendant que le balayage est encore en cours d'émission. Une longueur de balayage longue permet de collecter beaucoup plus de puissance réfléchie par balayage. Le radar à impulsions pourrait également utiliser des antennes TX et RX séparées afin que cela ne pose pas de problème, mais cela supprimerait ses avantages par rapport au radar FMCW, moins coûteux à mettre en œuvre. En général, le radar FMCW présente un avantage pour les applications à courte portée et les plateformes à déplacement lent. Le radar à impulsions est nécessaire lorsque la portée requise est longue (plus de quelques kilomètres). \cite{Forsten2025}
 
 \subsubsection{Spécificités du SAR}
 
-Dans la suite de la partie 3.1, les éléments étudiés porteront uniquement sur le contexte de l'étude : imagerie via radar SAR embarqué sur drone avec toutes les contraintes et exigences sous-jacentes.
-Nous reviendrons sur le fonctionnement de chaque élément de la chaine au cours du document. 
+Dans la suite de la partie \ref{SEC:Architecture matérielle et chaînes RF d’un radar SAR embarqué}, les éléments étudiés porteront uniquement sur le contexte de l'étude : imagerie via radar SAR embarqué sur drone avec toutes les contraintes et exigences sous-jacentes. La figure \ref{fig:image_schema_block_SAR} montre l'exemple d'un schéma fonctionnel d'un capteur SAR embarqué sur drone. Dans cette conception, un contrôleur SAR basé sur FPGA est utilisé pour produire les signaux FM linéaires (LFM) requis et d'autres signaux de synchronisation nécessaires. Les signaux LFM I et Q sont convertis et amplifiés dans le sous-système RF avant d'être transmis via le sous système antennaire. Ce sous système est mis en œuvre à l'aide de réseaux de patchs microbandes. Les échos renvoyés sont amplifiés et translater en une fréquence intermédiaire (FI), à laquelle ils sont ensuite numérisés et stockés. Une réplique du signal FI est transmise à un processeur SAR intégré pour la formation d'images en temps réel. L'image obtenue sera transmise à la station au sol via une unité de liaison descendante de données de 2,4 GHz. Une unité de mesure inertielle (IMU) intégrée avec récepteur GPS (Global Positioning System) a également été développée pour fournir les informations nécessaires sur les mouvements de la plate-forme \cite{article}
 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\textwidth]{src/rapport_complet/img/schema block SAR.jpg}
+    \caption{Schéma bloc d'un exemple de système SAR}
+    \label{fig:image_schema_block_SAR}
+\end{figure}
+
+De part son principe de synthétisation d'une grande ouverture d’antenne à partir du mouvement de la plateforme, les systèmes SAR possèdent des caractéristiques matérielles et RF spécifiques qui les distinguent nettement des autres types de radars comme les radars à impulsions, CW, Doppler, ou à antenne commutée par exemple. 
+
+\begin{table}[H]
+\centering
+\caption{Comparaison entre radar SAR et radar conventionnel}
+\renewcommand{\arraystretch}{1.2} % espace vertical plus agréable
+\setlength{\tabcolsep}{4pt}       % espace horizontal entre colonnes réduit
+\begin{tabular}{|>{\centering\arraybackslash}p{2.5cm}|
+                >{\centering\arraybackslash}p{3.8cm}|
+                >{\centering\arraybackslash}p{3.8cm}|
+                >{\centering\arraybackslash}p{3.8cm}|}
+\hline
+\textbf{Caractéristique} & \textbf{Radar SAR} & \textbf{Radar conventionnel} & \textbf{Commentaires} \\ \hline
+Antenne & Taille modérée (1--3 m), ouverture synthétique large & Antenne fixe ou orientable, souvent grande & Mouvement du SAR compense la taille réelle \\ \hline
+Type d’onde & Impulsions chirp modulées en fréquence & Impulsions simples ou onde continue & Chirp = meilleure résolution en distance \\ \hline
+Largeur de bande RF & 50--400 MHz (très large) & Quelques MHz à dizaines de MHz & Large bande $\Rightarrow$ haute résolution \\ \hline
+Puissance d’émission & 100 W à quelques kW crête & Plus élevée pour même portée & Gain de traitement compense la puissance \\ \hline
+Fréquence porteuse & L, C, X, Ku/Ka & Dépend de l’application & X et C très fréquentes en SAR \\ \hline
+Polarisation & Double ou quadri-polarisation & Simple polarisation & Donne infos sur la nature des cibles \\ \hline
+Récepteur & Très cohérent (phase stable) & Cohérence moins cruciale & Essentiel pour traitement SAR \\ \hline
+Synchronisation & Très précise ($<10^{-10}$) & Moins stricte & Nécessaire pour cohérence multi-impulsions \\ \hline
+Traitement du signal & FFT 2D, corrélation, focalisation & Plus simple, souvent en temps réel & Le SAR « fabrique » l’image \\ \hline
+PRF & 1–10 kHz & Variable, souvent plus faible & Pour échantillonner la trajectoire \\ \hline
+Antenne active & Fréquente (AESA) & Pas toujours utilisée & Permet calibration et agilité du faisceau \\ \hline
+\end{tabular}
+\end{table}
+
+
+\begin{table}[H]
+\centering
+\caption{Exemples typiques de spécifications d’un radar SAR}
+\renewcommand{\arraystretch}{1.2} % espace vertical
+\setlength{\tabcolsep}{4pt}       % espace horizontal entre colonnes
+\begin{tabular}{|>{\centering\arraybackslash}p{6cm}|
+                >{\centering\arraybackslash}p{8.9cm}|}
+\hline
+\textbf{Paramètre} & \textbf{Valeur typique} \\ \hline
+Bande de fréquence & X-band : 9.6 GHz \\ \hline
+Largeur de bande du chirp & 100–300 MHz \\ \hline
+Résolution en distance & 0.5 -- 3 m \\ \hline
+Résolution azimutale & $\approx 1$ m (indépendante de la distance) \\ \hline
+Durée d’impulsion & 10 -- 50 $\mu$s \\ \hline
+Puissance crête & 1 -- 2 kW \\ \hline
+Puissance moyenne & 10 -- 50 W \\ \hline
+PRF & 2 -- 5 kHz \\ \hline
+Polarisation & HH/VV ou quad-pol \\ \hline
+Type d’antenne & Antenne à fentes ou réseau phasé actif (AESA) \\ \hline
+Stabilité de l’oscillateur & $< 10^{-8}$ pendant l’acquisition \\ \hline
+\end{tabular}
+\end{table}
+
+%CHECK TABLEAU
+%dire quel param implique quoi, ex large Bande freq ==> ? puissance emission forte, freq echantillonage, 
+%INJECTER eq snr, Puisse recue, reso max sans ambiguite, facteur de bruit, directivité, etc, etc
+%parler des contraintes, isolation, leackage, phase noise, purete spectrale, etc etc pour chaque composant
 
 \subsection{Sous-systèmes RF}
 
