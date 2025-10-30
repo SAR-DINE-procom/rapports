@@ -46,4 +46,52 @@ Forstén SAR (drone maison) & ? & ? & 6 GHz & 600 m (110 m altitude, 10° inclin
 
 \subsubsection{Retours d’expérience et contraintes observées}
 
-Gestion du mouvement, traitement embarqué, stabilité RF.
+Les études et expérimentations menées sur les SAR miniaturisés mettent en évidence plusieurs verrous techniques récurrents qui conditionnent la qualité des images et la fiabilité des mesures.  
+Ces contraintes, souvent liées à la miniaturisation et à la portabilité sur drones légers, peuvent être regroupées en quatre catégories principales : \textbf{stabilité du mouvement}, \textbf{cohérence RF}, \textbf{capacité de traitement embarqué} et \textbf{gestion énergétique et thermique}.
+
+\paragraph{(1) Stabilité du mouvement et précision de trajectoire.}
+La qualité de focalisation SAR repose sur la cohérence de phase entre les acquisitions successives.  
+Toute dérive ou vibration du porteur se traduit en erreurs de phase et en artefacts d’image (flou azimutal, défocalisation).  
+Les retours d’expérience montrent que :
+\begin{itemize}
+  \item une précision de trajectoire de l’ordre de \(\lambda/10\) (soit $\approx$1.2 mm à 24\,GHz) est nécessaire pour une focalisation correcte~\cite{Aguasca2013_ARBRES_UAV_SAR};
+  \item les drones multirotors souffrent de micro-oscillations (1–10 Hz) difficiles à compenser sans centrale inertielle rapide (IMU $>$1\,kHz) et GPS différentiel (RTK);
+  \item la fusion GNSS/IMU avec un filtre de Kalman étendu constitue une approche standard pour reconstituer la trajectoire réelle à postériori~\cite{Svedin2021_UAVSAR}.
+\end{itemize}
+Ces contraintes impliquent de rigidifier la charge utile et d’intégrer une synchronisation temporelle commune (1\,PPS, 10\,MHz) entre les modules RF et la centrale de navigation.
+
+\paragraph{(2) Stabilité RF et cohérence de phase.}
+La miniaturisation des frontaux RF (synthétiseurs, LNA, mélangeurs) accroît la sensibilité au bruit de phase et au couplage thermique.  
+Les systèmes comme le HUSSAR ou le SAR-Light utilisent des oscillateurs de référence OCXO disciplinés GPS pour garantir une cohérence temporelle meilleure que 1° sur plusieurs secondes~\cite{HUSSAR2025,Angelliaume2022}.  
+Les prototypes amateurs, souvent basés sur des PLL ou DDS non compensés, subissent au contraire une dérive de fréquence cumulative qui limite la durée de cohérence effective à quelques centaines de millisecondes, rendant nécessaire un autofocus numérique.
+
+\paragraph{(3) Capacité de traitement embarqué.}
+Le traitement SAR (décompression, déchirpage, rétroprojection, autofocusing) est intensif en calcul et en mémoire.  
+Les systèmes commerciaux intègrent des FPGA ou SoC dédiés (Xilinx RFSoC, Jetson Orin) capables de produire des images préliminaires en vol.  
+Les plateformes expérimentales (type Forstén) externalisent tout le traitement post-vol sur GPU.  
+Les compromis observés :
+\begin{itemize}
+  \item un traitement embarqué complet augmente la masse et la consommation (>10\,W) ;
+  \item un traitement différé allège la charge utile mais accroît le besoin de stockage et la dépendance à la stabilité RF ;
+  \item les approches hybrides (aperçu embarqué + imagerie finale au sol) apparaissent aujourd’hui comme le meilleur compromis.
+\end{itemize}
+
+\paragraph{(4) Stockage, alimentation et contraintes thermiques.}
+L’enregistrement du flux $I/Q$ exige un stockage haute vitesse (SSD~NVMe ou eMMC) supportant plusieurs dizaines de MB/s en écriture continue~\cite{Balister2017_SigMF}.  
+Les expérimentations montrent :
+\begin{itemize}
+  \item qu’un enregistrement sans perte sur SSD reste stable jusqu’à $\approx$50\,MB/s, mais nécessite un buffer RAM ($\geq$ 512\,MB) et un système de fichiers optimisé (\texttt{noatime}, segments 1–5\,min) ;
+  \item que la sous-chaîne acquisition–stockage représente 15–25\% de la puissance totale consommée ;
+  \item que la dissipation thermique (surtout pour les SoC ARM récents) impose un refroidissement actif même sur des drones moyens (5–10\,kg).
+\end{itemize}
+
+\paragraph{(5) Calibration et reproductibilité.}
+Enfin, la calibration (amplitude, phase, polarisation) reste un point critique.  
+Les systèmes commerciaux procèdent à une calibration périodique en chambre anéchoïque ou par cibles connues au sol.  
+Les prototypes de recherche, plus ouverts, s’appuient sur des cibles ponctuelles artificielles et sur des routines de recalage automatique (méthodes de Forstén ou de Krieger~\cite{Forsten2025,Krieger2010_InterferometricSAR}).  
+La difficulté majeure demeure la reproductibilité des conditions de vol et la stabilité thermique des modules RF.
+
+\paragraph*{Bilan.}
+Les retours d’expérience convergent sur un constat : miniaturiser un SAR implique de basculer une partie des contraintes classiques (stabilité mécanique, synchronisation, cohérence RF) vers le domaine numérique et logiciel (recalage, autofocus, correction géométrique).  
+Les solutions commerciales privilégient la robustesse et l’intégration, tandis que les plateformes expérimentales favorisent la modularité et la transparence scientifique, au prix d’une stabilité moindre.  
+Ces observations guident la conception du système visé dans ce projet, centré sur un compromis entre légèreté, cohérence de phase et flexibilité logicielle.

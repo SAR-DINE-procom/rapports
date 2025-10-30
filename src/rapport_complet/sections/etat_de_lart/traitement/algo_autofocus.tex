@@ -1,3 +1,19 @@
-\subsection{Différents algorithmes d'autofocus}
+\subsection{Algorithmes de correction de phase}\label{sebsec:algo_autofocus}
+Pour réaliser une bonne focalisation sur la direction azimutale, la mesure de la phase du signal reçu doit être très précise. Un ordre de grandeur empirique est qu'une erreur de phase dépassant $\frac{\pi}{8}$ dégrade significativement la focalisation de l'énergie sur l'axe azimutal. C’est pourquoi la correction des erreurs de phase est primordiale pour obtenir une image de qualité. Cette section présente différentes méthodes pour résoudre ce problème et propose une implémentation d'un algorithme d'autofocus.\cite{autofocus}. 
 
-% Courage mikael
+\subsubsection{Différents algorithmes d'autofocus}
+\paragraph{ \textit{Phase Gradient Algorithm} (PGA)}
+
+
+\paragraph{ \textit{Map-Drift Algorithm}(MDA)}
+Cette approche de correction des erreurs de phase consiste à identifier des points significatifs dans l’image, idéalement une cible brillante et isolée, dont l’écho est suffisamment intense. Ensuite, on applique différentes sous-ouvertures (c’est-à-dire qu’on divise le signal reçu sur des durées d’intégration données) et on exploite le recouvrement entre les signaux issus de chaque sous-ouverture. Pour chaque sous-ouverture, on repère la position apparente du point cible. À partir des informations de trajectoire idéale et de la géométrie radar, on calcule l’écart de phase attendu. On mesure ensuite la phase réelle associée au point dans les données acquises; la différence entre la phase attendue et la phase observée permet d’estimer l’erreur de phase à corriger.
+
+\subsubsection{Notre algo de fou []]]]]}
+La méthode proposée dans l'article \cite{autofocus} consiste à corriger la phase des signaux après la compression en distance mais avant la formation finale de l’image. Le principe repose sur la maximisation de l’intensité des pixels: en effet, une corrélation maximale traduit une bonne focalisation et une distance minimale entre le point traité et sa position idéale de référence. Ainsi, maximiser cette intensité correspond à minimiser l’erreur de distance et donc la phase résiduelle. La correction proposée dans l’article se réalise le long de l’axe du temps rapide.\\
+
+Une première approche consisterait à réaliser ce focus cellule par cellule de résolution. Toutefois, la présence de multiples cibles proches peut entraîner un recouvrement entre cellules et fausser la correction à appliquer. De plus, dans le cas d’un point brillant isolé, une correction appliquée indépendamment à chaque cellule peut créer une compensation non cohérente des pixels environnants, ce qui conduit à des phénomènes d’ambiguïté d’image (ou \textit{ghosting}). Enfin, cette méthode serait naturellement très sensible au bruit.\\
+
+C’est pourquoi l’approche proposée dans l’article est de réaliser le focus sur un groupe de pixels, de manière collective.
+\begin{equation}
+    F(x^0) \geq F(x^1) \geq ... \geq F(x^n). 
+\end{equation}

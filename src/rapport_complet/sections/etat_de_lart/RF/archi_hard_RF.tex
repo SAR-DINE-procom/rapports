@@ -1,6 +1,6 @@
 \section{Architecture matérielle et chaînes RF d’un SAR embarqué}\label{SEC:Architecture matérielle et chaînes RF d’un radar SAR embarqué}
 
-\subsection{Architecture fonctionnelle globale}
+\subsection{Propagation et architectures RF}
 
 \subsubsection{Environnement et propagation RF}
 
@@ -36,7 +36,7 @@ La figure \ref{fig:image_pluie} montre l'effet de l’atténuation du signal rad
 Le diagramme montre également que l’atténuation varie avec le taux de précipitations: le faisceau de bande X est totalement absorbée dès 20 mm/h, celui de bande C à partir de 60 mm/h mais la perte est négligeable pour le faisceau de bande S, même dans le pic de précipitations.
 L’atténuation est donc généralement minime dans la neige, même pour la bande X. Dans la pluie faible à modérée, la bande X est affectée significativement mais la bande C l’est encore peu. Par contre, dans la pluie forte, seule la bande S a une perte minime. C’est pour ces raisons que les radars météorologique de bande S, plus coûteux, sont utilisés dans les régions où des orages/pluies intenses se produisent une bonne partie de l’année: les Tropiques, le sud des États-Unis ou de l’Europe, etc. Les radars de bande C sont un bon compromis pour les régions tempérées où le taux de précipitations est le plus souvent faible à modéré. Les radars de bande X ne servent que pour la courte portée à cause de la forte atténuation de leur signal. \cite{radartutorial}
 
-\subsubsection{Architecture radar}
+\subsubsection{Architecture RF radar}
 
 Il existe plusieurs architectures matérielles possibles pour un radar en fonction de plusieurs paramètres, du contexte et du coût. Comme cité précédemment, le radar génère des impulsions d'énergie RF de courte durée et de forte puissance qui sont rayonnées dans l'espace par l'antenne. Suite au rayonnement de l'onde par l'environnement, le récepteur radar reçoit un signal atténué et bruité avant d'être traité. 
 L'émetteur radar doit présenter les caractéristiques techniques et opérationnelles suivantes :
@@ -67,109 +67,199 @@ L'architecture RF varie dépendamment de tous ces facteurs, ci-dessous, deux exe
 \end{figure}
 \newpage
 
-Étant donné que les radars à impulsions avec antenne commutée ne peuvent pas émettre et recevoir simultanément, la durée maximale des impulsions est limitée par le temps nécessaire à l'impulsion pour atteindre la cible et revenir. Avec une distance minimale de 100 m, par exemple, la durée maximale de l'impulsion pour ne perdre aucune partie de celle-ci n'est que de 670 ns \[
+Étant donné que les radars à impulsions avec antenne commutée ne peuvent pas émettre et recevoir simultanément, la durée maximale des impulsions est limitée par le temps nécessaire à l'impulsion pour atteindre la cible et revenir. Avec une distance minimale de 100 m, par exemple, la durée maximale de l'impulsion pour ne perdre aucune partie de celle-ci n'est que de 670 ns \begin{equation} 
 \tau_{\text{max}} = \frac{2 R_{\text{min}}}{c} = \frac{2 \times 100}{3 \times 10^{8}} \approx 6.7 \times 10^{-7}\ \text{s} = 670\ \text{ns}
-\]
+\end{equation}
+
 Comme le radar à impulsions doit répartir le temps de mesure entre l'émission et la réception, cela réduit la puissance d'émission moyenne et diminue le rapport signal/bruit. Un grand nombre d'impulsions très courtes complique également la formation de l'image. Le temps nécessaire à la formation de l'image SAR est proportionnel au nombre d'impulsions, et une durée d'impulsion maximale très courte nécessite d'en transmettre un très grand nombre pour obtenir une image avec un bon rapport signal/bruit.
 
 Quant à lui, le radar FMCW peut émettre et recevoir simultanément, ce qui améliore le rapport signal/bruit. La longueur maximale du balayage n'est limitée que par les exigences de vitesse d'échantillonnage de l'ouverture synthétique, mais elle peut atteindre plusieurs centaines de µs. Contrairement au radar à impulsions, il existe également une exigence de longueur minimale de balayage, car le signal réfléchi est mélangé au signal émis et doit donc être reçu pendant que le balayage est encore en cours d'émission. Une longueur de balayage longue permet de collecter beaucoup plus de puissance réfléchie par balayage. Le radar à impulsions pourrait également utiliser des antennes TX et RX séparées afin que cela ne pose pas de problème, mais cela supprimerait ses avantages par rapport au radar FMCW, moins coûteux à mettre en œuvre. En général, le radar FMCW présente un avantage pour les applications à courte portée et les plateformes à déplacement lent. Le radar à impulsions est nécessaire lorsque la portée requise est longue (plus de quelques kilomètres). \cite{Forsten2025}
 
 \subsubsection{Spécificités du SAR}
 
-Dans la suite de la partie \ref{SEC:Architecture matérielle et chaînes RF d’un radar SAR embarqué}, les éléments étudiés porteront uniquement sur le contexte de l'étude : imagerie via radar SAR embarqué sur drone avec toutes les contraintes et exigences sous-jacentes. La figure \ref{fig:image_schema_block_SAR} montre l'exemple d'un schéma fonctionnel d'un capteur SAR embarqué sur drone. Dans cette conception, un contrôleur SAR basé sur FPGA est utilisé pour produire les signaux FM linéaires (LFM) requis et d'autres signaux de synchronisation nécessaires. Les signaux LFM I et Q sont convertis et amplifiés dans le sous-système RF avant d'être transmis via le sous système antennaire. Ce sous système est mis en œuvre à l'aide de réseaux de patchs microbandes. Les échos renvoyés sont amplifiés et translater en une fréquence intermédiaire (FI), à laquelle ils sont ensuite numérisés et stockés. Une réplique du signal FI est transmise à un processeur SAR intégré pour la formation d'images en temps réel. L'image obtenue sera transmise à la station au sol via une unité de liaison descendante de données de 2,4 GHz. Une unité de mesure inertielle (IMU) intégrée avec récepteur GPS (Global Positioning System) a également été développée pour fournir les informations nécessaires sur les mouvements de la plate-forme \cite{article}
+Dans la suite de la partie \ref{SEC:Architecture matérielle et chaînes RF d’un radar SAR embarqué}, les éléments étudiés porteront uniquement sur le contexte de l'étude : imagerie via radar SAR embarqué sur drone avec toutes les contraintes et exigences sous-jacentes. De part son principe de synthétisation d'une grande ouverture d’antenne à partir du mouvement de la plateforme, les systèmes SAR possèdent des caractéristiques matérielles et RF spécifiques qui les distinguent nettement des autres types de radars comme les radars à impulsions, CW, Doppler, ou à antenne commutée par exemple. 
+
+Prenons l'exemple d'un système SAR académique \cite{article}.La figure \ref{fig:image_schema_block_SAR} montre l'exemple d'un schéma fonctionnel d'un capteur SAR embarqué sur drone. Dans cette conception, un contrôleur SAR basé sur FPGA (Field Programmable Gate Arrays) est utilisé pour produire les signaux FM linéaires (LFM) requis et d'autres signaux de synchronisation nécessaires. Les signaux LFM I et Q sont convertis et amplifiés dans le sous-système RF avant d'être transmis via le sous système antennaire. Ce sous système est mis en œuvre à l'aide de réseaux de patchs microbandes. Les échos renvoyés sont amplifiés et translater en une fréquence intermédiaire (FI), à laquelle ils sont ensuite numérisés et stockés. Une réplique du signal FI est transmise à un processeur SAR intégré pour la formation d'images en temps réel. L'image obtenue sera transmise à la station au sol via une unité de liaison descendante de données de 2,4 GHz. Une unité de mesure inertielle (IMU) intégrée avec récepteur GPS (Global Positioning System) a également été développée pour fournir les informations nécessaires sur les mouvements de la plate-forme 
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.0\textwidth]{src/rapport_complet/img/schema block SAR.jpg}
-    \caption{Schéma bloc d'un exemple de système SAR}
+    \includegraphics[width=0.9\textwidth]{src/rapport_complet/img/schema block SAR.jpg}
+    \caption{Synoptique d'un exemple de système SAR}
     \label{fig:image_schema_block_SAR}
 \end{figure}
 
-De part son principe de synthétisation d'une grande ouverture d’antenne à partir du mouvement de la plateforme, les systèmes SAR possèdent des caractéristiques matérielles et RF spécifiques qui les distinguent nettement des autres types de radars comme les radars à impulsions, CW, Doppler, ou à antenne commutée par exemple. 
+Le synoptique du sous-système RF est illustré à la figure \ref{fig:image_schema_block_SAR_RF}. Il peut être divisé en deux sous-sections : l'émetteur (Tx) et le récepteur (Rx). À l'entrée de l'émetteur, les signaux chirp I (en phase) et Q (en quadrature de phase) sont mélangés à la fréquence porteuse (5,3 GHz) via un mélangeur pour translation de fréquence. En effet, séparer les signaux I (In-phase) et Q (Quadrature) permet de représenter un signal modulé sous forme complexe, en décomposant sa composante en phase et sa composante en quadrature, déphasé de 90°. Cette séparation facilite le traitement du signal, car elle permet d’accéder directement à son amplitude et à sa phase, de réaliser plus simplement la modulation et la démodulation cohérente, et de traiter numériquement le signal à l’aide d’algorithmes efficaces. Ensuite, la sortie du mélangeur est amplifiée par un amplificateur de puissance (PA). Un commutateur RF est utilisé pour activer la fenêtre de transmission, dont la durée de fonctionnement peut être sélectionnée en fonction des exigences de la mission. Le signal est ensuite acheminé vers un filtre passe-bande afin de rejeter les signaux indésirables en dehors de la bande de fréquences souhaitée,
+puis amplifié par un amplificateur haute puissance (HPA) afin d'augmenter la
+puissance pour une transmission à longue portée. La puissance de sortie  moyenne est d'environ 160 mW pour une portée nominale de 1 km.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{src/rapport_complet/img/sar rf.png}
+    \caption{Synoptique du sous sytème RF d'un exemple de système SAR}
+    \label{fig:image_schema_block_SAR_RF}
+\end{figure}
+
+Au niveau du récepteur, un limiteur à diode est utilisé pour protéger contre les pics de puissance soudains provenant de la transmission. Un commutateur est utilisé pour activer la fenêtre de réception à certains intervalles pour empêcher la saturation due aux fuites de signaux provenant de l'émetteur. Deux amplificateurs à faible bruit (LNA) sont montés en cascade pour fournir une amplification suffisante pour les échos renvoyés. Enfin, le mélangeur  convertit le signal reçu en signaux IF I et Q.
+
+Plusieurs caractéristiques RF sont essentielles à prendre en compte lors de la conception d'un SAR de part son fonctionnement. Tout d'abord, la résolution en distance d’un radar est directement liée à la bande passante $B$ du signal émis. Pour un radar impulsionnel ou à modulation linéaire de fréquence (chirp LFM), la relation classique s’écrit :
+\begin{equation}
+\Delta R = \frac{c}{2B}
+\label{eq:resodistance}
+\end{equation}
+Où : 
+\begin{description}
+    \item[$c$] : est la vitesse de la lumière [$\text{m·s}^{-1}$]
+    \item[$\Delta R$] : est la résolution en distance [$m$]
+\end{description}
+
+
+Dans un radar SAR, la recherche d’une résolution métrique ou submétrique impose une bande passante RF importante (souvent plusieurs centaines de MHz). Par conséquent, la chaîne émettrice doit garantir une linéarité et une fidélité de phase élevées sur toute la bande, afin d’éviter toute distorsion du chirp. De plus, la formation d’une image SAR nécessite la combinaison cohérente des signaux reçus à différentes positions. Toute fluctuation de phase entre impulsions successives dégrade la synthèse d’ouverture. Ainsi, l’oscillateur local doit présenter un bruit de phase extrêmement faible et une stabilité fréquentielle de l’ordre du ppm (parties par million, cela indique l'amplitude de la variation de fréquence sur une durée donnée. Par exemple, une stabilité de 1 ppm signifie que la fréquence ne variera pas de plus d'un pour un million en une seconde. La cohérence temporelle et fréquentielle devient donc un paramètre critique, contrairement aux radars classiques où une faible dérive peut être tolérée. Dans un radar SAR, la largeur de faisceau de l’antenne doit être suffisante pour couvrir la zone à imager pendant le déplacement de la plateforme. Le diagramme de rayonnement doit rester stable en amplitude et en phase sur toute la bande passante, garantissant ainsi l’uniformité de la réponse spatiale. Cette exigence se traduit par la nécessité d’antennes à large bande et à faible distorsion de phase. La chaîne RF de réception doit donc présenter un faible facteur de bruit (NF) et une grande dynamique, assurant la préservation de l’amplitude et de la phase des signaux reçus. Les convertisseurs analogiques-numériques (CAN) utilisés atteignent typiquement une résolution supérieure à 12 bits. La cohérence du système SAR dépend également de la synchronisation temporelle entre les modules émetteurs et récepteurs. Des systèmes de calibration interne sont souvent intégrés afin de compenser les dérives de gain, de phase et de retard dans la chaîne RF. Ces calibrations reposent sur l’injection périodique de signaux de référence connus. Enfin, Le choix de la bande RF (L, C, X, Ku, etc.) influence la résolution et la pénétration du signal dans le milieu observé. Par exemple, la bande X (8–12~GHz) permet une haute résolution mais une faible pénétration, tandis que la bande L (1–2~GHz) favorise la détection sous végétation. Le tableau \ref{tab:comparison} illustre les compromis typiques associés à chaque bande.
 
 \begin{table}[H]
 \centering
-\caption{Comparaison entre radar SAR et radar conventionnel}
-\renewcommand{\arraystretch}{1.2} % espace vertical plus agréable
-\setlength{\tabcolsep}{4pt}       % espace horizontal entre colonnes réduit
-\begin{tabular}{|>{\centering\arraybackslash}p{2.5cm}|
-                >{\centering\arraybackslash}p{3.8cm}|
-                >{\centering\arraybackslash}p{3.8cm}|
-                >{\centering\arraybackslash}p{3.8cm}|}
+\caption{Exigences RF essentielles d'un radar SAR}
+\label{tab:comparison}
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{l c}
 \hline
-\textbf{Caractéristique} & \textbf{Radar SAR} & \textbf{Radar conventionnel} & \textbf{Commentaires} \\ \hline
-Antenne & Taille modérée (1--3 m), ouverture synthétique large & Antenne fixe ou orientable, souvent grande & Mouvement du SAR compense la taille réelle \\ \hline
-Type d’onde & Impulsions chirp modulées en fréquence & Impulsions simples ou onde continue & Chirp = meilleure résolution en distance \\ \hline
-Largeur de bande RF & 50--400 MHz (très large) & Quelques MHz à dizaines de MHz & Large bande $\Rightarrow$ haute résolution \\ \hline
-Puissance d’émission & 100 W à quelques kW crête & Plus élevée pour même portée & Gain de traitement compense la puissance \\ \hline
-Fréquence porteuse & L, C, X, Ku/Ka & Dépend de l’application & X et C très fréquentes en SAR \\ \hline
-Polarisation & Double ou quadri-polarisation & Simple polarisation & Donne infos sur la nature des cibles \\ \hline
-Récepteur & Très cohérent (phase stable) & Cohérence moins cruciale & Essentiel pour traitement SAR \\ \hline
-Synchronisation & Très précise ($<10^{-10}$) & Moins stricte & Nécessaire pour cohérence multi-impulsions \\ \hline
-Traitement du signal & FFT 2D, corrélation, focalisation & Plus simple, souvent en temps réel & Le SAR « fabrique » l’image \\ \hline
-PRF & 1–10 kHz & Variable, souvent plus faible & Pour échantillonner la trajectoire \\ \hline
-Antenne active & Fréquente (AESA) & Pas toujours utilisée & Permet calibration et agilité du faisceau \\ \hline
+\textbf{Paramètre} & \textbf{Ordre de grandeur typique} \\ \hline
+Bande passante RF & $100~\text{MHz} \; \text{à} \; 1~\text{GHz}$ \\
+Cohérence de phase & $\Delta \phi < 1^\circ$ entre impulsions \\
+Stabilité de fréquence & $< 10^{-7}$ (soit $\pm 1~\text{ppm}$) \\
+Bruit de phase de l’oscillateur & $< -100~\text{dBc/Hz}$ à $10~\text{kHz}$ d’écart \\
+Linéarité RF (IP3) & $> +30~\text{dBm}$ \\
+Facteur de bruit du récepteur (NF) & $< 5~\text{dB}$ \\
+Dynamique du récepteur & $> 70~\text{dB}$ \\
+Puissance d’émission (moyenne) & $10~\text{W} \; \text{à} \; 100~\text{W}$ \\
+Largeur de faisceau antenne & $1^\circ$ à $5^\circ$ (selon bande) \\
+Calibration interne & Injection de signaux de référence toutes les $1$--$10~\text{s}$ \\ \hline
 \end{tabular}
 \end{table}
 
+La section \ref{subsec:Front end RF} entre plus en détail sur ces paramètres clés et les contraintes associées pour chaque élément du front end RF : de l'antenne à la conversion numérique de l'information.
+
+\subsection{Front end RF}\label{subsec:Front end RF}
+
+Les chaînes RF d’un SAR constituent l’un des sous-systèmes les plus déterminants pour la performance globale du capteur. Elles regroupent l’ensemble des éléments permettant la génération, la transmission, la réception et la numérisation du signal radar. Chacun de ces maillons influence directement des caractéristiques essentielles telles que la linéarité, le facteur de bruit, la stabilité de phase, la bande passante, la puissance reçue, ou encore la capacité de compression d’impulsions, par exemple.
+
+\subsubsection{Antenne}
+
+La sous système antennaire constitue le point d’entrée et de sortie des chaînes RF. Dans un radar SAR, l'antenne est souvent de type réseau à commande de phase (phased array) afin d’assurer une directivité contrôlée et une couverture azimutale adaptée aux besoins d’imagerie. En effet, une antenne à balayage électronique est un système capable d’orienter son faisceau sans mouvement mécanique, uniquement par contrôle électronique. Le phased array en est la forme la plus courante : il utilise plusieurs éléments rayonnants dont on ajuste la phase des signaux pour diriger le faisceau. Parmi ces réseaux à commande de phase, on distingue deux catégories : le PESA (Passive Electronically Scanned Array), où un seul émetteur alimente tous les éléments via des déphaseurs passifs, et le AESA (Active Electronically Scanned Array), où chaque élément possède son propre module émetteur-récepteur actif, cf. \ref{fig:image_aesapesa}. Le PESA est plus simple mais moins flexible, tandis que l’AESA offre une agilité, une rapidité et une fiabilité supérieures, au prix d’une complexité et d’un coût plus élevés. 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\textwidth]{src/rapport_complet/img/pesavsaesa.jpg}
+    \caption{PESA vs AESA}
+    \label{fig:image_aesapesa}
+\end{figure}
+
+Son gain et sa directivité conditionnent directement la puissance reçue selon l’équation radar \ref{eq:equation_radar}, tandis que sa largeur de bande détermine la résolution en distance du système (cf. \ref{eq:resodistance}).
+
+\begin{equation}
+    P_r \propto \frac{P_t . G^2 . \lambda^2 \sigma}{R^4}
+    \label{eq:equation_radar}
+\end{equation}
+Où : 
+\begin{description}
+    \item[$P_r$] : est la puissance reçue par l'antenne [$W$]
+    \item[$P_t$] : est la puissance transmise par l'antenne [$W$]
+    \item[$G$] : est le gain de l'antenne (émission/réception)
+    \item[$\lambda$] : est la longueur d’onde [$m$]
+    \item[$\sigma$] : est la surface équivalente radar [$m^2$]
+    \item[$R$] : est la distance entre l'antenne et la cible [$m$]
+\end{description}
+
+La Surface Équivalente Radar (SER), caractérise la quantité d’énergie électromagnétique renvoyée ou rétro-diffusée par un objet par rapport à l’énergie incidente qui le frappe. Elle est dépendante de la fréquence, de la polarisation et de l'angle de visée, caractérisé par \ref{eq:ser}. Le tableau \ref{tab:ser} donne quelques exemples de SER pour un faisceau radar de bande X.
+
+\begin{equation}
+\sigma = \lim_{R \to \infty} 4 \pi R^2 
+\frac{ \left| E_{\text{scat}} \right|^2 }{ \left| E_{\text{inc}} \right|^2 }
+\label{eq:ser}
+\end{equation}
+Où :
+\begin{description}
+    \item[$\sigma$] : Surface Équivalente Radar [$m^2$]
+    \item[$E_{\text{scat}}$] : champ électrique diffusé [$\text{V·m}^{-1}$]
+    \item[$E_{\text{inc}}$] : champ électrique incident [$\text{V·m}^{-1}$]
+    \item[$R$] : distance entre la cible et le radar [$m$]
+\end{description}
 
 \begin{table}[H]
 \centering
-\caption{Exemples typiques de spécifications d’un radar SAR}
-\renewcommand{\arraystretch}{1.2} % espace vertical
-\setlength{\tabcolsep}{4pt}       % espace horizontal entre colonnes
-\begin{tabular}{|>{\centering\arraybackslash}p{6cm}|
-                >{\centering\arraybackslash}p{8.9cm}|}
+\caption{Exemples numériques de SER pour différentes cibles}
+\begin{tabular}{lcc}
 \hline
-\textbf{Paramètre} & \textbf{Valeur typique} \\ \hline
-Bande de fréquence & X-band : 9.6 GHz \\ \hline
-Largeur de bande du chirp & 100–300 MHz \\ \hline
-Résolution en distance & 0.5 -- 3 m \\ \hline
-Résolution azimutale & $\approx 1$ m (indépendante de la distance) \\ \hline
-Durée d’impulsion & 10 -- 50 $\mu$s \\ \hline
-Puissance crête & 1 -- 2 kW \\ \hline
-Puissance moyenne & 10 -- 50 W \\ \hline
-PRF & 2 -- 5 kHz \\ \hline
-Polarisation & HH/VV ou quad-pol \\ \hline
-Type d’antenne & Antenne à fentes ou réseau phasé actif (AESA) \\ \hline
-Stabilité de l’oscillateur & $< 10^{-8}$ pendant l’acquisition \\ \hline
+\textbf{Cible} & \textbf{SER [m\textsuperscript{2}]} & \textbf{SER [dB]} \\
+\hline
+Oiseau & 0.01 & -20 \\
+Homme & 1 & 0 \\
+Bateau à cabines & 10 & 10 \\
+Automobile & 100 & 20 \\
+Camion & 200 & 23 \\
+Réflecteur en trièdre & 20379 & 43.1 \\
+\hline
 \end{tabular}
+\label{tab:ser}
 \end{table}
 
-%CHECK TABLEAU
-%dire quel param implique quoi, ex large Bande freq ==> ? puissance emission forte, freq echantillonage, 
-%INJECTER eq snr, Puisse recue, reso max sans ambiguite, facteur de bruit, directivité, etc, etc
-%parler des contraintes, isolation, leackage, phase noise, purete spectrale, etc etc pour chaque composant
 
-\subsection{Sous-systèmes RF}
+\subsubsection{Duplexeurs, circulateurs et commutateurs RF}
 
-Source RF / Synthétiseur : VCO, PLL, DDS, stabilité de phase critique pour SAR.
-
-Émetteur : modulateur FMCW ou impulsionnel, amplificateur de puissance (PA).
-
-Récepteur : LNA, mélangeurs, filtres, amplificateurs IF, démodulateur IQ.
-
-Conversion fréquence / Base bande : downconversion, ADC haute dynamique.
+L’utilisation d’une même antenne pour l’émission et la réception impose l’intégration d’un dispositif de commutation ou de séparation, tel qu’un circulateur ou un commutateur RF. Ces composants assurent la circulation correcte de l’énergie tout en protégeant le récepteur des signaux de forte puissance émis. Le paramètre clé ici est l’isolation RF, généralement supérieure à 30 dB, indispensable pour éviter toute dégradation du facteur de bruit global. En parallèle, les pertes d’insertion doivent être minimisées, car elles diminuent directement la puissance du signal reçu. 
 
 
-\subsection{Antenne et front-end RF}
+\subsubsection{Amplification, transposition et filtrage}
 
-Antennes à ouverture synthétique : antennes linéaires, réseaux patch, antennes conformes.
+En réception, la première étape est le Low Noise Amplifier (LNA), dont le rôle est d’amplifier le signal réfléchi tout en ajoutant le moins de bruit possible. Son facteur de bruit (NF) est déterminant, car selon la formule de Friis \ref{eq:friis}, il influence directement le SNR global du système. Une linéarité élevée (caractérisée par IP3 et P1dB) est également essentielle pour éviter la distorsion lorsque des échos puissants sont présents. Les LNAs modernes en technologies GaAs (Arséniure de Gallium) ou GaN (Nitrure de Gallium) offrent des compromis intéressants entre faible bruit et forte robustesse, avec des bandes passantes pouvant atteindre plusieurs centaines de MHz.
 
-Contraintes d’intégration (taille, masse, diagramme de rayonnement, polarisation).
+\begin{equation}
+    F_{\mathrm{tot}} = F_1 + \frac{F_2 - 1}{G_1} + \frac{F_3 - 1}{G_1 G_2} + \cdots + \frac{F_n - 1}{G_1 G_2 \cdots G_{n-1}}
+\label{eq:friis}
+\end{equation}
+Où : 
+\begin{description}
+    \item[$F_n$] : sont les facteurs de bruit linéaires des étages successifs 
+    \item[$G_n$] : sont les gains linéaires des étages successifs
+\end{description}
+Avec :
+\begin{equation}
+    F = \frac{\mathrm{SNR}_\mathrm{in}}{\mathrm{SNR}_\mathrm{out}}
+\label{eq:facteurbruit}
+\end{equation}
+Où : 
+\begin{description}
+    \item[$SNR_{in}$] : SNR en entrée du dispositif
+    \item[$SNR_{out}$] : SNR en sortie du dispositif
+\end{description}
+en dB (figure de bruit) :
+\begin{equation}
+    \mathrm{NF} = 10 \log_{10}(F)
+\label{eq:figurebruit}
+\end{equation}
+Où : 
+\begin{description}
+    \item[$F_n$] : figure de bruit [$dB$]
+    \item[$G_n$] : facteur de bruit
+\end{description}
 
-Antennes actives vs passives, antennes MIMO pour SAR.
+Le signal amplifié est ensuite translaté en fréquence intermédiaire (IF) via un mélangeur. Ce composant est fortement dépendant de la qualité de l’oscillateur local (LO) utilisé. Le bruit de phase du LO se transfère directement dans le signal IF et limite la cohérence de phase. Le mélangeur doit également présenter une bonne isolation entre ses ports RF, LO et IF, afin d’éviter les réinjections indésirables.
+
+Des filtres sont placés avant et après le mélangeur pour rejeter les fréquences indésirables, limiter le bruit hors bande et façonner la bande utile. Leur sélectivité, fréquence de coupure, bande passante et pertes d'insertion sont des exemples de caractéristique RF essentielles à prendre en compte pour le choix d'un filtre. Pour ce type de dispositif passif, un tableau de paramètre S obtenu via simulation ou mesure à l'aide d'un analyseur vectorielle caractérise complètement la réponse fréquentielle. Enfin, un amplificateur IF adapte le niveau du signal au convertisseur analogique-numérique (ADC), parfois avec une commande automatique de gain (AGC) pour compenser les variations de puissance.
+
+A l'émission les dispositifs utilisés sont sensiblement les mêmes exceptés pour l'amplificateur RF. En effet, il est d'usage d'utilisé un HPA (High Power Amplifier) afin de privilégié une puissance de sortie maximale. En effet, un compromis est à faire lors de la conception d'un amplificateur entre adaptation faible bruit et gain maximale. 
+
+\subsubsection{Synthèse de fréquence et oscillateurs locaux}
+
+La génération et la stabilité du signal de référence constituent un aspect critique pour la cohérence du radar. Le générateur de fréquence est souvent basé sur une boucle à verrouillage de phase (PLL) pilotant un oscillateur commandé en tension (VCO). Le bruit de phase et la stabilité en fréquence du LO déterminent la performance de focalisation du SAR et la qualité de la compression d’impulsion. Une gigue excessive se traduit par un élargissement des lobes secondaires et une dégradation de la résolution. Les architectures modernes utilisent des synthétiseurs numériques directs (DDS) combinés à des PLL à faible bruit, parfois complétés par une compensation numérique de phase pour améliorer la cohérence temporelle. 
+
+\subsubsection{Conversion analogique-numérique}
+
+La dernière étape de la chaîne RF est la numérisation du signal par un convertisseur analogique-numérique (CAN ou ADC). Le choix de ce composant conditionne la finesse d’échantillonnage et la dynamique du système. Le taux d’échantillonnage doit être au moins deux fois supérieur à la bande du signal radar, souvent de plusieurs centaines de mégaéchantillons par seconde pour les radars à large bande. La résolution en bits (12 à 14 bits typiquement) fixe la dynamique du système et la capacité à détecter des cibles faibles. Le jitter de l’horloge et la non-linéarité de conversion se traduisent respectivement par du bruit de phase additionnel et une distorsion d’amplitude, altérant la compression d’impulsion. L’intégration d’ADCs RF à échantillonnage direct tend à simplifier les architectures en supprimant l’étage IF, tout en exigeant des circuits numériques performants (FPGA, SoC) pour le traitement en temps réel.
+
+\subsubsection{Conclusion}
+
+Pour conclure, la performance des systèmes SAR résulte d’un compromis complexe entre linéarité, bruit, bande passante et stabilité des chaînes RF.
+Le facteur de bruit global est principalement déterminé par les premiers étages de la chaîne : antenne, circulateur et amplificateur à faible bruit (LNA), tandis que les caractéristiques de linéarité et le bruit de phase des étages suivants influencent directement la qualité de l’image reconstruite. Les pertes d’insertion dues aux composants passifs (circulateurs, commutateurs, connecteurs, câblages) doivent être minimisées, car elles dégradent irréversiblement le rapport signal sur bruit. La linéarité du signal chirp constitue un paramètre essentiel : toute non-linéarité en amplitude ou en phase engendre des distorsions lors de la compression d’impulsion, affectant la réponse impulsionnelle et la résolution spatiale. Les étages actifs (amplificateurs, mélangeurs) doivent donc être sélectionnés et polarisés de manière à maintenir une pureté spectrale optimale. Le contrôle du bruit de phase des oscillateurs locaux et des boucles à verrouillage de phase est également critique. Un bruit de phase excessif réduit la cohérence temporelle et altère la compression d’impulsion, tandis que le jitter de l’horloge d’échantillonnage de l’ADC limite la dynamique effective du convertisseur, dégradant la qualité de la mesure. La cohérence fréquentielle sur l’ensemble de la bande utile, depuis l’antenne jusqu’à l’ADC, conditionne la résolution en distance obtenue. Chaque composant doit transmettre le signal sans distorsion sélective, ce qui représente un défi majeur pour les radars large bande. Les variations de gain et la dispersion fréquentielle doivent être soigneusement compensées par la conception ou la calibration. Les tendances actuelles montrent une intégration croissante des fonctions RF dans des modules compacts basés sur des technologies SiGe ou GaN, combinant hautes performances, faible consommation et masse réduite, des qualités particulièrement adaptées aux plateformes aériennes et embarquées. Enfin, la calibration et la compensation numérique constituent un prolongement indispensable de la conception RF. Les techniques modernes d’étalonnage de gain et de phase, ainsi que les méthodes de correction de linéarité en traitement numérique, permettent de restaurer la cohérence globale du système. Ainsi, la performance d’un radar SAR découle d’une approche systémique, fondée sur l’optimisation conjointe des maillons RF et des traitements numériques, garantissant une imagerie cohérente, précise et robuste, même sur des plateformes compactes comme les drones.
 
 
-\subsection{Gestion des données}
 
-Débits très élevés (plusieurs centaines de Mo/s).
-
-Stockage embarqué (SSD industriels) ou transfert vers station au sol.
-
-
-\subsection{Alimentation et contraintes embarquées}
-
-Gestion énergétique, rendement RF.
-
-Dissipation thermique, miniaturisation et fiabilité.

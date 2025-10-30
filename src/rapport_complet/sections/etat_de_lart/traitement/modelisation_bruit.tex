@@ -1,1 +1,111 @@
-\subsection{Modélisation du bruit}\label{subsec:modelisation_bruit}
+\section{Chaîne de traitement}
+\subsection{Modélisation du bruit en imagerie SAR}\label{subsec:modelisation_bruit}
+
+Les images SAR acquises par drone sont affectées par diverses sources de dégradation affectant la qualité radiométrique et la capacité d'extraction d'information. Contrairement aux systèmes optiques où le bruit additif gaussien domine, les systèmes SAR présentent une complexité particulière due à la nature cohérente du signal. Cette section se concentre sur la modélisation du speckle, source de bruit prédominante en imagerie SAR terrestre, tout en mentionnant brièvement les autres contributions bruits instrumentaux et artefacts de traitement.
+
+\subsubsection{Speckle : bruit de cohérence multiplicatif}
+
+% \paragraph{Origines physiques}
+
+Le speckle est un phénomène d'interférence cohérente résultant de la superposition des retours rayonnés par de multiples diffuseurs ponctuels répartis dans une même cellule résolution radar \cite{goodman1976speckle}. Chaque diffuseur contribue au signal reçu avec une amplitude et une phase dépendant de sa position et de ses propriétés de rétrodiffusion. Les variations sub-pixel de la géométrie de diffusion engendrent des phases aléatoires, provoquant des interférences constructives ou destructives dont la résultante est aléatoire. Cette interférence incohérente se traduit, dans les images SAR, par une granularité affectant la radiométrie locale et réduisant significativement la qualité visuelle et la détectabilité des cibles \cite{lee1986speckle}.
+
+Pour les systèmes SAR sur drone opérant sur des zones terrestres naturelles (végétation, surfaces rugueuses), le speckle constitue la source de bruit dominante et limite directement la capacité à distinguer les variations de réflectivité dues à des variations de propriétés physiques de la scène (humidité, minéralogie, etc.).
+
+% \paragraph{Modèle multiplicatif et distributions statistiques}
+
+D'un point de vue statistique, le speckle dans une image SAR monopolarisée suit un modèle multiplicatif fondamental. Pour une image radar monocanal (single-look), l'intensité observée $I$ résulte du produit entre la réflectivité déterministe de la scène $\sigma$ et une composante de speckle multiplicatif $n$ \cite{lee1986speckle} :
+
+\begin{equation}
+I = \sigma \cdot n.
+\label{eq:modele_mutliplicatif}
+\end{equation}
+
+Sous l'hypothèse de retours mono-look et supposant un fond de rétrodiffusion constant, le speckle suit une distribution exponentielle négative \cite{lee1986speckle} :
+
+\begin{equation}
+p_I(I) = \frac{1}{\mu} \exp\left(-\frac{I}{\mu}\right),
+\label{eq:expo_speckle}
+\end{equation}
+où $\mu = \mathbb{E}[I]$ est la réflectivité moyenne de la cellule. L'amplitude correspondante suit une distribution de Rayleigh, avec un rapport écart-type sur moyenne constant égal à $\sqrt{\pi/4 - 1} \approx 0.5227$, une signature distinctive et invariante du caractère multiplicatif du bruit \cite{lee1986speckle,oliver1993enl}.
+
+Pour un traitement multi-look combinant $N$ observations indépendantes par moyenne incohérente (typique en SAR sur drone où plusieurs passes répétées fournissent des observations décorrélées), la distribution de l'intensité devient une loi gamma \cite{lee1986speckle,oliver1993enl} :
+
+\begin{equation}
+p_I(I) = \frac{N^N}{\Gamma(N)\mu^N} I^{N-1} \exp\left(-\frac{N I}{\mu}\right),
+\label{eq:gamma_speckle}
+\end{equation}
+où $\Gamma$ est la fonction gamma d'Euler et $N$ le nombre équivalent de looks (Equivalent Number of Looks, ENL) \cite{anfinsen2009enl,oliver1993enl}. L'ENL caractérise le compromis entre réduction du speckle et préservation de la résolution radiométrique.
+
+% \paragraph{Contraste speckle et implications pour les systèmes drone}
+
+Le contraste relatif du speckle, défini comme le Coefficient de Variation (ratio écart-type sur moyenne de l'intensité), s'exprime en fonction du nombre de looks \cite{oliver1993enl,mansourpour2006speckle} :
+
+\begin{equation}
+C_{\mathrm{speckle}} = \frac{\sigma_I}{\mathbb{E}[I]} = \frac{1}{\sqrt{N}}.
+\label{eq:contraste_speckle}
+\end{equation}
+
+Pour une image mono-look ($N = 1$), ce contraste vaut 1, indiquant une variance extrêmement importante du speckle. Pour une image multi-look ($N > 1$), le contraste diminue comme $1/\sqrt{N}$. Pour les systèmes SAR sur drone opérant avec des trajectoires répétées ou des apertures synthétiques multi-vues, atteindre $N = 4$ à $N = 8$ réduit le contraste speckle de 50\% à 65\%, permettant une amélioration significative de la qualité image au prix d'une dégradation modérée de la résolution spatiale \cite{lee1994speckle}.
+
+% \paragraph{Modèles additifs alternatifs}
+
+Bien que le modèle multiplicatif soit prépondérant en domaine linéaire (intensité brute), deux contextes justifient des approches alternatives :
+
+\begin{enumerate}
+\item Domaine logarithmique : Une transformation logarithmique convertit le modèle multiplicatif en additif : $\ln(I) = \ln(\sigma) + \ln(n)$ \cite{lee1994speckle}. Cette linearisation simplifie le traitement et permet d'appliquer des filtres linéaires conventionnels.
+
+\item SAR polarimétriques : Les matrices de covariance des images SAR polarimétriques multi-looks présentent une structure hybride où les éléments diagonaux (puissance de chaque canal) suivent une distribution gamma multiplicative, tandis que les éléments hors-diagonaux possèdent une composante additive croissante en zones de basse cohérence \cite{lee2003polsar}.
+\end{enumerate}
+
+\subsubsection{Autres sources de bruit et artefacts}
+
+Au-delà du speckle, les images SAR drone présentent plusieurs autres sources de dégradation, généralement d'impact secondaire en zone terrestre :
+
+% \paragraph{Bruit thermique instrumental}
+
+Le bruit thermique additif provient de l'émission aléatoire des composants électroniques du système radar (amplificateurs, récepteur, ADC). Ce bruit suit une distribution gaussienne et s'exprime par le \textit{Noise Equivalent Sigma Zero} (NESZ), défini comme la section efficace radar équivalente du plancher de bruit. Pour les systèmes SAR drone opérant sur zone terrestre avec rétrodiffusions modérées à fortes ($\sigma_0 > -10 dB$), le NESZ reste largement subordonné au speckle, avec des contributions typiques de l'ordre de $-20$ à $-25$ dB \cite{curlander1991sar}. Le NESZ devient prépondérant uniquement en zones de très faible rétrodiffusion (océans calmes, lacs), non pertinentes pour les applications UAV-SAR terrestres.
+
+% \paragraph{Ambiguïtés distance et azimut}
+
+Les ambiguïtés de distance et azimut résultent du sous-échantillonnage spatial ou temporel du signal radar, se manifestant par des répliques fantômes de cibles à des positions fixes déterminées par la PRF et la géométrie d'acquisition \cite{curlander1991sar}. Pour les systèmes SAR drone avec conception soignée, les taux d'ambiguïté restent typiquement en dessous de $-20$ dB, visibles seulement en présence de cibles très brillantes (coins réflecteurs, structures métalliques). En zone naturelle, ces artefacts restent négligeables devant le speckle.
+
+% \paragraph{Lobes secondaires de traitement}
+
+Les lobes secondaires (sidelobes) résultent de la transformée de Fourier appliquée lors de la compression d'impulsion et la synthèse d'ouverture. Leur niveau dépend de la fonction de fenêtrage (typiquement $-13$ dB pour fenêtre rectangulaire, $-30$ à $-40$ dB pour fenêtres apodisées) \cite{cumming2005}. Ces artefacts sont également négligeables devant le speckle dans les applications terrain classiques.
+
+% \paragraph{Perturbations liées au système drone}
+
+Pour les systèmes SAR portés par drone, des contributions spécifiques apparaissent \cite{grathwohl2025uavbased} :
+\begin{itemize}
+\item Instabilités de trajectoire introduisant des erreurs de phase (compensées par autofocus, précisé en \ref{sebsec:algo_autofocus})
+\item Dérive temporelle de l'horloge et du générateur de fréquence (non critique pour systèmes FMCW stables)
+\item Vibrations du drone influençant la stabilité du diagramme d'antenne
+\end{itemize}
+
+Ces perturbations sont généralement corrigées par les algorithmes de traitement (autofocus, compensation de phase) et ne constituent pas une source primaire de bruit dans les images finales.
+
+\subsubsection{Hiérarchie typique des bruits en SAR drone terrestre}
+
+Pour synthétiser, la Table~\ref{tab:noise_hierarchy_uav} présente les ordres de grandeur typiques des contributions pour un système SAR sur drone en zone terrestre :
+
+\FloatBarrier
+\begin{table}[h!]
+\centering
+\begin{tabular}{lcc}
+\hline
+\textbf{Source de bruit} & \textbf{Niveau typique} & \textbf{Impact} \\
+\hline
+Speckle mono-look & \(C = 1.0\) (100\%) & Dominant \\
+Speckle multi-look (\(N=4\)) & \(C = 0.5\) (50\%) & Dominant \\
+Bruit thermique (NESZ) & \(-22\) à \(-25\) dB & Secondaire \\
+Ambiguïtés (\(N \times N\) cibles) & \(-20\) dB & Secondaire \\
+Lobes secondaires (rect.) & \(-13\) dB & Négligeable \\
+\hline
+\end{tabular}
+\caption{Hiérarchie typique des sources de bruit pour un système SAR drone en zone terrestre}
+\label{tab:noise_hierarchy_uav}
+\end{table}
+\FloatBarrier
+\subsubsection{Implication pour le traitement}
+
+Cette hiérarchie confirme que pour les applications SAR sur drone en zone terrestre, le speckle constitue l'enjeu majeur du traitement d'image. Les algorithmes de filtrage doivent être optimisés pour réduire le contraste speckle multiplicatif tout en préservant les contours et structures géomorphologiques pertinents pour les applications d'analyse de terrain. Cependant, dans le cadre de ce projet, le de-speckling ne sera pas traité.

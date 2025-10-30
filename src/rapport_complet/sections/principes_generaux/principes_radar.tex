@@ -81,10 +81,10 @@ Avant d’aborder les techniques avancées d’imagerie SAR, il est utile de rap
     \label{fig:schema_base_radar}
 \end{figure}
 
-La puissance reçue $P_r$ s’exprime selon l’« équation radar » classique \cite{richards2010} :
+\noindent La puissance reçue $P_r$ s’exprime selon l’« équation radar » classique \cite{richards2010} :
 
 \begin{equation}
-    P_r = \frac{P_t . G^2 . \lambda^2. \sigma}{(4.\pi)^3 R^4}
+    P_r = \frac{P_t \cdot G^2 \cdot \lambda^2 \cdot \sigma}{(4\cdot\pi)^3\cdot R^4}.
     \label{eq:equation_radar}
 \end{equation}
 Où : 
@@ -98,10 +98,12 @@ Où :
 \end{description}
 \vspace{1em}
 
+Les deux points importants dans cette équation sont le terme $R^4$ et $\sigma$. Dans le contexte de la propagation d'onde, il est considéré qu'une onde électromagnétique se propage sur une sphère isotrope. Or, cela implique que la puissance décroît proportionnellement au carré de la distance de propagation. Dans notre cas, l'onde fait un aller-retour, la décroissance est donc proportionnelle à $R^4$. La surface équivalente radar permet de caractériser une cible. Elle représente la capacité d’un objet à réfléchir les ondes électromagnétiques d’un radar vers l’émetteur, fournissant ainsi une mesure de sa visibilité pour les systèmes de détection. Sa valeur dépend de la forme, de la taille, des matériaux de la cible, ainsi que de la fréquence et l’angle d’incidence du signal radar.
+
 Le faisceau est caractérisé par un angle d’ouverture $\theta$, qui influence directivité et portée : un faisceau étroit accroît la portée mais requiert une connaissance approximative de la position de la cible, tandis qu’un faisceau large permet de couvrir une zone plus étendue au détriment de la distance atteignable. On peut estimer $\theta$ par \cite{skolnik2001,richards2010} :
 
 \begin{equation}
-    \theta \approx \frac{\lambda}{L}
+    \theta \approx \frac{\lambda}{L}.
     \label{eq:approx_angle_ouverture_antenne}
 \end{equation}
 Où :
@@ -115,7 +117,7 @@ Où :
 Pour mesurer la vitesse relative, on s’appuie sur l’effet Doppler–Fizeau, qui décale la fréquence de l’onde réfléchie selon la vitesse $\nu_r$ de la cible par rapport à l’émetteur comme l'illustre la figure \ref{fig:illustration_effet_doppler}. La fréquence Doppler $f_d$ s’exprime \cite{skolnik2001} :
 
 \begin{equation}
-    f_d = \frac{2.\nu_r.f_0}{c_0}
+    f_d = \frac{2\cdot\nu_r \cdot f_0}{c_0}.
     \label{eq:frequence_doppler}
 \end{equation}
 Où :
@@ -165,19 +167,19 @@ Au-delà de la géométrie et de la puissance, la nature du signal émis conditi
 Les impulsions courtes et puissantes (\emph{pulses}) sont suivies de périodes d’écoute pour capter les échos (voir figure \ref{fig:impulsions_radar_avec_echo}). La détection s’effectue via un filtre adapté, produisant un pic de corrélation dont le délai $\tau_e$ permet de calculer la distance, puisque la célérité du canal est connue \cite{richards2010}. La résolution en distance s’exprime :
 
 \begin{equation}
-    \delta_d \ge \frac{c_0\,\tau_p}{2} = \frac{c_0}{2\,B}
+    \delta_d \ge \frac{c_0 \cdot \tau_p}{2} = \frac{c_0}{2 \cdot B},
     \label{eq:resolution_distance_pulse}
 \end{equation}
-où $\tau_p$ est la durée de l’impulsion et $B$ sa bande de fréquence. Un compromis est nécessaire entre résolution en distance (favorisée par des impulsions courtes) et résolution en vitesse (favorisée par des impulsions longues), cette dernière s’exprimant :
+où $\tau_p$ est la durée de l’impulsion et $B$ sa bande de fréquence. Un compromis est nécessaire entre résolution en distance (favorisée par des impulsions courtes), résolution en vitesse (favorisée par des impulsions longues) et l'occupation spectrale (favorisée par des impulsions longues), cette dernière s’exprimant :
 
 \begin{equation}
-    \delta\nu_r = \frac{\lambda_0}{2\,\tau_p} = \frac{\lambda_0\,B}{2}
+    \delta\nu_r = \frac{\lambda_0}{2\cdot\tau_p} = \frac{\lambda_0\cdot B}{2}.
     \label{eq:resolution_vitesse_impulsions}
 \end{equation}
 L’ambiguïté de portée maximale non ambiguë pour les radars à impulsion est donnée par \cite{skolnik2001,radartutorial} :
 
 \begin{equation}
-    \delta_{\max} = \frac{c_0\,(T_p - \tau_p)}{2}
+    R_{\max} = \frac{c_0\cdot(T_p - \tau_p)}{2}.
     \label{eq:resolution_distance_max_radar_pulse}
 \end{equation}
 
@@ -217,10 +219,10 @@ L’ambiguïté de portée maximale non ambiguë pour les radars à impulsion es
 \end{figure}
 
 \subsubsection{Impulsions modulées}
-La modulation linéaire (\emph{chirp} Sawtooth) fait varier la fréquence sur une bande $B_{ch}$, améliorant le pic de corrélation pour la résolution en distance :
+La modulation linéaire (\emph{chirp} Sawtooth) fait varier la fréquence sur une bande $B_{ch}$, améliorant le pic de corrélation pour la résolution en distance. C'est cette complexité spectrale (la large bande $B_ch$) qui permet, après corrélation, d'obtenir un pic fin proportionnel à $\frac{1}{B_ch}$, et non à la durée de l'impulsion :
 
 \begin{equation}
-    \delta_d = \frac{c_0}{2\,B_{ch}}
+    \delta_d = \frac{c_0}{2\cdot B_{ch}}.
     \label{eq:resolution_en_distance_chirp}
 \end{equation}
 
@@ -344,15 +346,15 @@ La modulation triangulaire FMCW, illustrée figure \ref{fig:fmcw_avec_echo}, ém
 \end{figure}
 \FloatBarrier
 
-Les résolutions s’expriment alors \cite{richards2010} :
+\noindent Les résolutions s’expriment alors \cite{richards2010} :
 
 \begin{equation}
-    \delta_d = \frac{c_0}{2\,B_{ch}}
+    \delta_d = \frac{c_0}{2\cdot B_{ch}},
     \label{eq:resolution_distance_fmcw_triangulaire}
 \end{equation}
 
 \begin{equation}
-    \delta\nu_r = \frac{c_0}{2\,f_0\,T_r}
+    \delta\nu_r = \frac{c_0}{2\cdot f_0\cdot T_r}.
     \label{eq:resolution_vitesse_fmcw_triangulaire}
 \end{equation}
 
@@ -362,17 +364,16 @@ On remarque ainsi que les deux résolutions ne sont pas inversement liées. On p
 
 \subsection{Le bruit}
 
-Jusqu’à présent, le bruit a été négligé. Or, il est indispensable de le modéliser pour évaluer la performance réelle. Le \emph{signal} désigne les échos utiles, tandis que le \emph{bruit} englobe toutes les perturbations (interférences, hydrométéores, bruit thermique des composants). Le rapport signal-sur-bruit (SNR) se définit \cite{skolnik2001} :
+Jusqu’à présent, le bruit a été négligé. Or, il est indispensable de le modéliser pour évaluer la performance réelle. Le signal désigne les échos utiles, tandis que le bruit englobe toutes les perturbations (interférences, hydrométéores, bruit thermique des composants). Le rapport signal-sur-bruit (SNR) se définit \cite{skolnik2001} :
 
 \begin{equation}
-    SNR = \frac{P_{signal}}{P_{bruit}}
+    SNR = \frac{P_{signal}}{P_{bruit}},
     \label{eq:snr}
 \end{equation}
-
 et le facteur de bruit d’un dispositif, selon Friis \cite{skolnik2001,Friis1944Noise}, :
 
 \begin{equation}
-    F = \frac{(S/N)_e}{(S/N)_s} = \frac{N_s}{G.N_e}
+    F = \frac{(S/N)_e}{(S/N)_s} = \frac{N_s}{G\cdot N_e}.
     \label{eq:facteur_de_bruit}
 \end{equation}
 Où :
@@ -384,10 +385,10 @@ Où :
 \end{description}
 \vspace{1em}
 
-Le facteur de bruit représente donc le rapport entre le RSB en entrée et le RSB en sortie. La deuxième partie de l'équation permet de définir $F$ par rapport à une référence de bruit thermique en entrée à $T_0 = 290 \degree K$, tel que $N_e = k.T_0.B$ avec $k$ la constante de Boltzmann et $B$ la bande de fréquence observée. On définit alors la température équivalente de bruit \cite{Friis1944Noise} :
+Le facteur de bruit représente donc le rapport entre le RSB en entrée et le RSB en sortie. La deuxième partie de l'équation permet de définir $F$ par rapport à une référence de bruit thermique en entrée à $T_0 = 290 \degree K$, tel que $N_e = k\cdot T_0 \cdot B$ avec $k$ la constante de Boltzmann et $B$ la bande de fréquence observée. On définit alors la température équivalente de bruit \cite{Friis1944Noise} :
 
 \begin{equation}
-    T_{eq} = (F-1).T_0 
+    T_{eq} = (F-1)\cdot T_0 .
     \label{eq:temp_eq_de_bruit}
 \end{equation}
 Où :
@@ -396,8 +397,9 @@ Où :
     \item[$F$] : Le facteur de bruit
     \item[$T_0$] : La température de référence ($290 \degree K$) [$\degree K$]
 \end{description}
+\vspace{1em}
 
-Les figures \ref{fig:illus_snr_facteur_de_bruit} et \ref{fig:snr_degradation} illustrent l’évolution du SNR à travers une chaîne RF et l’importance du premier étage, qui conditionne la performance globale.
+La figure \ref{fig:snr_degradation} illustre l'évolution du SNR à travers de la chaîne RF présentée par la figure \ref{fig:illus_snr_facteur_de_bruit}. Elles montrent l'importance du premier dans la performance globale du système.
 
 \FloatBarrier
 \begin{figure}[htbp]
@@ -464,25 +466,21 @@ Les figures \ref{fig:illus_snr_facteur_de_bruit} et \ref{fig:snr_degradation} il
     \label{fig:snr_degradation}
 \end{figure}
 
-Le gain total d’une chaîne de $n$ éléments s’exprime par \cite{Friis1944Noise} :
+\noindent Le gain total d’une chaîne de $n$ éléments s’exprime par \cite{Friis1944Noise} :
 \begin{equation}
-    G_T = \prod_{i=1}^n G_i
+    G_T = \prod_{i=1}^n G_i,
     \label{eq:gain_total}
 \end{equation}
-
 et le facteur de bruit total par la formule de Friis :
-
 \begin{equation}
-    F_T = F_1 + \sum_{i=2}^n \frac{F_i - 1}{\prod_{k=1}^{i-1} G_k}
+    F_T = F_1 + \sum_{i=2}^n \frac{F_i - 1}{\prod_{k=1}^{i-1} G_k}.
     \label{eq:formule_friis_bruit}
 \end{equation}
 
-La sélection soignée du premier composant est cruciale pour limiter la dégradation globale du SNR. 
+La sélection soignée du premier composant est cruciale pour limiter la dégradation globale du SNR. Avec ces notions établies, la section \ref{sec:principes_sar} détaillera les principes spécifiques à l’imagerie radar, en particulier le SAR.
 
-Avec ces notions établies, la section \ref{sec:principes_sar} détaillera les principes spécifiques à l’imagerie radar, en particulier le SAR.
-
-\subsection{Architecture matérielle}
-% Pertinence ? Si oui à quel niveau on descend ?
+% \subsection{Architecture matérielle}
+% % Pertinence ? Si oui à quel niveau on descend ?
 
 \subsection{Applications}
 

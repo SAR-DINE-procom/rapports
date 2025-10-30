@@ -1,4 +1,4 @@
-\subsection{Différents algorithmes de synthèse d'ouverture}
+\subsection{Différents algorithmes de synthèse d'ouverture}\label{subsec:algo_traitement}
 Cette section porte sur la présentation puis la comparaison des différents algorithmes de formation d'image de radar à synthèse d'ouverture. L'objectif ici est de présenter de manière synthétique les différents algorithmes ; le choix de l'algorithme utilisé dans ce projet est détaillé dans la partie [ref].
 
 \subsubsection{La compression en distance} \label{subsubsec:compression_dist}
@@ -6,19 +6,19 @@ L'opération de compression en distance dans les algorithmes de traitement SAR e
 Pour expliquer ce principe, on considère un radar pulsé non modulé en fréquence.
 \noindent On part de l'expression classique
 \[
-\tau = \frac{2R}{c}
+\tau = \frac{2R}{c}.
 \]
 \noindent Avec la différenciation, on obtient
 \[
-\Delta R = \frac{c \Delta \tau}{2}
+\Delta R = \frac{c \Delta \tau}{2}. 
 \]
 \noindent On fait apparaître ici la résolution en distance $\Delta R$ et le temps minimal pour distinguer deux impulsions $\Delta \tau$, que l'on peut transformer en $T_p$, la durée d'une impulsion, ce qui nous donne
 \begin{equation}
 \label{eq: delta_r}
-    \Delta R = \frac{c T_p}{2}
+    \Delta R = \frac{c T_p}{2}. 
 \end{equation}
 
-\noindent Nous faisons alors face à un dilemme : pour améliorer notre résolution spatiale, nous devons réduire la durée de notre impulsion. Cependant, réduire la durée du pulse diminue la quantité d'énergie transmise et, par conséquent, la capacité à détecter des cibles moins réfléchissantes ou plus lointaines. \\
+\noindent On fait alors face à un dilemme : pour améliorer notre résolution spatiale, on doit réduire la durée de notre impulsion. Cependant, réduire la durée du pulse diminue la quantité d'énergie transmise et, par conséquent, la capacité à détecter des cibles moins réfléchissantes ou plus lointaines.\\
 C'est pourquoi on utilise des codes modulés en fréquence. On peut exprimer le signal reçu par l'expression suivante.
 \begin{equation}
 s(t) =
@@ -38,28 +38,31 @@ A \, e^{j 2\pi \left(\nu_0 + \tfrac{1}{2} \tfrac{\Delta \nu}{T}t\right)t}, & \te
 \end{equation}
 L'expression de la fonction d'intercorrélation est donnée par
 \begin{equation}
-    R_{s,s'} = (s \star s')(t)
+    R_{s,s'} = (s \ast s')(t). 
 \end{equation}
 
 \[
-R_{s,s'}(t) = \int_{-\infty}^{+\infty} s(t) \, s'(t-\tau) \, dt
+R_{s,s'}(t) = \int_{-\infty}^{+\infty} s(t) \, s'(t-\tau) \, dt. 
 \]
 
-On obtient alors le résultat suivant :
+\noindent On obtient alors le résultat suivant :
 \begin{equation}
-    R_{s,s'}(t) = T \, \Lambda \!\left( \frac{t}{T} \right) \, \text{sinc} \!\left( \pi \Delta f \cdot T \cdot \Lambda \!\left( \frac{t}{T} \right) \right) \cdot e^{i 2 \pi f_0 t}
+    R_{s,s'}(t) = T \, \Lambda \!\left( \frac{t}{T} \right) \, \text{sinc} \!\left( \pi \Delta f \cdot T \cdot \Lambda \!\left( \frac{t}{T} \right) \right) \cdot e^{i 2 \pi f_0 t}. 
 \end{equation}
-
+\noindent Avec $\Lambda(T)$ la fonction triangle de largeur T. 
 La largeur temporelle du terme de sinus cardinal à -3 dB (largeur au niveau de la moitié du lobe principal) est $T'$, tel que
 \begin{equation}
-    T' \simeq \frac{1}{B}
+    T' \simeq \frac{1}{B}. 
 \end{equation}
 
 En réinjectant ce résultat dans l'expression \ref{eq: delta_r}, on obtient l'expression suivante
 \begin{equation}
-    \delta_r=\frac{c}{2B}
+    \delta_r=\frac{c}{2B}. 
 \end{equation}
-D'où le résultat de l'expression [ref]. On vient de démontrer l'intérêt des méthodes de compression en distance pour l'amélioration de la résolution en distance. À noter qu'en pratique, on travaille en fréquentiel : l'opération de convolution dans le domaine temporel devient alors un produit simple dans le domaine fréquentiel.
+D'où le résultat de l'expression [ref]. On vient de démontrer l'intérêt des méthodes de compression en distance pour l'amélioration de la résolution en distance. À noter qu'en pratique, on travaille en fréquentiel : l'opération de convolution dans le domaine temporel devient alors un produit simple dans le domaine fréquentiel. \\ 
+La compression en distance dans le traitement SAR, bien qu’efficace pour améliorer la résolution radiale, présente plusieurs limitations et sources d’artefacts qui doivent être considérées pour une analyse complète. Une des principales imperfections est l’apparition de lobes secondaires temporels lorsque l’impulsion compressée n’est pas parfaitement rectangulaire, mais ressemble à une fonction sinus cardinal (sinc). Ces lobes secondaires peuvent masquer ou confondre la détection de cibles proches du lobe principal, car leur énergie se répartit à des instants différents, ce qui peut introduire des ambiguïtés de détection ou des fausses alarmes.
+
+Pour limiter l’impact des lobes secondaires, on utilise des techniques de pondération (fenêtrage) telles que les fenêtres de Hamming ou de Hanning lors du filtrage adapté, ce qui atténue ces artefacts mais au prix d’une légère dégradation du rapport signal sur bruit. Par ailleurs, la compression exige une bande passante élevée et une électronique sophistiquée, augmentant la complexité et le coût du système radar. Enfin, la présence de bruit dans le signal reçu, souvent modélisé comme du bruit blanc gaussien, affecte la qualité de la compression, en particulier pour les cibles faibles ou situées loin du radar, nécessitant un dimensionnement précis des algorithmes de filtrage pour maintenir de bonnes performances de détection
 
 \subsubsection{Range-Doppler Algorithm (RDA)}
 L'algorithme Range-Doppler (RDA) est une méthode très répandue en formation d'image SAR, développée à la fin des années 1970. Son principe repose sur deux étapes principales : la compression en distance pour obtenir une résolution fine en portée, suivie d'une transformée de Fourier Doppler en azimut permettant de séparer puis de compresser les différentes fréquences Doppler induites par le mouvement relatif radar-cible. Le RDA corrige ensuite la migration des cellules de portée via une interpolation (RCMC) dans le domaine fréquentiel. Cette approche exploite la séparabilité entre le traitement en distance et en azimut, offrant un bon compromis entre efficacité de calcul et qualité d'image, mais nécessite une trajectoire quasi linéaire et stable pour conserver la cohérence de phase nécessaire à la formation précise des images. \cite{krieger1998digital} \\
@@ -75,12 +78,12 @@ L'article cité \cite{WiSPNET2025RangeDoppler} étudie la performance de l’alg
 \paragraph{Première version : compression directe en azimut}
 Cette étape est sensiblement similaire à l'opération décrite en \ref{subsubsec:compression_dist}, à la différence que l'on peut remplacer l'expression \ref{eq: signal_ref} par l'expression (en fréquentiel) suivante \cite{WiSPNET2025RangeDoppler}
 \begin{equation}
-    H_a = \exp\!\left( j \, \frac{4 \pi f_0}{c \, R_{0r} \, D} \right)
+    H_a = \exp\!\left( j \, \frac{4 \pi f_0}{c \, R_{0r} \, D} \right). 
 \end{equation}
 Avec :
 \begin{description}
-    \item $R_{0r} = \left(R_c + \frac{c}{2B}\right) \cos{\theta}$ [m] : la distance radiale projetée au sol ($\theta$ étant l'angle formé entre le faisceau et la trajectoire du porteur),
-    \item $D = \sqrt{1 - \left( \dfrac{c \cdot \mathrm{PRF}}{2 f_0 v}\right)}$ [Hz/s] : le \textit{Doppler rate}, traduisant la vitesse à laquelle le décalage Doppler évolue sur l’axe d’acquisition radar.
+    \item $R_{0r} = \left(R_c + \frac{c}{2B}\right) \cos{\theta}$ $[m]$ : la distance radiale projetée au sol ($\theta$ étant l'angle formé entre le faisceau et la trajectoire du porteur),
+    \item $D = \sqrt{1 - \left( \dfrac{c \cdot \mathrm{PRF}}{2 f_0 v}\right)}$ $[Hz/s]$ : le \textit{Doppler rate}, traduisant la vitesse à laquelle le décalage Doppler évolue sur l’axe d’acquisition radar.
 \end{description}
 
 \paragraph{Deuxième version : corrections additionnelles en distance et azimut}
@@ -95,12 +98,12 @@ La première opération est la correction secondaire en distance. L'objectif de 
 \FloatBarrier
 Dans notre cas, cet angle étant nul, ce phénomène de couplage est nul. Toutefois, cette opération fait également une compensation de certains effets de migration de cellule. Ici encore, on réalise un filtrage adapté, mais cette fois-ci l'expression (dans le domaine fréquentiel) est la suivante \cite{WiSPNET2025RangeDoppler}
 \begin{equation}
-    H_{\mathrm{src}} = \exp\left(-\mathrm{j}\,\frac{\pi f_r^2}{K_{\mathrm{src}}}\right)
+    H_{\mathrm{src}} = \exp\left(-\mathrm{j}\,\frac{\pi f_r^2}{K_{\mathrm{src}}}\right). 
 \end{equation}
 Avec :
 \begin{description}
     \item $K_{\mathrm{src}}$ [$\mathrm{s}^{-2}$] : le \textit{chirp rate} pour la correction secondaire en distance, dépendant de la fréquence centrale, du \textit{Doppler rate}, de la vitesse, de la célérité et du PRF,
-    \item $f_r = \dfrac{B}{N_r}$ [Hz] : la résolution fréquentielle en distance.
+    \item $f_r = \dfrac{B}{N_r}$ $[Hz]$ : la résolution fréquentielle en distance.
 \end{description}
 
 Ensuite, pour corriger la migration de cellule, on réalise une interpolation dans le domaine fréquentiel (une méthode avec l'interpolation de Stolt est détaillée à \ref{subsubsec:rma}) avec l'expression suivante \cite{WiSPNET2025RangeDoppler}
@@ -135,30 +138,35 @@ Avec une scène aussi dense, on aperçoit bien la différence entre les deux fig
 \subsubsection{Chirp-Scaling Algorithm (CSA)}
 Le rôle du CSA est de compenser les variations non linéaires de phase engendrées par la géométrie de prise de vue en les corrigeant directement dans le domaine fréquentiel grâce à un redimensionnement du signal, appelé \textit{chirp scaling}. Le traitement débute dans le domaine (portée, Doppler) par cette mise à l’échelle du chirp, qui linéarise la relation entre portée et azimut et prépare la compensation de la migration de cellule de portée. Ensuite, dans le domaine fréquentiel 2D, intervient l’étape de correction de la migration de cellule et de mise au point en portée, où la courbure principale de la trajectoire est corrigée et le signal est comprimé pour obtenir la focalisation en distance. Enfin, une correction de phase résiduelle et une focalisation azimutale sont réalisées dans le domaine (portée, Doppler) pour affiner la restitution de phase, supprimer les couplages restants et effectuer la compression finale en azimut, produisant une image SAR focalisée à haute résolution.
 
-\begin{figure}[htbp]
+\begin{figure}[ht] 
+\centering 
+
+    \begin{minipage}[t]{0.45\textwidth} 
     \centering
-    \begin{minipage}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[scale=0.4]{src/rapport_complet/img/flux_CSA.drawio.png}
-        \caption{Diagramme de flux du \textit{Chirp Scaling Algorithm}}
-        \label{fig:csa_flux}
-    \end{minipage}
-    \hfill
-    \begin{minipage}[b]{0.45\textwidth}
-        \centering
-        \includegraphics[width=\textwidth]{src/rapport_complet/img/csa_egalisation.PNG}
-        \caption{Égalisation des courbures en portée}
-        \label{fig:csa_eq}
-    \end{minipage}
+    \vspace{0pt}
+    \includegraphics[scale=0.4]{src/rapport_complet/img/flux_CSA.drawio.png} \caption{Diagramme de flux du \textit{Chirp Scaling Algorithm}} 
+    \label{fig:csa_flux} 
+    \end{minipage} 
+\hfill 
+    \begin{minipage}[t]{0.45\textwidth} 
+    \centering 
+    \vspace{0pt}
+    \includegraphics[width=\textwidth]{src/rapport_complet/img/csa_egalisation.PNG} 
+    \caption{Égalisation des courbures en portée} 
+    \label{fig:csa_eq} 
+    \end{minipage} 
 \end{figure}
+
+
+
 \FloatBarrier
 La première correction de phase, $\Phi_1$, met en œuvre le \textit{chirp scaling} proprement dit. Elle agit dans le domaine (portée, Doppler) et sert à rendre linéaire la relation entre la fréquence Doppler et la phase du signal (Figure \ref{fig:csa_eq}). Concrètement, cette opération applique une fonction de phase dépendant à la fois de la fréquence en portée et de la fréquence Doppler, qui « redimensionne » le chirp du signal pour chaque cellule de portée. Cela permet d’éliminer le couplage entre portée et azimut, de sorte que les contributions d’une même cible restent alignées en portée lorsque le capteur se déplace. En d’autres termes, $\Phi_1$ prépare la correction de migration de cellule de portée (RCMC) en la rendant réalisable sans interpolation. L'expression du terme $\Phi_1$ est donnée par
 \begin{equation}
-    \Phi_1(\tau, \nu, r_{ref}) = \exp \left( -j\pi K_s(\nu, r_{ref}) \, C_s(\nu)\, ( \tau - \tau_{ref}(\nu))^2 \right)
+    \Phi_1(\tau, \nu, r_{ref}) = \exp \left( -j\pi K_s(\nu, r_{ref}) \, C_s(\nu)\, ( \tau - \tau_{ref}(\nu))^2 \right). 
 \end{equation}
 Avec :
 \begin{description}
-    \item $\tau_{ref}(\nu)$ [s] : temps de trajet du signal radar pour la portée de référence en fonction de la fréquence Doppler,
+    \item $\tau_{ref}(\nu)$ $[s]$ : temps de trajet du signal radar pour la portée de référence en fonction de la fréquence Doppler,
     \item $K_s(\nu, r_{ref})$ : coefficient de \textit{chirp scaling},
     \item $C_s(\nu)$ : fonction de correction de courbure ou de décalage introduite par le déplacement Doppler.
 \end{description}
@@ -178,7 +186,7 @@ Le Range Migration Algorithm (RMA), aussi appelé algorithme \textit{omega-$k$},
 \paragraph{L'interpolation de Stolt}
 Dans le traitement radar SAR, les données brutes sont initialement échantillonnées dans un espace non cartésien défini par les coordonnées ($k_u$, $k_r$), où $k_u$ représente le nombre d’onde associé à la direction azimutale (ou Doppler) et $k_r$ celui de l'axe de portée. Cet espace suit une relation de dispersion (géométrie de propagation) donnée par
 \begin{equation}
-    k_y = \sqrt{k_r^2 - k_x^2}
+    k_y = \sqrt{k_r^2 - k_x^2}. 
 \end{equation}
 Dans cette expression, on a remplacé $k_u$ par $k_x$ car l’échantillonnage suivant cet axe est homogène. \\
 On propose une représentation de ces différents axes sur la Figure \ref{fig:stolt}.\\
@@ -188,6 +196,7 @@ On propose une représentation de ces différents axes sur la Figure \ref{fig:st
     \caption{Représentation de la donnée dans l'espace de représentation avant et après interpolation.}
     \label{fig:stolt}
 \end{figure}
+\FloatBarrier
 Ce maillage est représenté sur la figure par les points violets (« data given on »), qui ne sont pas uniformément espacés en coordonnées cartésiennes.
 
 Or, pour appliquer efficacement une transformation de Fourier 2D et obtenir l’image focalisée, les données doivent être rééchantillonnées sur une grille régulière ($k_x$, $k_y$), représentée ici par les carrés rouges (« data computed on »).
@@ -210,12 +219,12 @@ Sur la Figure \ref{fig:recouvrement_BP}, on observe qu’en raison du déplaceme
 Techniquement, l'algorithme standard de Backprojection, pour chaque pixel, corrige uniquement la phase selon l'expression (\ref{eq:correction_bp})
 \begin{equation}
     \label{eq:correction_bp}
-    I(\vec{p})=\sum_m s_{RC}(r_{\vec{p}, m}) \, e^{-j \, \varphi_{e}(r_{\vec{p}, m})}
+    I(\vec{p})=\sum_m s_{RC}(r_{\vec{p}, m}) \, e^{-j \, \varphi_{e}(r_{\vec{p}, m})}. 
 \end{equation}
 Avec :
 \begin{description}
-    \item $s_{RC}(r_{\vec{p}, m})$ : le signal reçu « rang-compressé » à la distance $r_{\vec{p}, m}$ [m],
-    \item $\varphi_e(r_{\vec{p}, m})$ : la phase attendue pour un signal à la distance $r_{\vec{p}, m}$ [rad].
+    \item $s_{RC}(r_{\vec{p}, m})$ : le signal reçu « rang-compressé » à la distance $r_{\vec{p}, m}$ $[m]$,
+    \item $\varphi_e(r_{\vec{p}, m})$ : la phase attendue pour un signal à la distance $r_{\vec{p}, m}$ $[rad]$.
 \end{description}
 \vspace{1em}
 Le terme $\varphi_e$ représente la correction de phase.
