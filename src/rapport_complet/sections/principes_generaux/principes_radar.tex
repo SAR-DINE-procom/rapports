@@ -3,7 +3,7 @@
 \subsection{Généralités}
 % S'inspirer de l'existant, ajuster (ajouter le SNR brièvement)
 
-Avant d’aborder les techniques avancées d’imagerie SAR, il est utile de rappeler les notions clés des systèmes radar. Un radar émet une onde électromagnétique directive à l’aide d’une antenne, représentée par les traits noirs dans la figure \ref{fig:schema_base_radar}. Lorsqu’elle rencontre une cible, une partie de l’énergie est renvoyée sous forme d’échos — indiqués en rouge — qui se propagent avec des amplitudes et des phases variables. Ces échos peuvent également se réfléchir sur d’autres objets, générant des contributions secondaires. Une fraction de ces retours est recueillie par l’antenne et analysée pour extraire des informations essentielles telles que : la distance de la cible, sa vitesse relative et certains aspects de sa structure \cite{skolnik2001}.
+Avant d’aborder les techniques avancées d’imagerie SAR, il est utile de rappeler les notions clés des systèmes radar. Un radar émet une onde électromagnétique directive à l’aide d’une antenne, représentée par les rectangles noirs dans la figure \ref{fig:schema_base_radar}. Lorsqu’elle rencontre une cible, une partie de l’énergie est renvoyée sous forme d’échos — indiqués en rouge — qui se propagent avec des amplitudes et des phases variables. Ces échos peuvent également se réfléchir sur d’autres objets, générant des contributions secondaires. Une fraction de ces retours est recueillie par l’antenne et analysée pour extraire des informations essentielles telles que : la distance de la cible, sa vitesse relative et certains aspects de sa structure \cite{skolnik2001}.
 
 %\begin{figure}[htbp]
 %    \centering
@@ -84,7 +84,7 @@ Avant d’aborder les techniques avancées d’imagerie SAR, il est utile de rap
 \noindent La puissance reçue $P_r$ s’exprime selon l’« équation radar » classique \cite{richards2010} :
 
 \begin{equation}
-    P_r = \frac{P_t \cdot G^2 \cdot \lambda^2 \cdot \sigma}{(4\cdot\pi)^3\cdot R^4}.
+    P_r = \frac{P_t \cdot G^2 \cdot \lambda^2 \cdot \sigma_r}{(4\cdot\pi)^3\cdot R^4}.
     \label{eq:equation_radar}
 \end{equation}
 Où : 
@@ -92,15 +92,15 @@ Où :
     \item[$P_r$] : est la puissance reçue par l'antenne [$W$]
     \item[$P_t$] : est la puissance transmise par l'antenne [$W$]
     \item[$G$] : est le gain de l'antenne (émission/réception)
-    \item[$\lambda$] : est la longueur d’onde [$m$]
-    \item[$\sigma$] : est la surface équivalente radar [$m^2$]
+    \item[$\lambda$] : est la longueur d’onde émise [$m$]
+    \item[$\sigma_r$] : est la surface équivalente radar [$m^2$]
     \item[$R$] : est la distance entre l'antenne et la cible [$m$]
 \end{description}
 \vspace{1em}
 
-Les deux points importants dans cette équation sont le terme $R^4$ et $\sigma$. Dans le contexte de la propagation d'onde, il est considéré qu'une onde électromagnétique se propage sur une sphère isotrope. Or, cela implique que la puissance décroît proportionnellement au carré de la distance de propagation. Dans notre cas, l'onde fait un aller-retour, la décroissance est donc proportionnelle à $R^4$. La surface équivalente radar permet de caractériser une cible. Elle représente la capacité d’un objet à réfléchir les ondes électromagnétiques d’un radar vers l’émetteur, fournissant ainsi une mesure de sa visibilité pour les systèmes de détection. Sa valeur dépend de la forme, de la taille, des matériaux de la cible, ainsi que de la fréquence et l’angle d’incidence du signal radar.
+Les deux points importants dans cette équation sont le terme $R^4$ et $\sigma_r$. Dans le contexte de la propagation d'onde, il est considéré qu'une onde électromagnétique se propage sur une sphère isotrope. Or, cela implique que la puissance décroît proportionnellement au carré de la distance de propagation. Dans notre cas, l'onde fait un aller-retour, la décroissance est donc proportionnelle à $R^4$. La surface équivalente radar permet de caractériser une cible. Elle représente la capacité d’un objet à réfléchir les ondes électromagnétiques d’un radar vers l’émetteur, fournissant ainsi une mesure de sa visibilité pour les systèmes de détection. Sa valeur dépend de la forme, de la taille, des matériaux de la cible, ainsi que de la fréquence et l’angle d’incidence du signal radar.
 
-Le faisceau est caractérisé par un angle d’ouverture $\theta$, qui influence directivité et portée : un faisceau étroit accroît la portée mais requiert une connaissance approximative de la position de la cible, tandis qu’un faisceau large permet de couvrir une zone plus étendue au détriment de la distance atteignable. On peut estimer $\theta$ par \cite{skolnik2001,richards2010} :
+Le faisceau est caractérisé par un angle d’ouverture $\theta$, qui influence directivité et portée : un faisceau étroit accroît la portée mais requiert une connaissance approximative de la position de la cible, tandis qu’un faisceau large permet de couvrir une zone plus étendue au détriment de la portée. On peut estimer $\theta$ par \cite{skolnik2001,richards2010} :
 
 \begin{equation}
     \theta \approx \frac{\lambda}{L}.
@@ -158,7 +158,7 @@ Où :
     \label{fig:illustration_effet_doppler}
 \end{figure}
 
-\subsection{Formes d'ondes}
+\subsection{Formes d'ondes}\label{subsec:formes_ondes}
 
 Au-delà de la géométrie et de la puissance, la nature du signal émis conditionne la portée, la résolution et la sensibilité. On distingue deux grandes catégories : impulsions simples et impulsions modulées.
 
@@ -167,7 +167,7 @@ Au-delà de la géométrie et de la puissance, la nature du signal émis conditi
 Les impulsions courtes et puissantes (\emph{pulses}) sont suivies de périodes d’écoute pour capter les échos (voir figure \ref{fig:impulsions_radar_avec_echo}). La détection s’effectue via un filtre adapté, produisant un pic de corrélation dont le délai $\tau_e$ permet de calculer la distance, puisque la célérité du canal est connue \cite{richards2010}. La résolution en distance s’exprime :
 
 \begin{equation}
-    \delta_d \ge \frac{c_0 \cdot \tau_p}{2} = \frac{c_0}{2 \cdot B},
+    \delta_r \ge \frac{c_0 \cdot \tau_p}{2} = \frac{c_0}{2 \cdot B},
     \label{eq:resolution_distance_pulse}
 \end{equation}
 où $\tau_p$ est la durée de l’impulsion et $B$ sa bande de fréquence. Un compromis est nécessaire entre résolution en distance (favorisée par des impulsions courtes), résolution en vitesse (favorisée par des impulsions longues) et l'occupation spectrale (favorisée par des impulsions longues), cette dernière s’exprimant :
@@ -219,10 +219,10 @@ L’ambiguïté de portée maximale non ambiguë pour les radars à impulsion es
 \end{figure}
 
 \subsubsection{Impulsions modulées}
-La modulation linéaire (\emph{chirp} Sawtooth) fait varier la fréquence sur une bande $B_{ch}$, améliorant le pic de corrélation pour la résolution en distance. C'est cette complexité spectrale (la large bande $B_ch$) qui permet, après corrélation, d'obtenir un pic fin proportionnel à $\frac{1}{B_ch}$, et non à la durée de l'impulsion :
+La modulation linéaire (\emph{chirp} Sawtooth), illustrée en \ref{fig:impulsions_chirp_avec_echo} fait varier la fréquence sur une bande $B_{ch}$, améliorant le pic de corrélation pour la résolution en distance. C'est cette complexité spectrale (la large bande $B_ch$) qui permet, après corrélation, d'obtenir un pic fin proportionnel à $\frac{1}{B_ch}$, et non à la durée de l'impulsion :
 
 \begin{equation}
-    \delta_d = \frac{c_0}{2\cdot B_{ch}}.
+    \delta_r = \frac{c_0}{2\cdot B_{ch}}.
     \label{eq:resolution_en_distance_chirp}
 \end{equation}
 
@@ -286,7 +286,7 @@ Cependant, la superposition du décalage Doppler et de la dérive de fréquence 
         \coordinate (point_rouge) at (\annotXpos, {(\Bch/\Ts) * (\annotXpos - \retard - 2*\Ts)});
         \draw[<->, annotation] (point_rouge) -- (point_noir) node[midway, below right, label] {$\Delta f = f_b$};
     \end{tikzpicture}
-    \caption{Représentation d'une impulsion Chirp et de son écho}
+    \caption{Représentation d'une impulsion Chirp et d'un écho}
     \label{fig:impulsions_chirp_avec_echo}
 \end{figure}
 
@@ -349,7 +349,7 @@ La modulation triangulaire FMCW, illustrée figure \ref{fig:fmcw_avec_echo}, ém
 \noindent Les résolutions s’expriment alors \cite{richards2010} :
 
 \begin{equation}
-    \delta_d = \frac{c_0}{2\cdot B_{ch}},
+    \delta_r = \frac{c_0}{2\cdot B_{ch}},
     \label{eq:resolution_distance_fmcw_triangulaire}
 \end{equation}
 
@@ -362,9 +362,9 @@ Cet équilibre favorable est contrebalancé par la complexité matérielle accru
 
 On remarque ainsi que les deux résolutions ne sont pas inversement liées. On peut donc avoir une bonne résolution en distance et une bonne résolution en vitesse. Cependant, cet avantage doit être nuancé par la complexité de la réalisation matérielle de cette forme d'onde, d'autant plus sur une large bande \cite{meta2007performance}. 
 
-\subsection{Le bruit}
+\subsection{Bases du bruit}
 
-Jusqu’à présent, le bruit a été négligé. Or, il est indispensable de le modéliser pour évaluer la performance réelle. Le signal désigne les échos utiles, tandis que le bruit englobe toutes les perturbations (interférences, hydrométéores, bruit thermique des composants). Le rapport signal-sur-bruit (SNR) se définit \cite{skolnik2001} :
+Jusqu’à présent, le bruit a été négligé. Or, il est indispensable de le caractériser pour évaluer la performance réelle. Le signal désigne les échos utiles, tandis que le bruit englobe toutes les perturbations (interférences, hydrométéores, bruit thermique des composants). Le rapport signal-sur-bruit (SNR) se définit \cite{skolnik2001} :
 
 \begin{equation}
     SNR = \frac{P_{signal}}{P_{bruit}},
@@ -379,7 +379,7 @@ et le facteur de bruit d’un dispositif, selon Friis \cite{skolnik2001,Friis194
 Où :
 \begin{description}
     \item[$F$] : Le facteur de bruit
-    \item[$S_x$] : La puissance du signal, en entrée pour $x=e$, en sortie pour $x=s$ [$W$]
+    \item[$S$] : La puissance du signal [$W$]
     \item[$N_x$] : La puissance du bruit, en entrée pour $x=e$, en sortie pour $x=s$ [$W$]
     \item[$G$] : Le gain du dispositif traversé
 \end{description}
@@ -399,7 +399,7 @@ Où :
 \end{description}
 \vspace{1em}
 
-La figure \ref{fig:snr_degradation} illustre l'évolution du SNR à travers de la chaîne RF présentée par la figure \ref{fig:illus_snr_facteur_de_bruit}. Elles montrent l'importance du premier dans la performance globale du système.
+La figure \ref{fig:snr_degradation} illustre l'évolution du SNR à travers de la chaîne RF présentée par la figure \ref{fig:illus_snr_facteur_de_bruit}. Elles montrent l'importance du premier élément dans la performance globale du système.
 
 \FloatBarrier
 \begin{figure}[htbp]

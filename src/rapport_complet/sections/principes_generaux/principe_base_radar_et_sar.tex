@@ -362,152 +362,15 @@ Toutes les figures et équations présentées précédemment représentent la vi
 
 
 
-BASES SAR ALEXIS : 
-
-\section{Principe du radar SAR}\label{SEC:Principe du radar SAR}
-
-\subsection{Rappel du principe SAR}
-
-Synthèse d’ouverture par le déplacement du radar.
-
-Notions de bande azimutale, résolution, longueur d’onde, vitesse de plateforme.
 
 
 
 
 
 
-\subsection{Choix de la forme d'onde}
-
-Le choix de la forme d’onde constitue un paramètre fondamental dans la conception d’un radar à synthèse d’ouverture (SAR), notamment lorsqu’il est embarqué sur une plateforme légère telle qu’un drone. Chaque forme d’onde possède des caractéristiques spécifiques qui influencent directement les performances en portée, en résolution, en complexité électronique et en robustesse face au bruit ou aux interférences \cite{richards2010, soumekh1999synthetic}. C'est pourquoi nous allons étudier quatre formes d'ondes répandues dans le domaine radar, puis les comparer pour déterminer celle à privilégier dans notre cas.
-
-La forme d’onde impulsionnelle (Pulse) représente historiquement le schéma le plus simple. Elle consiste à émettre des impulsions brèves et puissantes séparées par des intervalles de silence. Ce mode offre une bonne résolution en distance si la largeur d’impulsion est courte, mais impose une puissance crête élevée, difficile à générer sur des plateformes à ressources énergétiques limitées comme les drones. De plus, l’efficacité énergétique du radar impulsionnel est faible, car l’émetteur reste inactif une grande partie du temps. Ainsi, bien que cette forme d’onde soit robuste et bien maîtrisée, elle est souvent peu adaptée aux systèmes SAR compacts embarqués sur UAV \cite{skolnik2008radar}.
-
-\begin{figure}[h!]
-    \centering
-    \setlength{\unitlength}{1cm}
-    \begin{picture}(10,2)
-        \thicklines
-        \put(0,0){\line(1,0){0.25}}
-        \put(0.25,0){\line(0,1){2}}
-        \put(0.25,2){\line(1,0){0.5}}
-        \put(0.75,2){\line(0,-1){2}}
-        \put(0.75,0){\line(1,0){2.5}}
-        \put(3.25,0){\line(0,1){2}}
-        \put(3.25,2){\line(1,0){0.5}}
-        \put(3.75,2){\line(0,-1){2}}
-        \put(3.75,0){\line(1,0){2.5}}
-        \put(6.25,0){\line(0,1){2}}
-        \put(6.25,2){\line(1,0){0.5}}
-        \put(6.75,2){\line(0,-1){2}}
-        \put(6.75,0){\line(1,0){2.5}}
-        \put(9.25,0){\line(0,1){2}}
-        \put(9.25,2){\line(1,0){0.5}}
-        \put(9.75,2){\line(0,-1){2}}
-        \put(9.75,0){\line(1,0){0.25}}
-    \end{picture}
-    \caption{Forme d’onde impulsionnelle (« Pulse »)}
-    \label{fig:pulse}
-\end{figure}
-
-Les formes d’onde FMCW (Frequency Modulated Continuous Wave), en particulier les modulations en dent de scie et triangulaire, offrent une alternative attractive. Dans le cas du FMCW en dent de scie, la fréquence du signal augmente linéairement au cours du temps avant de revenir instantanément à sa valeur initiale. Ce type de modulation permet de mesurer la distance et la vitesse de la cible à partir du décalage de fréquence entre le signal émis et reçu. Son avantage principal réside dans la faible puissance crête requise et la simplicité de l’électronique d’émission \cite{ma2016compact}. Cependant, la récupération simultanée des informations de portée et de vitesse peut devenir complexe en présence de cibles multiples, et la discontinuité de la rampe peut introduire des artefacts dans le traitement SAR.
-
-\begin{figure}[h!]
-    \centering
-    \setlength{\unitlength}{1cm}
-    \begin{picture}(10,2)
-        \thicklines
-        \put(0,0){\line(1,1){2}}  
-        \put(2,2){\line(0,-2){2}}  
-        \put(2,0){\line(1,1){2}}
-        \put(4,2){\line(0,-2){2}}
-        \put(4,0){\line(1,1){2}}
-        \put(6,2){\line(0,-2){2}}
-        \put(6,0){\line(1,1){2}}
-        \put(8,2){\line(0,-2){2}}
-        \put(8,0){\line(1,1){2}}
-        \put(10,2){\line(0,-2){2}}
-    \end{picture}
-    \caption{Forme d’onde en dent de scie (FMCW Sawtooth).}
-    \label{fig:sawtooth_fmcw}
-\end{figure}
 
 
-Le FMCW triangulaire, quant à lui, alterne des montées et descentes de fréquence successives, ce qui permet une mesure plus précise de la vitesse radiale (via la différence de battement entre les deux pentes). Cette propriété réduit l’ambiguïté Doppler et améliore la qualité des images SAR, en particulier lorsque la plateforme est en mouvement continu, comme c’est le cas pour un drone \cite{meta2007performance}. Toutefois, cette forme d’onde nécessite un étalonnage précis du temps de montée et de descente, ainsi qu’une correction fine des non-linéarités de la modulation pour éviter la dégradation de la résolution \cite{aoki2020chirp}.
 
-\begin{figure}[h!]
-    \centering
-    \setlength{\unitlength}{1cm}
-    \begin{picture}(10,2)
-        \thicklines
-        \put(0,0){\line(1,1){2}}  
-        \put(2,2){\line(1,-1){2}} 
-        \put(4,0){\line(1,1){2}}
-        \put(6,2){\line(1,-1){2}}
-        \put(8,0){\line(1,1){2}}
-    \end{picture}
-    \caption{Forme d’onde en triangle (FMCW triangulaire).}
-    \label{fig:triangular_fmcw}
-\end{figure}
-
-Enfin, la modulation FSK (Frequency Shift Keying) repose sur une émission séquentielle de fréquences discrètes. Chaque palier correspond à une fréquence fixe pendant un court intervalle de temps. L’avantage majeur de cette approche est la simplicité du traitement de détection, ainsi que la résistance accrue au bruit et aux interférences \cite{li2018fsk}. Néanmoins, la résolution en distance est généralement inférieure à celle des modulations chirpées, et la reconstruction d’image SAR nécessite une interpolation fine des sauts fréquentiels.
-
-\begin{figure}[h!]
-    \centering
-    \setlength{\unitlength}{1cm}
-    \begin{picture}(8,3.8)
-        \thicklines
-        \put(0,1){\line(1,0){1.5}}
-        \put(1.5,1){\line(0,1){0.7}}
-        \put(1.5,1.7){\line(1,0){1.5}}
-        \put(3,1.7){\line(0,1){0.7}}
-        \put(3,2.4){\line(1,0){1.5}}
-        \put(4.5,2.4){\line(0,1){0.7}}
-        \put(4.5,3.1){\line(1,0){1.5}}
-        \put(6,3.1){\line(0,1){0.7}}
-        \put(6,3.8){\line(1,0){1}}
-        \put(7,3.8){\line(0,-1){2.8}}
-        \put(7,1){\line(1,0){1}}
-    \end{picture}
-    \caption{Forme d’onde à sauts de fréquence (FSK).}
-    \label{fig:fsk}
-\end{figure}
-
-Dans le contexte d’un SAR embarqué sur drone, les compromis principaux concernent la consommation énergétique, la résolution en distance et en azimut, et la stabilité fréquentielle de l’émetteur. Les formes d’onde FMCW, en particulier la triangulaire, apparaissent comme un choix privilégié dans la littérature récente pour les radars embarqués légers, grâce à leur efficacité en puissance et à leur compatibilité avec des émetteurs à onde continue de faible coût. Toutefois, des études expérimentales montrent que la correction des distorsions de la rampe de fréquence demeure un défi pour garantir la qualité radiométrique et géométrique des images SAR \cite{sun2021fmcw, yang2023uavsar}. 
-
-%AJOUTER TRANSITIONS AVEC TABLEAU
-%AJOUTER LE CHOIX SPECIFIQUE POUR NOUS AVEC LA CARTE 
-
-\begin{table}[h!]
-\centering
-\caption{Comparaison des résolutions en distance et en vitesse relative pour différentes formes d’onde radar.}
-\label{tab:resolutions}
-\renewcommand{\arraystretch}{1.3}
-\begin{tabular}{|l|c|c|}
-\hline
-\textbf{Forme d’onde} & \textbf{Résolution en distance $\Delta R$} & \textbf{Résolution en vitesse $\Delta v$} \\
-\hline
-\textbf{Impulsionnelle (Pulse)} 
-& $\displaystyle \Delta R = \frac{c\,\tau}{2}$ 
-& $\displaystyle \Delta v = \frac{\lambda}{2\,T_{\text{obs}}}$ \\ 
-\hline
-\textbf{FMCW dent de scie (Sawtooth)} 
-& $\displaystyle \Delta R = \frac{c}{2\,B}$ 
-& $\displaystyle \Delta v = \frac{\lambda}{2\,T_{\text{chirp}}}$ \\
-\hline
-\textbf{FMCW triangulaire (Triangle)} 
-& $\displaystyle \Delta R = \frac{c}{2\,B}$ 
-& $\displaystyle \Delta v = \frac{\lambda}{4\,T_{\text{chirp}}}$ \\
-\hline
-\textbf{FSK (Frequency Shift Keying)} 
-& $\displaystyle \Delta R = \frac{c}{2\,\Delta f}$ 
-& $\displaystyle \Delta v = \frac{\lambda}{2\,N\,T_{\text{symb}}}$ \\
-\hline
-\end{tabular}
-\end{table}
-
-%A REFAIRE BILBIO DANS BIB  
-%\begin{thebibliography}{9} \bibitem{richards2010principles} M. A. Richards, \textit{Principles of Modern Radar: Basic Principles}, SciTech, 2010. \bibitem{soumekh1999synthetic} M. Soumekh, \textit{Synthetic Aperture Radar Signal Processing}, Wiley, 1999. \bibitem{skolnik2008radar} M. I. Skolnik, \textit{Radar Handbook}, 3rd ed., McGraw-Hill, 2008. \bibitem{ma2016compact} J. Ma et al., “Compact FMCW SAR for UAV-based remote sensing,” \textit{IEEE Trans. Geosci. Remote Sens.}, vol. 54, no. 12, 2016. \bibitem{meta2007performance} A. Meta et al., “Performance analysis of FMCW SAR,” \textit{IEEE Trans. Geosci. Remote Sens.}, vol. 45, no. 11, 2007. \bibitem{aoki2020chirp} T. Aoki and Y. Sugimoto, “Chirp linearization in low-cost FMCW radar,” \textit{IEEE Sensors Journal}, vol. 20, no. 22, 2020. \bibitem{li2018fsk} W. Li et al., “FSK-based radar waveform for low-power SAR systems,” \textit{Electronics Letters}, vol. 54, no. 10, 2018. \bibitem{sun2021fmcw} Y. Sun et al., “FMCW SAR imaging on UAV platforms: System design and calibration,” \textit{Remote Sensing}, vol. 13, no. 3, 2021. \bibitem{yang2023uavsar} L. Yang et al., “Recent advances in lightweight UAV SAR systems,” \textit{IEEE Aerospace and Electronic Systems Magazine}, vol. 38, no. 1, 2023. \end{thebibliography}
 
 
 

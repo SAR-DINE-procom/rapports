@@ -1,0 +1,88 @@
+\subsection{Acquisition et formation d'images SAR}
+
+Les systèmes SAR reposent sur l'acquisition cohérente d'échos radar le long d'une trajectoire synthétique, permettant de reconstruire une image à haute résolution indépendamment de la distance de la cible. La phase d'acquisition conditionne la qualité radiométrique, la résolution et le volume de données à traiter.
+
+\subsubsection{Principes fondamentaux de l’acquisition SAR}
+
+Les travaux fondateurs de Bamler et Hartl \cite{Bamler1993_SAR} formalisent le lien entre la géométrie de vol, la modulation du signal émis et la phase mesurée, posant les bases des schémas de focalisation. La cohérence de phase entre impulsions successives, garantie par une horloge stable et une synchronisation fine, est essentielle à la synthèse d’ouverture.
+
+\subsubsection{Architectures d’acquisition}
+
+% Plusieurs architectures se distinguent :
+% \begin{itemize}
+%   \item \textbf{SAR à impulsions (Pulse SAR)} : architecture des grands systèmes spatiaux/aéroportés ; forte portée et dynamique, au prix d’une électronique d’émission puissante et d’une chaîne RF complexe \cite{Krieger2010_InterferometricSAR}.
+%   \item \textbf{SAR FMCW} : adapté aux plateformes légères (UAV) ; l’onde chirpée est déchirpée en réception, réduisant la bande utile à numériser. Des démonstrateurs complets et légers sont documentés dans \cite{Aguasca2013_ARBRES_UAV_SAR,Svedin2021_UAVSAR}.
+%   \item \textbf{SAR passif} : le capteur n’émet pas, exploite des illuminateurs d’opportunité ; consommation minimale mais corrélation et synchronisation plus exigeantes \cite{Sun2020_PassiveUAVSAR}.
+%   \item \textbf{Multi-canaux / polarimétrique} : enrichissement informationnel (HH/HV/VH/VV) au prix d’une stricte synchronisation inter-voies et d’un volume de données accru \cite{Krieger2010_InterferometricSAR}.
+% \end{itemize}
+
+\label{subsec:arch_sar}
+
+La conception d’un système d’imagerie radar impose d’abord un choix d’architecture, qui conditionne portée, résolution, complexité matérielle et exigences de synchronisation. Dans ce qui suit, nous parcourons de manière continue les principales familles, en partant des contraintes système pour aller vers les compromis de mise en œuvre.
+
+Nous considérons en premier lieu le SAR impulsionnel (Pulse SAR), historiquement privilégié sur les plateformes spatiales et aéroportées pour sa grande portée et sa dynamique élevée. Il permet une focalisation robuste à longue distance, au prix d’une puissance crête importante et d’une chaîne RF/numérique plus exigeante, tant côté émission que réception \cite{Krieger2010_InterferometricSAR}. Dès lors que la masse, le volume et l’énergie disponibles deviennent contraints, comme sur des vecteurs légers, ces exigences pèsent fortement sur l’architecture.
+
+Afin de réduire la puissance crête et la bande effectivement numérisée après \textit{déchirp} en réception, de nombreux travaux se tournent vers le SAR FMCW. L’émission d’un chirp linéairement modulé en fréquence autorise une conversion du problème temps–fréquence favorable à l’acquisition et au traitement embarqué. Des démonstrateurs compacts sur UAV confirment l’intérêt de cette approche pour des capteurs légers \cite{Aguasca2013_ARBRES_UAV_SAR,Svedin2021_UAVSAR}. La contrepartie majeure réside dans la maîtrise de la linéarité de rampe et des étalonnages associés : toute non-linéarité dégrade la compression en distance et, partant, la qualité de focalisation.
+
+Un troisième paradigme consiste à s’affranchir totalement de l’émission : le SAR passif. Le capteur exploite alors des illuminateurs d’opportunité (diffusion terrestre, GNSS, etc.). Cette solution minimise à la fois la consommation énergétique et la signature électromagnétique, mais impose une corrélation et une synchronisation fines vis-à-vis des sources, dont la géométrie et la bande ne sont pas contrôlées \cite{Sun2020_PassiveUAVSAR}. La performance dépend donc fortement de l’environnement spectral et de la capacité à estimer précisément l’onde d’illumination de référence.
+
+Au-delà du choix d’onde et de la stratégie d’illumination, l’architecture peut être étendue en multi-canaux et/ou en polarimétrie (HH/HV/VH/VV). L’objectif est d’enrichir l’information (caractérisation de diffusion, classification, ouverture vers InSAR/MIMO), à condition d’assurer une stricte synchronisation inter-voies et une calibration rigoureuse. Cette sophistication augmente le débit et le volume de données, ainsi que la complexité d’intégration \cite{Krieger2010_InterferometricSAR}.
+
+En synthèse, le choix architectural résulte d’un compromis entre énergie embarquée, performances visées (portée, résolution, SNR) et effort de calibration. Sur plateformes UAV, les solutions FMCW apparaissent particulièrement attractives grâce à leur faible puissance crête et à la réduction de bande après déchirp, pourvu que la linéarité de rampe et les étalonnages soient maîtrisés. Le passif constitue une alternative intéressante lorsque l’environnement d’illumination est favorable et que la discrétion prime, tandis que le multi-canaux/polarimétrique ouvre la voie à des capacités d’analyse avancées au prix d’une complexité accrue.
+
+\begin{table}[htbp]
+    \centering
+   
+    \label{tab:arch_sar_comparatif}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{|p{3.2cm}|p{5.6cm}|p{5.8cm}|}
+        \hline
+        \textbf{Architecture} & \textbf{Atouts} & \textbf{Limites / Points d’attention} \\
+        \hline
+        Pulse SAR & Portée et dynamique élevées ; focalisation robuste à longue distance. 
+        & Puissance crête élevée ; chaîne RF/numérique complexe ; consommation énergétique. \\
+        \hline
+        SAR FMCW & Faible puissance crête ; bande à numériser réduite après déchirp ; intégration favorable sur UAV \cite{Aguasca2013_ARBRES_UAV_SAR,Svedin2021_UAVSAR}. 
+        & Linéarité/étalonnage de chirp ; non-linéarités impactant la compression et la focalisation. \\
+        \hline
+        SAR passif & Très faible consommation et signature ; réutilisation d’illuminateurs existants \cite{Sun2020_PassiveUAVSAR}. 
+        & Dépendance aux sources ; synchronisation/corrélation exigeantes ; géométrie/bande non maîtrisées. \\
+        \hline
+        Multi-canaux / PolSAR & Information enrichie (diffusion, classification) ; potentiel InSAR/MIMO. 
+        & Synchronisation/calibration inter-voies ; débit et stockage accrus ; complexité système \cite{Krieger2010_InterferometricSAR}. \\
+        \hline
+    \end{tabular}
+     \caption{Synthèse des architectures SAR : atouts, limites et domaines d’emploi typiques.}
+\end{table}
+\FloatBarrier
+
+\subsubsection{Chaîne d’acquisition embarquée}
+
+La chaîne moderne numérisée intègre : un synthétiseur (DDS/PLL) pour générer le chirp, un émetteur à puissance modulable, une réception LNA--mélangeur--IF--ADC, et une électronique de contrôle (FPGA/SBC) pour tramage et stockage. Sur UAV FMCW, des systèmes de quelques kilogrammes réalisent des acquisitions cohérentes avec navigation intégrée (GNSS/IMU) \cite{Aguasca2013_ARBRES_UAV_SAR,Svedin2021_UAVSAR}. Les formats de métadonnées (SigMF) facilitent l’archivage et le post-traitement \cite{Balister2017_SigMF}.
+
+\subsubsection{Tendances actuelles}
+
+Les approches \textit{Software Defined} et les SoC (System on Chip) RF intégrés permettent reconfiguration en vol, compacité et faible latence ; elles s’appuient sur des horloges distribuées (10~MHz/1~PPS) et des liens déterministes \cite{AMD_RFSoC_DS889,ADI_JESD204B_Survival}. L’optimisation énergétique et la génération d’aperçus (range--Doppler) à bord sont très étudiées sur UAV \cite{Svedin2021_UAVSAR,Sun2020_PassiveUAVSAR}.
+
+\vspace{0.5em}
+\noindent\textit{En résumé~:} l’acquisition SAR a évolué d’architectures impulsionnelles lourdes vers des systèmes FMCW/SDR miniaturisés, cohérents et reconfigurables, adaptés aux contraintes de masse et d’énergie des UAV \cite{Aguasca2013_ARBRES_UAV_SAR,Svedin2021_UAVSAR}.
+
+\subsection{Cartes d’acquisition}
+
+L’acquisition SAR repose sur des convertisseurs rapides et cohérents en phase, une distribution d’horloges stable et une chaîne d’horodatage fiable. Dans la littérature comme dans l’offre industrielle, quatre familles se dégagent et structurent les choix d’architecture : les \textit{SDR }reconfigurables, les SoC RF intégrant ADC/DAC (\textit{RFSoC}), les numériseurs au format PCIe/PXIe, et les mezzanines \textit{FMC/FMC+} associées à des FPGA hôtes.
+
+\subsubsection{Familles de cartes d’acquisition}
+
+Les \textit{SDR} reconfigurables constituent une option privilégiée lorsqu’une mise en œuvre rapide, une chaîne flexible et une bonne cohérence temporelle sont recherchées. Des châssis tels que l’USRP~X310 offrent une bande de base élevée (jusqu’à \textasciitilde160~MHz selon le front-end RF), une logique programmable embarquée pour la préparation des flux, et une référence commune 10~MHz/1~PPS (GPSDO) assurant la cohérence inter-équipements~\cite{Ettus_X310_Spec}. Ce profil convient aux démonstrateurs SAR et aux solutions aéroportées pour lesquelles la réutilisabilité et la modularité priment sur l’optimisation fine de la consommation.
+
+À l’autre extrémité du spectre d’intégration, les SoC RF de type \textit{RFSoC} (par exemple la famille Zynq UltraScale+) associent, sur un même circuit, des convertisseurs multivoies et une matrice logique, ce qui favorise la compacité, la faible latence de traitement et la synchronisation précise entre canaux~\cite{AMD_RFSoC_DS889}. L’étroite proximité entre ADC/DAC et logique de traitement simplifie la gestion des horloges et des alignements de phase, tout en réduisant l’encombrement et le câblage, des atouts déterminants pour des charges utiles UAV.
+
+Entre ces deux approches, les numériseurs PCIe/PXIe offrent un compromis intéressant lorsque des débits très élevés et une intégration dans un châssis instrumenté sont nécessaires. Des cartes comme la NI~PXIe-5775 (FlexRIO) atteignent plusieurs~GSa/s et s’insèrent dans un environnement de mesure où l’horloge et le déclenchement sont distribués de manière déterministe~\cite{NI_PXIe5775_Spec}. Cette voie facilite la mise en place de bancs d’essai, de validations RF et de chaînes de mesure répétables, au prix d’un gabarit et d’une consommation moins adaptés aux vecteurs légers.
+
+Enfin, les mezzanines \textit{FMC/FMC+} couplées à un FPGA hôte constituent une solution “à la carte” particulièrement attractive pour des prototypes performants et compacts. Des modules tels que l’Abaco~FMC134, s’appuyant sur des liaisons JESD204B/C, permettent de sélectionner précisément les convertisseurs et la logique hôte en fonction des objectifs de bande et de dynamique, tout en maîtrisant la topologie d’horloges et les budgets de gigue~\cite{Abaco_FMC134}. Cette approche favorise une intégration serrée et une optimisation du parcours signal, avec un effort de conception initial plus important que pour une SDR clé en main.
+
+\subsubsection{Critères de sélection}
+
+Le choix d’une carte d’acquisition doit être guidé par la bande instantanée et la fréquence d’échantillonnage visées, lesquelles diffèrent sensiblement entre un SAR~FMCW “déchirpé” (quelques à dizaines de~MSa/s par voie) et un SAR impulsionnel large bande (centaines de~MSa/s à~GSa/s). Les métriques de dynamique —~ENOB, SNR, SFDR~— conditionnent directement la qualité de compression en distance et, in fine, la focalisation. La distribution et la discipline d’horloge (10~MHz, 1~PPS, liens déterministes de type MCS/JESD204 à faible \textit{phase noise}) pèsent sur la cohérence de phase inter-impulsions et inter-voies, tout comme la topologie de synchronisation retenue. À ces considérations s’ajoute la chaîne de données, depuis les buffers et mécanismes DMA jusqu’aux interconnexions hôte/stockage (PCIe, 10~GigE, NVMe), dimensionnée au regard du débit brut généré par le couple \{fréquence d’échantillonnage, nombre de canaux, résolution effective\}. Dans le contexte UAV, les contraintes de masse, de consommation et de tenue thermique/vibratoire imposent enfin d’arbitrer entre compacité (souvent à l’avantage des \textit{RFSoC}) et polyvalence (plutôt en faveur des SDR et des solutions modulaires FMC).
+
+En résumé, la carte d’acquisition ne fixe pas seulement les performances analogiques et numériques de la chaîne, elle gouverne le volume d’information à enregistrer et la stratégie d’horodatage, avec des conséquences directes sur la taille des tampons, la capacité de stockage et la gestion énergétique. Ces éléments préparent les choix décrits dans la section suivante, consacrée au stockage embarqué des données SAR.

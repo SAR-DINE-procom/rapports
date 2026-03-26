@@ -1,0 +1,503 @@
+
+% =====================================================
+% FICHE 1 - Chaîne radar instable
+% =====================================================
+\begin{center}
+{\LARGE \textbf{FICHE DE RISQUE}}\\[6pt]
+{\large Ref : \textbf{R001} \hfill Lot : \underline{Chaîne radar instable}}\\[6pt]
+\hrule
+\end{center}
+
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{|p{5.2cm}|p{10.8cm}|}
+\hline
+\textbf{Libellé du risque} & Chaîne radar instable \\ \hline
+\textbf{Classe (acteur exposé)} & Équipe globale \\ \hline
+\textbf{Responsable} & Référent RF / Chef de projet \\ \hline
+\textbf{Causes potentielles ou réelles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Dérive de fréquence, bruit RF ou mauvais étalonnage
+\item Mauvaise isolation entre émetteur et récepteur
+\item Composants non adaptés ou vieillissants
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Conséquences / Impacts possibles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Données I/Q inutilisables
+\item Retard de validation du prototype
+\item Reprise complète du montage ou recalibrage
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Actions de réduction / prévention} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Effectuer un étalonnage initial complet
+\item Ajouter des étapes de test RF intermédiaires
+\item Documenter les configurations matérielles
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Probabilité (P)} & 3 \\ \hline
+\textbf{Gravité (Gc,Gd,Gp)} & Gc = 0, Gd = 4, Gp = 4 \\ \hline
+\textbf{Coefficient de résolution (R)} & 4 \\ \hline
+\textbf{Sévérité globale (SG)} & 96 \\ \hline
+\textbf{Niveau d'exposition} & Critique \\ \hline
+\end{tabular}
+\newpage
+% =====================================================
+% FICHE 2 - Perte ou corruption de données expérimentales
+% =====================================================
+\begin{center}
+{\LARGE \textbf{FICHE DE RISQUE}}\\[6pt]
+{\large Ref : \textbf{R002} \hfill Lot : \underline{Perte ou corruption de données expérimentales}}\\[6pt]
+\hrule
+\end{center}
+
+\begin{tabular}{|p{5.2cm}|p{10.8cm}|}
+\hline
+\textbf{Libellé du risque} & Perte ou corruption de données expérimentales \\ \hline
+\textbf{Classe (acteur exposé)} & Équipe traitement \\ \hline
+\textbf{Responsable} & Responsable traitement SAR \\ \hline
+\textbf{Causes potentielles ou réelles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Erreur de stockage ou panne SSD
+\item Mauvaise sauvegarde des acquisitions I/Q
+\item Mauvais versioning
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Conséquences / Impacts possibles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Données SAR inutilisables
+\item Reprise complète des acquisitions
+\item Retard dans les tests et l’analyse
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Actions de réduction / prévention} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Sauvegarde automatique sur serveur IMT
+\item Double stockage local + cloud
+\item Versioning des fichiers
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Probabilité (P)} & 2 \\ \hline
+\textbf{Gravité (Gc,Gd,Gp)} & Gc = 0, Gd = 3, Gp = 3 \\ \hline
+\textbf{Coefficient de résolution (R)} & 4 \\ \hline
+\textbf{Sévérité globale (SG)} & 48 \\ \hline
+\textbf{Niveau d'exposition} & Modéré \\ \hline
+\end{tabular}
+\newpage
+% =====================================================
+% FICHE 3 - Problème d’expérimentation matérielle
+% =====================================================
+\begin{center}
+{\LARGE \textbf{FICHE DE RISQUE}}\\[6pt]
+{\large Ref : \textbf{R003} \hfill Lot : \underline{Problème d’expérimentation matérielle}}\\[6pt]
+\hrule
+\end{center}
+
+\begin{tabular}{|p{5.2cm}|p{10.8cm}|}
+\hline
+\textbf{Libellé du risque} & Problème d’expérimentation (matérielle) \\ \hline
+\textbf{Classe (acteur exposé)} & Équipe hardware \\ \hline
+\textbf{Responsable} & Référent intégration matérielle \\ \hline
+\textbf{Causes potentielles ou réelles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Alimentation insuffisante ou défaillante
+\item Connectique incompatible entre modules
+\item Mauvais câblage ou surchauffe
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Conséquences / Impacts possibles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Perte de temps sur les essais
+\item Arrêt du développement
+\item Reconfiguration matérielle non prévue
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Actions de réduction / prévention} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Prévoir des composants de rechange
+\item Réaliser des tests unitaires avant chaque essai
+\item Contrôler thermiquement le montage
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Probabilité (P)} & 2 \\ \hline
+\textbf{Gravité (Gc,Gd,Gp)} & Gc = 4, Gd = 3, Gp = 4 \\ \hline
+\textbf{Coefficient de résolution (R)} & 2 \\ \hline
+\textbf{Sévérité globale (SG)} & 44 \\ \hline
+\textbf{Niveau d'exposition} & Modéré \\ \hline
+\end{tabular}
+
+\newpage
+% =====================================================
+% FICHE 4 - Fusion multi-capteurs
+% =====================================================
+\begin{center}
+{\LARGE \textbf{FICHE DE RISQUE}}\\[6pt]
+{\large Ref : \textbf{R004} \hfill Lot : \underline{Fusion multi-capteurs complexe ou imprécise}}\\[6pt]
+\hrule
+\end{center}
+
+\begin{tabular}{|p{5.2cm}|p{10.8cm}|}
+\hline
+\textbf{Libellé du risque} & Fusion multi-capteurs complexe ou imprécise \\ \hline
+\textbf{Classe (acteur exposé)} & Équipe algorithmie / traitement SAR \\ \hline
+\textbf{Responsable} & Responsable synchronisation / traitement \\ \hline
+\textbf{Causes potentielles ou réelles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Désynchronisation temporelle entre radars
+\item Mauvaise calibration spatiale
+\item Interférences CEM entre capteurs
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Conséquences / Impacts possibles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Images SAR floues ou incohérentes
+\item Résultats scientifiques invalides
+\item Difficulté à prouver la faisabilité multi-capteurs
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Actions de réduction / prévention} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Synchroniser les acquisitions (horloge commune)
+\item Tester à 2 capteurs avant extension
+\item Évaluer la CEM en amont
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Probabilité (P)} & 2 \\ \hline
+\textbf{Gravité (Gc,Gd,Gp)} & Gc = 0, Gd = 3, Gp = 4 \\ \hline
+\textbf{Coefficient de résolution (R)} & 3 \\ \hline
+\textbf{Sévérité globale (SG)} & 42 \\ \hline
+\textbf{Niveau d'exposition} & Modéré \\ \hline
+\end{tabular}
+
+\newpage
+% =====================================================
+% FICHE 5 - Non-conformité réglementaire
+% =====================================================
+\begin{center}
+{\LARGE \textbf{FICHE DE RISQUE}}\\[6pt]
+{\large Ref : \textbf{R005} \hfill Lot : \underline{Non-conformité réglementaire (RF / sécurité)}}\\[6pt]
+\hrule
+\end{center}
+
+\begin{tabular}{|p{5.2cm}|p{10.8cm}|}
+\hline
+\textbf{Libellé du risque} & Non-conformité réglementaire (RF / sécurité) \\ \hline
+\textbf{Classe (acteur exposé)} & Encadrants responsables légaux \\ \hline
+\textbf{Responsable} & Encadrant RF / Responsable sécurité IMT \\ \hline
+\textbf{Causes potentielles ou réelles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Utilisation de bandes de fréquences non autorisées
+\item Essais non déclarés ou hors site IMT
+\item Absence de validation sécurité
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Conséquences / Impacts possibles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Interdiction d’expérimentation
+\item Retard du projet
+\item Image négative du groupe
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Actions de réduction / prévention} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Vérifier les fréquences avant test
+\item Réaliser essais en environnement contrôlé
+\item Validation sécurité par encadrant
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Probabilité (P)} & 1 \\ \hline
+\textbf{Gravité (Gc,Gd,Gp)} & Gc = 4, Gd = 4, Gp = 4 \\ \hline
+\textbf{Coefficient de résolution (R)} & 2 \\ \hline
+\textbf{Sévérité globale (SG)} & 24 \\ \hline
+\textbf{Niveau d'exposition} & Modéré \\ \hline
+\end{tabular}
+
+\newpage
+% =====================================================
+% FICHE 6 - Démotivation ou perte de cohésion
+% =====================================================
+\begin{center}
+{\LARGE \textbf{FICHE DE RISQUE}}\\[6pt]
+{\large Ref : \textbf{R006} \hfill Lot : \underline{Démotivation ou perte de cohésion d’équipe}}\\[6pt]
+\hrule
+\end{center}
+
+\begin{tabular}{|p{5.2cm}|p{10.8cm}|}
+\hline
+\textbf{Libellé du risque} & Démotivation ou perte de cohésion d’équipe \\ \hline
+\textbf{Classe (acteur exposé)} & Équipe globale \\ \hline
+\textbf{Responsable} & Chef de projet / Référent humain \\ \hline
+\textbf{Causes potentielles ou réelles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Fatigue, déséquilibre des contributions
+\item Difficulté technique prolongée sans résultat
+\item Mauvais partage des réussites
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Conséquences / Impacts possibles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Baisse de productivité
+\item Climat d’équipe détérioré
+\item Risque sur la qualité des livrables
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Actions de réduction / prévention} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Points d’équipe réguliers
+\item Répartition équitable des tâches
+\item Valoriser les progrès individuels
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Probabilité (P)} & 1 \\ \hline
+\textbf{Gravité (Gc,Gd,Gp)} & Gc = 0, Gd = 3, Gp = 4 \\ \hline
+\textbf{Coefficient de résolution (R)} & 3 \\ \hline
+\textbf{Sévérité globale (SG)} & 21 \\ \hline
+\textbf{Niveau d'exposition} & Acceptable \\ \hline
+\end{tabular}
+
+\newpage
+% =====================================================
+% FICHE 7 - Retard sur un jalon
+% =====================================================
+\begin{center}
+{\LARGE \textbf{FICHE DE RISQUE}}\\[6pt]
+{\large Ref : \textbf{R007} \hfill Lot : \underline{Retard sur un jalon}}\\[6pt]
+\hrule
+\end{center}
+
+\begin{tabular}{|p{5.2cm}|p{10.8cm}|}
+\hline
+\textbf{Libellé du risque} & Retard sur un jalon \\ \hline
+\textbf{Classe (acteur exposé)} & Planning global \\ \hline
+\textbf{Responsable} & Chef de projet \\ \hline
+\textbf{Causes potentielles ou réelles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Complexité technique sous-estimée
+\item Indisponibilité d’un membre clé
+\item Réunion de validation reportée
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Conséquences / Impacts possibles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Décalage du calendrier global
+\item Réduction du périmètre des tests
+\item Pénalité sur la qualité du livrable ProCom
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Actions de réduction / prévention} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Suivi hebdomadaire
+\item Validation intermédiaire à chaque jalon
+\item Redéfinir les priorités en cas de retard
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Probabilité (P)} & 2 \\ \hline
+\textbf{Gravité (Gc,Gd,Gp)} & Gc = 0, Gd = 4, Gp = 0 \\ \hline
+\textbf{Coefficient de résolution (R)} & 2 \\ \hline
+\textbf{Sévérité globale (SG)} & 16 \\ \hline
+\textbf{Niveau d'exposition} & Acceptable \\ \hline
+\end{tabular}
+
+\newpage
+% =====================================================
+% FICHE 8 - Surcharge de calcul / performance logicielle
+% =====================================================
+\begin{center}
+{\LARGE \textbf{FICHE DE RISQUE}}\\[6pt]
+{\large Ref : \textbf{R008} \hfill Lot : \underline{Surcharge de calcul / performance logicielle}}\\[6pt]
+\hrule
+\end{center}
+
+\begin{tabular}{|p{5.2cm}|p{10.8cm}|}
+\hline
+\textbf{Libellé du risque} & Surcharge de calcul / contraintes de performance logicielle \\ \hline
+\textbf{Classe (acteur exposé)} & Équipe traitement SAR / simulation \\ \hline
+\textbf{Responsable} & Responsable algorithmie / simulation \\ \hline
+\textbf{Causes potentielles ou réelles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Scripts non optimisés
+\item Ressources serveur insuffisantes
+\item Traitement SAR trop long
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Conséquences / Impacts possibles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Résultats non exploitables en temps voulu
+\item Blocage du pipeline de traitement
+\item Retard sur les livrables
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Actions de réduction / prévention} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Optimiser les scripts Python/C++
+\item Réserver les serveurs IMT à l’avance
+\item Réduire la taille des jeux de données test
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Probabilité (P)} & 2 \\ \hline
+\textbf{Gravité (Gc,Gd,Gp)} & Gc = 0, Gd = 4, Gp = 0 \\ \hline
+\textbf{Coefficient de résolution (R)} & 2 \\ \hline
+\textbf{Sévérité globale (SG)} & 16 \\ \hline
+\textbf{Niveau d'exposition} & Acceptable \\ \hline
+\end{tabular}
+
+\newpage
+% =====================================================
+% FICHE 9 - Dépassement du budget matériel
+% =====================================================
+\begin{center}
+{\LARGE \textbf{FICHE DE RISQUE}}\\[6pt]
+{\large Ref : \textbf{R009} \hfill Lot : \underline{Dépassement du budget matériel}}\\[6pt]
+\hrule
+\end{center}
+
+\begin{tabular}{|p{5.2cm}|p{10.8cm}|}
+\hline
+\textbf{Libellé du risque} & Dépassement du budget matériel \\ \hline
+\textbf{Classe (acteur exposé)} & Équipe globale \\ \hline
+\textbf{Responsable} & Chef de projet / Encadrant IMT \\ \hline
+\textbf{Causes potentielles ou réelles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Besoins matériels sous-évalués
+\item Erreurs de commande ou achats multiples
+\item Coûts non anticipés
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Conséquences / Impacts possibles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Impossibilité d’acquérir du matériel critique
+\item Nécessité de revoir les priorités d’essai
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Actions de réduction / prévention} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Valider les dépenses avec l’équipe
+\item Mutualiser le matériel IMT
+\item Tenir un tableau de suivi budgétaire
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Probabilité (P)} & 1 \\ \hline
+\textbf{Gravité (Gc,Gd,Gp)} & Gc = 4, Gd = 0, Gp = 0 \\ \hline
+\textbf{Coefficient de résolution (R)} & 3 \\ \hline
+\textbf{Sévérité globale (SG)} & 12 \\ \hline
+\textbf{Niveau d'exposition} & Acceptable \\ \hline
+\end{tabular}
+
+\newpage
+% =====================================================
+% FICHE 10 - Répartition inégale des tâches
+% =====================================================
+\begin{center}
+{\LARGE \textbf{FICHE DE RISQUE}}\\[6pt]
+{\large Ref : \textbf{R010} \hfill Lot : \underline{Répartition inégale des tâches / absences}}\\[6pt]
+\hrule
+\end{center}
+
+\begin{tabular}{|p{5.2cm}|p{10.8cm}|}
+\hline
+\textbf{Libellé du risque} & Répartition inégale des tâches / absences \\ \hline
+\textbf{Classe (acteur exposé)} & Équipe globale \\ \hline
+\textbf{Responsable} & Chef de projet \\ \hline
+\textbf{Causes potentielles ou réelles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Mauvaise communication interne
+\item Manque de coordination ou motivation
+\item Absence d’un membre sur une période critique
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Conséquences / Impacts possibles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Retard sur certaines tâches
+\item Déséquilibre dans la charge de travail
+\item Diminution de la qualité du livrable
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Actions de réduction / prévention} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Répartition claire des livrables
+\item Suivi par binômes
+\item Plan de secours en cas d’absence
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Probabilité (P)} & 2 \\ \hline
+\textbf{Gravité (Gc,Gd,Gp)} & Gc = 0, Gd = 2, Gp = 0 \\ \hline
+\textbf{Coefficient de résolution (R)} & 2 \\ \hline
+\textbf{Sévérité globale (SG)} & 8 \\ \hline
+\textbf{Niveau d'exposition} & Acceptable \\ \hline
+\end{tabular}
+
+\newpage
+% =====================================================
+% FICHE 11 - Défaut de communication
+% =====================================================
+\begin{center}
+{\LARGE \textbf{FICHE DE RISQUE}}\\[6pt]
+{\large Ref : \textbf{R011} \hfill Lot : \underline{Défaut de communication inter-équipe ou encadrants}}\\[6pt]
+\hrule
+\end{center}
+
+\begin{tabular}{|p{5.2cm}|p{10.8cm}|}
+\hline
+\textbf{Libellé du risque} & Défaut de communication inter-équipe ou avec encadrants \\ \hline
+\textbf{Classe (acteur exposé)} & Équipe projet + encadrants \\ \hline
+\textbf{Responsable} & Référent communication / Chef de projet \\ \hline
+\textbf{Causes potentielles ou réelles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Absence de compte rendu régulier
+\item Manque de clarté sur les responsabilités
+\item Multiplicité des canaux d’échange
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Conséquences / Impacts possibles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Mauvaise cohérence des sous-parties
+\item Décisions non validées ou contradictoires
+\item Risque de réorientation tardive du projet
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Actions de réduction / prévention} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+\item Réunion hebdomadaire obligatoire
+\item Compte rendu partagé sur Drive
+\item Référent communication désigné
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+\textbf{Probabilité (P)} & 1 \\ \hline
+\textbf{Gravité (Gc,Gd,Gp)} & Gc = 0, Gd = 3, Gp = 1 \\ \hline
+\textbf{Coefficient de résolution (R)} & 1 \\ \hline
+\textbf{Sévérité globale (SG)} & 4 \\ \hline
+\textbf{Niveau d'exposition} & Acceptable \\ \hline
+\end{tabular}

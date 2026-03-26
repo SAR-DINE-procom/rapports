@@ -1,0 +1,19 @@
+\section{Mise en place des tests expérimentaux}
+
+Les tests expérimentaux visent à valider le fonctionnement de la chaîne complète d’acquisition et de traitement du système radar. Le principe consiste à déplacer la carte radar, installée sur un robot industriel UR10e, selon un mouvement linéaire contrôlé d’une distance d’1~m. Une cible de type trièdre est placée au sol, en vis-à-vis de la trajectoire du capteur. Durant le déplacement du robot, les données complexes $I/Q$ sont acquises en continu, tandis que les positions successives du robot sont enregistrées afin de reconstituer précisément la trajectoire du capteur.
+
+La mise en œuvre de ce protocole expérimental nécessite la synchronisation de plusieurs éléments : l’acquisition des signaux radar, le pilotage du robot et l’enregistrement de la position du capteur au cours du mouvement. Afin de répondre à ces contraintes, un travail préalable a été mené sur le pilotage du robot UR10e à l’aide d’un environnement Python, ainsi que sur la récupération et la sauvegarde des positions successives de ce dernier.
+
+Pour faciliter le développement et limiter les risques liés à la manipulation du robot réel, un jumeau numérique a été mis en place. Celui-ci repose sur les données fournies par le constructeur ainsi que sur des bibliothèques logicielles développées par Grégory Gaudin au sein du département MO.
+Dans ce cadre, une instance Docker du robot a été déployée permettant de reproduire fidèlement le fonctionnement du système réel. Cette approche présente plusieurs avantages : elle permet un développement sécurisé, sans risque pour le matériel, et offre également une plus grande flexibilité de travail, en rendant possible le développement et la validation du code sans nécessiter un accès direct au robot physique.
+
+Une fois la mise en place du jumeau numérique finalisée et le programme de pilotage validé en simulation, le code a été testé sur le robot réel. Malgré quelques ajustements nécessaires lors de cette phase de mise en œuvre, le système a rapidement fonctionné conformément aux attentes. Cette étape constitue une validation importante de l’architecture expérimentale.
+
+L’ensemble du dispositif étant désormais opérationnel, il est possible de lancer les campagnes de tests et de procéder aux premières acquisitions expérimentales, destinées à valider le fonctionnement de la chaîne complète d’acquisition et de traitement SAR.
+
+
+\paragraph*{Conclusion}
+
+La mise en place de cette plateforme expérimentale constitue une étape clé du projet. L’intégration du capteur radar sur le robot, associée au développement des outils logiciels nécessaires au pilotage et à l’acquisition des données, permet désormais de disposer d’un système capable de réaliser des mesures contrôlées en mouvement. La validation préalable du programme grâce au jumeau numérique a permis de sécuriser le développement et de limiter les risques lors des essais sur le robot réel.
+
+Le dispositif étant désormais pleinement fonctionnel, les travaux peuvent se concentrer sur la réalisation des campagnes de mesures et sur l’analyse des données acquises, afin d’évaluer les performances de la chaîne de traitement SAR mise en place dans le cadre de ce  projet.

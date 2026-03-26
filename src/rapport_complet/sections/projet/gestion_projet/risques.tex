@@ -1,0 +1,92 @@
+\section{Analyse des risques}
+
+% --------- FICHE DE RISQUE ---------
+% Désactive \rowcolor si non disponible (évite l'erreur)
+\makeatletter
+\@ifundefined{rowcolor}{\newcommand{\rowcolor}[2][]{}}{}
+\makeatother
+\begin{center}
+    {\LARGE \textbf{FICHE DE RISQUE}}\\[6pt]
+    {\large Ref : \textbf{R\_\_\_\_} \hfill Lot : \underline{\hspace{6cm}}}\\[6pt]
+    \hrule
+\end{center}
+
+\vspace{8pt}
+
+% Tableau principal
+\begingroup
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{|p{5.2cm}|p{10.8cm}|}
+\hline
+\rowcolor{gray!20}\textbf{Libellé du risque} & \textbf{[Titre du risque]} \\ \hline
+
+\textbf{Classe (acteur exposé)} & [Technique / Humain / Organisationnel / Financier / Juridique / Autre] \\ \hline
+
+\textbf{Responsable} & [Nom, fonction] \\ \hline
+
+\textbf{Causes potentielles ou réelles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+  \item [•] [Cause 1]
+  \item [•] [Cause 2]
+  \item [•] [Cause 3]
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+
+\textbf{Conséquences / Impacts possibles} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+  \item [•] [Impact sur délais]
+  \item [•] [Impact sur coûts]
+  \item [•] [Impact sur performance / qualité / image]
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+
+\textbf{Actions de réduction / prévention} &
+\begin{minipage}[t]{\linewidth}\vspace{2pt}
+\begin{itemize}\setlength\itemsep{2pt}
+  \item [•] [Action 1 : description courte + date prévisionnelle]
+  \item [•] [Action 2 : description courte + responsable]
+  \item [•] [Action 3]
+\end{itemize}\vspace{2pt}
+\end{minipage} \\ \hline
+
+\textbf{Probabilité (P)} & \textbf{[1 -- 4]} \quad 1 : Improbable ; 2 : Peu probable ; 3 : Probable ; 4 : Très probable \\ \hline
+
+\textbf{Gravité (Gc,Gd,Gp)} & Gc (Coûts) = [1–4] ; Gd (Délais) = [1–4] ; Gp (Performances) = [1–4] \\ \hline
+
+\textbf{Coefficient de résolution (R)} & [1–4] \quad 1 : Facile ; 4 : Difficile \\ \hline
+
+\textbf{Sévérité globale (SG)} & \textbf{SG = P × (Gc + Gd + Gp) × R} \\ \hline
+
+\textbf{Niveau d'exposition} & [Acceptable / Modéré / Critique / Inacceptable] \\ \hline
+\end{tabular}
+\endgroup
+
+\vspace{12pt}
+
+% Historique
+\noindent\textbf{Commentaires / historique des mises à jour :}\\[4pt]
+\begingroup
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{|p{3.5cm}|p{3.5cm}|p{8.5cm}|}
+\hline
+\rowcolor{gray!20}\textbf{Date} & \textbf{Auteur} & \textbf{Commentaires / évolution du risque} \\ \hline
+jj/mm/aa & [Nom] & [Ex : action lancée / risque réduit / nouveau responsable] \\ \hline
+jj/mm/aa & [Nom] & [ … ] \\ \hline
+\end{tabular}
+\endgroup
+
+\vspace{10pt}
+
+% Notes
+\noindent\textbf{Remarques :}
+\begin{itemize}
+  \item Remplir P, Gc, Gd, Gp, R avec des coefficients entre 1 et 4.
+  \item Calculer SG selon la formule et classer le risque dans la matrice d’exposition.
+  \item Mettre à jour cette fiche dès que la situation évolue.
+\end{itemize}
+
+% -----------------------------------------------------------------
+% Fin de la fiche (aucun \end{document} ici : c'est volontaire)
+% -----------------------------------------------------------------

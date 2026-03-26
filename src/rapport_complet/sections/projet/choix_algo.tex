@@ -1,6 +1,0 @@
-\section{Choix de l'algo de traitement}
-Dans cette partie, l'objectif est de faire le choix de l'algorithme qui sera utilisé dans ce projet. Les algorithmes considérés sont ceux présentés dans la partie [ref].
-
-Pour effectuer ce choix, le premier critère pris en compte est le mouvement du porteur. En effet, notre porteur est destiné à être un drone, relativement léger et donc sujet à d’importants écarts de trajectoire [à déterminer dans le cahier des charges]. Le premier critère est donc l’absence d’hypothèse de trajectoire linéaire dans les algorithmes. Dans ce cas, seul l’algorithme de \textit{Backprojection} respecte cette condition. Toutefois, pour nuancer ces propos, l’algorithme RMA permet une assez bonne correction de la trajectoire grâce à l’interpolation. Mais là encore, l’intégration de chaque contribution de chaque pixel dans l’algorithme de \textit{Backprojection} le rend plus robuste aux erreurs de phase. \
-Un autre argument en faveur du RMA pourrait être sa complexité, bien moindre : $O(N^2 \log(N))$ contre $O(N^3)$ pour le \textit{Backprojection}. Cependant, dans ce projet, le traitement des données est réalisé post-mission, et aucune contrainte d’embarqué n’est donc considérée. \
-Pour ces différentes raisons, nous faisons le choix d’utiliser l’algorithme de \textit{Backprojection} pour la formation d’image SAR.

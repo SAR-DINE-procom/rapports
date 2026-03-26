@@ -1,0 +1,162 @@
+\subsection{Stockage des données}
+
+La phase de stockage constitue un maillon critique de la chaîne d’acquisition SAR. Le radar génère un flux cohérent en phase, continu et volumineux, qu’il faut enregistrer sans perte ni désynchronisation. Le dispositif de stockage doit, par conséquent, associer un débit soutenu à une grande fiabilité, tout en maîtrisant la consommation énergétique.
+
+\subsubsection{Rôle et contraintes générales}
+
+Le stockage embarqué a pour vocation de conserver l’intégralité des signaux complexes $I/Q$ indispensables à la formation d’image après la mission. À la différence d’autres capteurs (optiques ou lidar), ces données ne se prêtent ni à un sous-échantillonnage agressif ni à une compression destructive, sous peine d’altérer la cohérence de phase. Dans la pratique, les contraintes se résument à quatre exigences corrélées : un débit soutenu souvent supérieur à 10–100~MB/s selon la bande et le nombre de voies ; une continuité d’écriture absolue (aucune perte d’échantillons) ; un horodatage précis et traçable à une référence commune (1~PPS, GNSS) ; et une intégrité de bout en bout garantissant la cohérence temporelle et la fidélité des contenus.
+
+\subsubsection{Architecture typique}
+
+\begin{center}
+\texttt{[Front-end RF]} $\rightarrow$ \texttt{[Numériseur / FPGA]} $\rightarrow$ \texttt{[Buffer RAM]} $\rightarrow$ \texttt{[SSD / NVMe]} $\rightarrow$ \texttt{[Transfert post-vol]}
+\end{center}
+
+L’architecture s’articule autour d’un tampon mémoire (DDR/LPDDR) qui absorbe les fluctuations instantanées de débit et protège contre les pertes, puis d’un support persistant (SSD ou NVMe) chargé d’assurer la pérennité des données. Afin de limiter les effets d’un arrêt inopiné, l’enregistrement est segmenté en fichiers de durée modérée (typiquement 1 à 5~minutes), ce qui réduit la surface d’exposition en cas de corruption.
+
+\subsubsection{Technologies de stockage}
+
+Les technologies courantes pour un système SAR embarqué sont synthétisées dans le tableau ~\ref{tab:stockage_sar}. Les UAV légers privilégient aujourd’hui les SSD~NVMe en PCIe~Gen~3/4, qui apportent un compromis favorable entre débit (jusqu’à plusieurs~Go/s), masse et compacité. Les mémoires eMMC/SDXC conservent leur intérêt pour la télémétrie et l’état-système, mais ne conviennent pas à l’enregistrement soutenu du flux radar brut.
+
+\begin{table}[h!]
+\centering
+\label{tab:stockage_sar}
+\renewcommand{\arraystretch}{1.1}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Technologie} & \textbf{Interface} & \textbf{Débit typique} & \textbf{Avantages} & \textbf{Inconvénients} \\
+\midrule
+SSD SATA III & 6~Gb/s & 300--500~MB/s & Fiable, économique & Débit limité, latence plus élevée \\
+SSD NVMe PCIe 3/4 & 32~Gb/s & 1000--7000~MB/s & Très haut débit, faible latence & Échauffement, consommation accrue \\
+eMMC / SDXC & -- & 30--100~MB/s & Compact, léger & Faible robustesse, pas pour flux continus \\
+RAM circulaire & DDR4/5 & $>$5~GB/s & Très rapide, faible latence & Capacité limitée (tampon uniquement) \\
+RAID embarqué & SATA/NVMe & variable & Redondance, fiabilité accrue & Masse et complexité supplémentaires \\
+\bottomrule
+\end{tabular}%
+}
+\caption{Comparatif des technologies de stockage pour applications SAR embarquées.}
+\end{table}
+
+\subsubsection{Formats de fichiers et structuration}
+
+L’enregistrement s’effectue classiquement au format binaire, sous forme de couples d’échantillons complexes $(I,Q)$, accompagnés d’un en-tête décrivant les paramètres d’acquisition — fréquence porteuse $f_0$, bande $B$, fréquence d’échantillonnage $f_s$, horodatage, position GNSS, polarisation, température électronique. Depuis 2017, le format SigMF (\textit{Signal Metadata Format}) s’est imposé comme standard de facto pour l’archivage de signaux RF~\cite{Balister2017_SigMF}. Il associe un fichier de données brutes (\texttt{.sigmf-data}) et un manifeste JSON (\texttt{.sigmf-meta}) qui assure la traçabilité et l’interopérabilité avec GNU~Radio, MATLAB ou Python.
+
+\subsubsection{Réduction et compression de données}
+
+La réduction de volumétrie vise à contenir les besoins de stockage tout en préservant la phase complexe. Les approches sans perte — codages entropiques ou adaptatifs — procurent des gains modestes, de l’ordre de 1{,}3 à 2$\times$, selon la structure spectrale du signal~\cite{Pieterse2019_SARcompressionMetrics}. Les méthodes avec perte contrôlée (transformées cosinus, représentations parcimonieuses ou schémas compressifs) sont étudiées pour des gains plus significatifs~\cite{Choi2021_DroneSARcompression, Kim2025_SARcompressionPointClouds}, mais leur emploi demeure prudent en présence d’exigences de cohérence élevées. Dans le cas FMCW, une décimation après déchirpage est envisageable lorsque la bande utile est inférieure à $f_s$ ; en parallèle, la génération d’aperçus (images range–Doppler) offre un retour visuel rapide sans transfert intégral du flux. Ces leviers sont combinés avec parcimonie sur UAV, l’objectif premier restant de maintenir la qualité de focalisation~\cite{Svedin2021_UAVSAR}.
+
+\subsubsection{Aspects énergétiques et fiabilité}
+
+L’écriture à haut débit induit une consommation non négligeable : un SSD~NVMe soutenu se situe typiquement entre 1{,}5 et 2~W, et la sous-chaîne \textit{acquisition~+~stockage} représente fréquemment 10–20\,\% de la puissance d’une charge utile SAR~\cite{Sun2020_PassiveUAVSAR}. La robustesse opérationnelle s’appuie sur un système de fichiers journalisé (ext4, XFS) configuré en \texttt{noatime}, sur un \textit{flush} périodique des tampons et sur une capacité de sauvegarde énergétique (supercondensateur) pour terminer les écritures en cas de coupure. L’intégrité se vérifie enfin par le calcul d’empreintes (CRC, hash) par segment et la production d’un manifeste global, de manière à sécuriser la chaîne de traçabilité.
+
+\subsubsection{Résolution de quantification nécessaire pour la précision de phase}
+
+Dans un radar à synthèse d’ouverture, la fidélité de la phase complexe conditionne la cohérence et, in fine, la résolution azimutale. En modélisant la quantification $I/Q$ par un bruit additif sur chaque composante,
+\[
+z = A\,e^{j\varphi} + n_I + j\,n_Q,\qquad n_I,n_Q \sim \mathcal{U}\!\left(-\tfrac{\Delta}{2},\tfrac{\Delta}{2}\right),
+\]
+avec $\Delta$ le pas de quantification et $\mathrm{Var}(n_I)=\mathrm{Var}(n_Q)=\sigma_q^2=\Delta^2/12$, on obtient, pour de faibles bruits,
+\[
+\sigma_\varphi \approx \frac{\Delta}{\sqrt{12}\,A}
+\quad\text{et}\quad
+\sigma_\varphi \approx \frac{1}{\sqrt{2\,\mathrm{SNR}_{q,\mathrm{lin}}}},
+\]
+où $\mathrm{SNR}_{q,\mathrm{lin}} \triangleq A^2/(2\sigma_q^2)$. Pour un CAN idéal à $N$~bits et un \textit{backoff} de $\mathrm{backoff}_{\mathrm{dB}}$,
+\begin{equation}
+    \mathrm{SNR}_{q,\mathrm{dB}} \simeq 6{,}02\,N + 1{,}76 - \mathrm{backoff}_{\mathrm{dB}}.
+\end{equation}
+
+
+
+\paragraph{Lien avec la contrainte \texorpdfstring{$\lambda/100$}{lambda/100}.}
+À 24~GHz, la longueur d’onde vaut $\lambda \approx 12{,}5$~mm. Une erreur radiale $\Delta R=\lambda/100 \approx 0{,}125$~mm induit en monostatique une erreur de phase
+
+
+\begin{equation}
+   \Delta\varphi \approx \frac{4\pi\,\Delta R}{\lambda} \approx 0{,}126~\text{rad}~(7{,}2^\circ). 
+\end{equation}
+En retenant une marge plus stricte $\sigma_\varphi \le 0{,}063$~rad (3{,}6°), il suffit d’assurer $\mathrm{SNR}_{q,\mathrm{dB}}\gtrsim 21$~dB pour que la quantification seule ne limite pas la cohérence.
+
+\paragraph{Exemple (I/Q sur 16~bits, backoff 12~dB).}
+Avec $\mathrm{backoff}=12$~dB, on obtient :
+\begin{table}[H]
+\centering
+\label{tab:bits_phase_24ghz}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{@{}cccc@{}}
+\toprule
+$N$ (bits) & $\mathrm{SNR}_{q,\mathrm{dB}}$ & $\sigma_\varphi$ (rad) & $\sigma_\varphi$ (deg) \\
+\midrule
+8  & 37.9 & $9.0\times10^{-3}$  & $0.52^\circ$ \\
+10 & 50.0 & $2.25\times10^{-3}$ & $0.13^\circ$ \\
+12 & 62.0 & $5.62\times10^{-4}$ & $0.032^\circ$ \\
+14 & 74.0 & $1.40\times10^{-4}$ & $0.008^\circ$ \\
+\bottomrule
+\end{tabular}
+\caption{Erreur de phase RMS due à la quantification selon la résolution du CAN (24~GHz, backoff 12~dB).}
+\end{table}
+
+\noindent Même pour une exigence de l’ordre de $\lambda/100$, 8 à 10~bits effectifs suffisent du point de vue de la quantification pure. En pratique, des CAN 12–14~bits (ENOB $\gtrsim$ 10) sont privilégiés afin de préserver la dynamique de scène, la polarimétrie et la robustesse vis-à-vis de la gigue d’horloge, du bruit de phase LO et des erreurs de trajectoire.
+
+\subsubsection{Exemple représentatif : volume de données d’un vol à 24~GHz}
+
+Le flux généré dépend des paramètres d’acquisition et du mode d’enregistrement. Considérons un radar FMCW déchirpé, enregistrant des échantillons $I/Q$ sur 16~bits par composante (soit 4~octets par échantillon et par canal). Les relations usuelles~\cite{cumming2005,richards2010,Aguasca2013_ARBRES_UAV_SAR}
+\[
+d = \mathrm{PRF}\,T_{\mathrm{chirp}}, \qquad
+R_{\mathrm{inst}} = 4\,f_s\,N_c, \qquad
+R_{\mathrm{moy}} = d\,R_{\mathrm{inst}}, \qquad
+V = R_{\mathrm{moy}}\,T_{\mathrm{vol}},
+\]
+relient la physique d’acquisition au débit et au volume enregistré. On rappelle que $T_{\mathrm{chirp}}$ règle la bande instantanée et donc la résolution en distance $\delta_r = c/(2B)$ ; que la PRF gouverne l’échantillonnage azimutal et la portée non ambiguë ; que $f_s$ fixe le nombre d’échantillons par chirp après déchirpage ; et que $N_c$ est le nombre de voies indépendantes.
+
+La contrainte azimutale relie en outre la PRF à la vitesse du porteur~\cite{cumming2005,richards2010} :
+\begin{equation}
+    \Delta x = \frac{v}{\mathrm{PRF}},
+\end{equation}
+où $v$ est la vitesse du drone et $\Delta x$ l’espacement spatial entre positions successives. Pour éviter les ambiguïtés d’azimut, on impose $\Delta x < \lambda/2$.
+
+\paragraph{Paramètres de référence (projet).}
+Pour un système compact en bande~K ($f_0=24$~GHz, $\lambda\simeq12{,}5$~mm) embarqué sur un drone léger, on retient à titre illustratif $v \approx 18$~m/s, $N_c\in\{1,2\}$ et une durée utile $T_{\mathrm{vol}}=20$ à 25~minutes. Trois profils représentatifs sont présentés ci-dessous.
+
+\begin{table}[H]
+\centering
+\label{tab:volume_donnees_vol_24ghz}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{@{}lcccccccc@{}}
+\toprule
+\textbf{Profil} & $f_s$ & $T_{\mathrm{chirp}}$ & PRF & $d$ & $N_c$ & $R_{\mathrm{inst}}$ & $R_{\mathrm{moy}}$ & $V$ sur $T_{\mathrm{vol}}$ \\
+ & (MS/s) & ($\mu$s) & (Hz) &  &  & (MB/s) & (MB/s) &  \\ \midrule
+A — Léger   & 3  & 120 & 800  & 0.096 & 1 & 12.0 & 1.15 & \textbf{1.4\,GB} (20\,min) \\
+B — Nominal & 6  & 200 & 1500 & 0.30  & 2 & 48.0 & 14.4 & \textbf{21.6\,GB} (25\,min) \\
+C — Riche   & 10 & 250 & 2000 & 0.50  & 2 & 80.0 & 40.0 & \textbf{48\,GB}  (20\,min) \\
+\bottomrule
+\end{tabular}
+\caption{Volume de données selon trois profils de mission (24~GHz, $I/Q$ sur 16~bits).}
+\end{table}
+
+\noindent Pour $v=18$~m/s, l’échantillonnage azimutal vaut
+\[
+\Delta x = \frac{v}{\mathrm{PRF}} \Rightarrow
+\begin{cases}
+\text{A : } 2{,}25~\mathrm{cm},\\
+\text{B : } 1{,}2~\mathrm{cm},\\
+\text{C : } 9~\mathrm{mm},
+\end{cases}
+\]
+des valeurs compatibles avec une antenne compacte à 24~GHz ($\lambda\simeq12{,}5$~mm).
+
+\paragraph{Commentaires.}
+Le profil~B (nominal) adopte $f_s=6$~MS/s, deux canaux ($N_c=2$, dual-pol) et un rapport cyclique $d=0{,}30$, pour un débit moyen $R_{\mathrm{moy}}\approx 14{,}4$~MB/s, soit 21{,}6~GB en 25~minutes. Le profil~C, à bande utile et PRF supérieures, atteint environ 48~GB en 20~minutes. Un SSD~NVMe de 512~GB couvre ainsi plusieurs missions complètes. Les chiffres indiqués concernent le flux brut $I/Q$ ; un flux d’aperçu (image range–Doppler en \texttt{float16}) n’occupe que quelques centaines de mégaoctets et autorise un contrôle rapide en vol.
+
+\medskip
+\noindent\textit{En résumé} — Les équations précédentes relient directement les paramètres d’acquisition ($f_s$, PRF, $T_{\mathrm{chirp}}$, $N_c$) aux besoins en débit et en capacité mémoire. Pour un radar FMCW en bande~K, l’enregistrement intégral du flux sur SSD~NVMe (capacité $\geq$\,512~GB) demeure compatible avec une mission UAV de 20–30~minutes tout en préservant cohérence temporelle et précision de phase~\cite{Aguasca2013_ARBRES_UAV_SAR,cumming2005,richards2010}. La résolution du CAN, dimensionnée par l’exigence de phase ($\lambda/100$), n’est généralement pas limitante au regard des autres sources d’erreurs (jitter d’horloge, bruit de phase LO, trajectoire), tandis que $f_s$, PRF, $N_c$ et $d$ déterminent, eux, le débit moyen et donc la capacité de stockage et la gestion de puissance.
+
+
+\subsection*{Conclusion générale}
+
+L’examen conjoint de l’acquisition et du stockage confirme la cohérence d’ensemble de la chaîne SAR embarquée : les paramètres physiques — fréquence d’échantillonnage $f_s$, PRF, durée de chirp et nombre de voies — déterminent directement le débit moyen, le volume enregistré et, par ricochet, la capacité mémoire et le budget énergétique. À 24~GHz, la courte longueur d’onde impose une discipline stricte des horloges et une maîtrise de la cohérence de phase ; pour autant, la quantification numérique n’est pas dimensionnante : avec des convertisseurs de 12–14~bits (ENOB $\gtrsim$ 10), la marge vis-à-vis d’une contrainte de l’ordre de $\lambda/100$ demeure confortable au regard des autres sources d’erreurs (gigue d’horloge, bruit de phase LO, trajectoire).
+
+Sur plateformes UAV, l’architecture FMCW “déchirpé” s’accorde particulièrement bien avec les contraintes de masse et d’énergie, tout en maintenant des débits compatibles avec un enregistrement intégral du flux $I/Q$ sur SSD~NVMe de capacité $\geq$\,512~GB pour des missions de 20 à 30~minutes. Le choix de la carte d’acquisition — SDR modulaire, RFSoC intégré, numériseur PXIe ou mezzanine FMC — fixe le compromis entre compacité, latence, cohérence multivoies et facilité d’intégration, mais ne dispense jamais d’une chaîne d’horodatage robuste et d’une structuration rigoureuse des données (entêtes complets, manifeste, SigMF).
+
+En définitive, la qualité radiométrique et la résolution azimutale découlent autant de la fidélité temporelle (synchronisation 10~MHz/1~PPS, liens déterministes, budgets de gigue maîtrisés) que de la tenue du parcours signal et de la stratégie de stockage (tampons RAM, écriture soutenue, intégrité vérifiée). Ces fondations matérielles conditionnent la performance des traitements ultérieurs — focalisation, calibration, compression et géoréférencement — et valident la faisabilité d’un capteur SAR compact, cohérent et reconfigurable adapté aux vecteurs légers.

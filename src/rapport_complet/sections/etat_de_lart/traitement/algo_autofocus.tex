@@ -2,18 +2,43 @@
 Pour réaliser une bonne focalisation sur la direction azimutale, la mesure de la phase du signal reçu doit être très précise. Un ordre de grandeur empirique est qu'une erreur de phase dépassant $\frac{\pi}{8}$ dégrade significativement la focalisation de l'énergie sur l'axe azimutal. C’est pourquoi la correction des erreurs de phase est primordiale pour obtenir une image de qualité. Cette section présente différentes méthodes pour résoudre ce problème et propose une implémentation d'un algorithme d'autofocus.\cite{autofocus}. 
 
 \subsubsection{Différents algorithmes d'autofocus}
-\paragraph{ \textit{Phase Gradient Algorithm} (PGA)}
+\paragraph{ \textit{Phase Gradient Autofocus} (PGA)}
+La méthode Phase Gradient Autofocus (PGA) est une technique d’autofocus largement utilisée pour corriger les erreurs de phase dans les images radar à synthèse d’ouverture (SAR). Contrairement aux méthodes basées sur la présence de cibles ponctuelles isolées ou sur un modèle paramétrique des erreurs, le PGA est une approche non paramétrique qui exploite directement les données radar pour estimer l’erreur de phase résiduelle.
+
+Le principe du PGA repose sur l’observation que tous les points de l’image partagent une erreur de phase commune, qui peut être extraite en analysant les variations (gradients) de phase le long des lignes d’azimut. L’algorithme procède en plusieurs étapes: il centre l’image, applique un fenêtrage adapté, calcule le gradient de phase entre les différentes lignées d’azimut (range bins), puis corrige l’image à partir de cette estimation. Ce processus est itératif: on estime la courbe d’erreur de phase, on l’applique à l’image pour correction, puis on réévalue jusqu’à convergence.
+
+Le PGA est très flexible: il ne suppose aucune connaissance a priori sur le type d’erreur ou la présence d’une cible dominante et fonctionne à la fois sur les images riches en contraste et dans les scènes complexes, avec bonnes performances même en présence de bruit ou de fond diffus.
 
 
-\paragraph{ \textit{Map-Drift Algorithm}(MDA)}
+\paragraph{ \textit{Map-Drift Autofocus}(MDA)}
 Cette approche de correction des erreurs de phase consiste à identifier des points significatifs dans l’image, idéalement une cible brillante et isolée, dont l’écho est suffisamment intense. Ensuite, on applique différentes sous-ouvertures (c’est-à-dire qu’on divise le signal reçu sur des durées d’intégration données) et on exploite le recouvrement entre les signaux issus de chaque sous-ouverture. Pour chaque sous-ouverture, on repère la position apparente du point cible. À partir des informations de trajectoire idéale et de la géométrie radar, on calcule l’écart de phase attendu. On mesure ensuite la phase réelle associée au point dans les données acquises; la différence entre la phase attendue et la phase observée permet d’estimer l’erreur de phase à corriger.
 
-\subsubsection{Notre algo de fou []]]]]}
-La méthode proposée dans l'article \cite{autofocus} consiste à corriger la phase des signaux après la compression en distance mais avant la formation finale de l’image. Le principe repose sur la maximisation de l’intensité des pixels: en effet, une corrélation maximale traduit une bonne focalisation et une distance minimale entre le point traité et sa position idéale de référence. Ainsi, maximiser cette intensité correspond à minimiser l’erreur de distance et donc la phase résiduelle. La correction proposée dans l’article se réalise le long de l’axe du temps rapide.\\
+\subsubsection{Proposition d'un algorithme d'autofocus}
+La méthode proposée dans l'article \cite{autofocus} consiste à corriger la phase des signaux après la compression en distance, mais avant la formation finale de l’image. Le principe repose sur la maximisation de l’intensité des pixels: en effet, une corrélation maximale traduit une bonne focalisation et une distance minimale entre le point traité et sa position idéale de référence. Ainsi, maximiser cette intensité correspond à minimiser l’erreur de distance et donc la phase résiduelle. La correction proposée dans l’article se réalise le long de l’axe du temps rapide.
 
-Une première approche consisterait à réaliser ce focus cellule par cellule de résolution. Toutefois, la présence de multiples cibles proches peut entraîner un recouvrement entre cellules et fausser la correction à appliquer. De plus, dans le cas d’un point brillant isolé, une correction appliquée indépendamment à chaque cellule peut créer une compensation non cohérente des pixels environnants, ce qui conduit à des phénomènes d’ambiguïté d’image (ou \textit{ghosting}). Enfin, cette méthode serait naturellement très sensible au bruit.\\
+Une première approche consisterait à réaliser ce focus cellule par cellule de résolution. Toutefois, la présence de multiples cibles proches peut entraîner un recouvrement entre cellules et fausser la correction à appliquer. De plus, dans le cas d’un point brillant isolé, une correction appliquée indépendamment à chaque cellule peut créer une compensation non cohérente des pixels environnants, ce qui conduit à des phénomènes d’ambiguïté d’image (ou \textit{ghosting}). Enfin, cette méthode serait naturellement très sensible au bruit.
 
-C’est pourquoi l’approche proposée dans l’article est de réaliser le focus sur un groupe de pixels, de manière collective.
+C’est pourquoi l’approche proposée dans l’article est de réaliser le focus sur un groupe de pixels, de manière collective. 
+Considérons $\mathcal{M} = (m_1, m_2, ..., m_{|\mathcal{M}|}) $ un groupe de $|\mathcal{M}|$ pixels.  On choisi le groupe de pixel à un endroit où l'énergie est localisée (cible intense, zone structurée) pour garantir une correction de phase fiable et stable, évitant les artefacts de bruit ou de speckle diffus. On peut choisir les patchs avec des calculs d'intensité brute, puis appliquer un seuil. On peut également tester plusieurs patchs. 
+On peut alors noter le signal résultant de la contribution de chacun des pixels du groupe $\mathcal{M}$ à un instant $n$ comme 
 \begin{equation}
-    F(x^0) \geq F(x^1) \geq ... \geq F(x^n). 
+    s(n) = A_{\mathcal{M}}(n) e^{j\varphi_{\mathcal{M}}(n)} \quad \forall n \in \mathcal{P}. 
 \end{equation}
+Avec $ \mathcal{P} $ l'ensemble des pulses qui couvrent le groupe $\mathcal{M}$ de pixels. 
+On peut d'écrire l'ensemble des phases considérées comme 
+\begin{equation}
+    \Phi_{\mathcal{M}} = \{\varphi_{\mathcal{M}}(0), \,\varphi_{\mathcal{M}}(1), \,...\,,\,\varphi_{\mathcal{M}}(|\mathcal{P}| -1) \}.
+\end{equation}
+L’objectif est de minimiser une fonction de coût $F(.)$ à l’aide d’une méthode de descente de coordonnées, comme décrit dans l’algorithme d’autofocus de l’article. Cette approche consiste à ajuster, à chaque itération, la correction de phase d’un pulse à la fois (en laissant les autres phases constantes), puis à passer successivement à chaque pulse pour couvrir l’ensemble des paramètres. Chaque terme de phase est donc adapté individuellement afin de minimiser la fonction de coût sur le groupe de pixels sélectionné. Ce procédé séquentiel est répété jusqu’à convergence et permet ainsi d’optimiser efficacement un grand nombre de paramètres sans devoir résoudre un problème global complexe, tout en assurant une convergence robuste dans les applications SAR exigeantes. 
+
+On définit alors $ \Phi^k_{\mathcal{M}}$ comme le vecteur des phases à la $k$-ème itération de l'algorithme de descente par coordonnées. Et similairement à une descente de gradient, on aura le résultat suivant 
+\begin{equation}
+    F(\Phi^0_{\mathcal{M}}) \geq F(\Phi^1_{\mathcal{M}}) \geq ... \geq F(\Phi^n_{\mathcal{M}}). 
+\end{equation}
+Un exemple de fonction de coût est la fonction d'entropie, elle est définie comme suit  
+\begin{equation}
+    F(\Phi^k_{\mathcal{M}}) = - \sum_{i\in \mathcal{M}}I_i log(I_i),  
+\end{equation}
+avec $I_i$ l'intensité du pixel $i$ après rétroprojection avec la phase corrigée. L'entropie définie une mesure du chaos. Ainsi, en minimisant cette fonction, on concentre l'énergie dans certains pixels, on améliore donc la netteté de l'image. Une fois une correction de phase obtenue, on applique cette dernière à l'ensemble de l'image. 
+
+%On propose une implémentation de cet algorithme dans la section [ref]. 

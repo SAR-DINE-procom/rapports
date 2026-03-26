@@ -1,162 +1,3 @@
-\section{Principes SAR}
-\label{sec:principes_sar}
-
-\subsection{Résolution en imagerie radar conventionnelle}
-
-Un radar à ouverture réelle (Real Aperture Radar, RAR) constitue la forme la plus élémentaire de système radar imageur. Ce type de système émet des impulsions d'ondes électromagnétiques dans la direction perpendiculaire à la trajectoire du porteur et mesure l'intensité de la rétrodiffusion pour reconstituer une image de la scène observée \cite{chan2008sar, curlander1991sar}.
-
-La résolution en portée (range resolution), notée $\delta_d$, dépend directement de la durée temporelle de l'impulsion émise $\tau$. Elle s'exprime par la relation fondamentale :
-\begin{equation}
-    \delta_d = \frac{c_0 \cdot\tau}{2},
-    \label{eq:resolution_distance_imagerie}
-\end{equation}
-où $c_0$ représente la vitesse de propagation des ondes électromagnétiques dans le vide, et le facteur 2 provient du trajet aller-retour du signal radar \cite{bamler1992comparison, rosen2000sar}. Pour améliorer la résolution en portée sans réduire l'énergie transmise, les systèmes modernes utilisent la compression d'impulsion (pulse compression) basée sur des signaux modulés en fréquence (chirp) \cite{cumming2005, curlander1991sar}.
-
-La résolution azimutale (azimuth resolution ou along-track resolution) d'un RAR, notée $\delta_{az}$, est limitée par les dimensions physiques de l'antenne et s'exprime par :
-\begin{equation}
-    \delta_{az} = \frac{\lambda\cdot R}{L},
-    \label{eq:resolution_azimutale_imagerie}
-\end{equation}
-avec $\lambda$ la longueur d'onde du signal radar, $R$ la distance radiale (slant range) entre le radar et la scène observée, et $L$ la longueur physique de l'antenne dans la direction azimutale \cite{chan2008sar, elachi2006remote}. Cette relation montre que la résolution azimutale se dégrade proportionnellement à la distance : pour un UAV (drone) volant à 120 m d'altitude avec une antenne de 20 cm et une longueur d'onde de 1,25 cm (bande K), la résolution azimutale atteint environ 7,5 mètres, ce qui est utilisable pour la détection de mouvements ou la cartographie simple mais qui reste limité pour de l'imagerie de haute précision \cite{bamler1998sar}.
-
-\subsection{Principe général du SAR}
-
-Le radar à synthèse d'ouverture (Synthetic Aperture Radar, SAR) surmonte la limitation physique imposée par les dimensions de l'antenne en exploitant le déplacement du porteur (satellite, avion, ou drone) pour synthétiser une antenne virtuelle de grande dimension \cite{curlander1991sar, rosen2000sar}. Le concept fondamental du SAR repose sur l'enregistrement cohérent de multiples échos successifs provenant d'une même cible au sol pendant que le radar se déplace le long de sa trajectoire \cite{elachi2006remote, massonnet1998radar}.
-
-Le SAR observe la scène latéralement (side-looking geometry) pour plusieurs raisons : maximiser la zone couverte (swath), éviter l'ambiguïté gauche-droite, et optimiser la résolution azimutale \cite{bamler1998sar}. Chaque point au sol reste illuminé dans le faisceau radar pendant un temps d'observation $T_{ill}$ , permettant l'enregistrement de nombreuses impulsions successives. En combinant ces échos de façon cohérente en tenant compte des variations de phase, on synthétise une antenne virtuelle dont la longueur effective $L_{syn}$ est bien supérieure à la longueur physique de l'antenne \cite{chan2008sar}.
-
-L'effet Doppler-Fizeau joue un rôle central dans le principe du SAR \cite{curlander1991sar, bamler1992comparison}. Lorsque le radar se déplace par rapport à une cible au sol, la fréquence du signal réfléchi par cette cible varie en fonction de sa position relative au radar. Cette variation de fréquence Doppler, et donc de phase, permet de localiser précisément la cible dans l'axe azimutal à la condition prêt de connaître précisément la position du porteur. Le signal rétrodiffusé par une cible ponctuelle peut être modélisé par :
-\begin{equation}
-    s(t_0,\eta) \approx A\cdot\exp\left(j \frac{4\pi \cdot R(\eta)}{\lambda}\right),
-    \label{eq:signal_retrodiffuse_sar}
-\end{equation}
-où $R(\eta)$ représente la distance instantanée entre la cible et l'antenne en fonction du temps lent $\eta$, $A$ l'amplitude du signal rétrodiffusé, et le facteur $\frac{4\cdot\pi}{\lambda}$ provient de l'aller-retour du signal \cite{cumming2005}. La résolution azimutale d'un SAR focalisé est remarquablement indépendante de la distance et approximativement égale à la moitié de la longueur physique de l'antenne \cite{rosen2000sar, bamler1998sar} :
-\begin{equation}
-    \delta_{az} \approx \frac{L}{2}.
-    \label{eq:resolution_azimutale}
-\end{equation}
-
-\subsection{Matrice temps lent / temps rapide}
-
-Les données SAR brutes sont organisées dans une matrice bidimensionnelle \(S(t,\eta)\) qui structure l'information selon deux échelles temporelles distinctes \cite{cumming2005, curlander1991sar} :
-\begin{equation}
-    S = 
-    \begin{bmatrix}
-       s(t_1,\eta_1) & s(t_2,\eta_1) & \dots & s(t_N,\eta_1) \\
-        s(t_1,\eta_2) & s(t_2,\eta_2) & \dots & s(t_N,\eta_2) \\
-        \vdots & \vdots & \ddots & \vdots \\
-        s(t_1,\eta_M) & s(t_2,\eta_M) & \dots & s(t_N,\eta_M) 
-    \end{bmatrix}.
-    \label{eq:matrice_tps_lent_tps_rapide}
-\end{equation}
-
-Le temps rapide (fast time) $t$ correspond à l'échelle temporelle de propagation de chaque impulsion radar individuelle. Il mesure le temps d'aller-retour du signal entre l'émission et la réception de l'écho pour une impulsion donnée, et est directement lié à la distance radiale par la relation \cite{rosen2000sar} :
-\begin{equation}
-    R = \frac{c_0 \cdot t}{2}.
-    \label{eq:distance_radiale_sar}
-\end{equation}
-Cette dimension permet de distinguer les cibles situées à différentes distances du radar (direction range). L'échantillonnage en temps rapide doit respecter le critère de Nyquist pour la bande passante du signal émis \cite{bamler1992comparison}.
-
-Le temps lent (slow time ou azimuth time) $\eta$ indexe les impulsions radar successives émises pendant le déplacement du porteur le long de sa trajectoire \cite{cumming2005}. Cette dimension correspond à la direction azimutale de l'image et porte l'information de l'histoire Doppler des cibles. La fréquence de répétition des impulsions (Pulse Repetition Frequency, PRF) doit être suffisamment élevée pour échantillonner correctement le spectre Doppler et éviter l'aliasing azimutal, avec un espacement minimal entre impulsions de $\frac{L}{2}$ le long de la trajectoire \cite{rosen2000sar, elachi2006remote}.
-
-Cette organisation matricielle constitue le format de données brutes (raw data) qui sera transformé par les algorithmes de focalisation SAR pour produire une image focalisée \cite{cumming2005}.
-
-\subsection{Focalisation SAR}
-
-Le traitement SAR consiste à transformer la matrice de données brutes $S(t,\eta)$ en une image focalisée $I(x,y)$ où chaque pixel représente la réflectivité radar de la scène \cite{bamler1992comparison, cumming2005}. Ce processus de focalisation, également appelé compression SAR, s'effectue en deux étapes principales \cite{curlander1991sar, rosen2000sar} :
-
-\begin{enumerate}
-    \item Compression en distance (range compression) : Cette première étape applique un filtrage adapté dans la dimension du temps rapide. Pour les systèmes utilisant des chirps linéaires en fréquence, le filtrage adapté correspond à une corrélation avec le chirp de référence conjugué \cite{bamler1992comparison}. Cette opération s'effectue efficacement dans le domaine fréquentiel par multiplication avec le spectre conjugué du signal émis, permettant d'obtenir une haute résolution radiale limitée uniquement par la bande passante du signal $B$ comme cela sera démontré dans la partie \ref{subsubsec:compression_dist} : $\delta_r = \frac{c_0}{2\cdot B}$ \cite{cumming2005}.
-    
-    \item Compression en azimut (azimuth compression) : La seconde étape traite la dimension du temps lent pour exploiter la modulation Doppler. Le traitement cohérent des variations de phase dues au mouvement du radar permet de reconstituer l'ouverture synthétique et d'améliorer la résolution azimutale \cite{rosen2000sar}. Cette compression azimutale requiert une correction de la migration en distance (Range Cell Migration Correction, RCMC) car les échos d'une cible se déplacent en distance au cours de son passage dans le faisceau \cite{bamler1992comparison, cumming2005}.
-\end{enumerate}
-
-Plusieurs algorithmes de focalisation ont été développés pour optimiser le compromis entre précision et efficacité computationnelle \cite{bamler1992comparison}. Les algorithmes introduits ci-dessous sont parmi les plus utilisés et sont détaillés dans la partie \ref{subsec:algo_traitement} :
-
-\begin{itemize}
-    \item L'algorithme Range-Doppler (RDA) qui opère dans le domaine distance-Doppler et approxime la trajectoire hyperbolique range-azimut \cite{cumming2005, bamler1992comparison}.
-    \item L'algorithme Chirp Scaling (CSA) qui remplace l'interpolation de la RCMC par une opération de mise à l'échelle dans le domaine distance-fréquence azimutale, offrant une meilleure qualité d'image \cite{raney1994chirp, dastgir2007processing}.
-    \item L'algorithme $\omega$-K (ou wavenumber domain algorithm) qui opère entièrement dans le domaine bidimensionnel des fréquences spatiales et peut gérer de larges ouvertures synthétiques \cite{bamler1992comparison}.
-\end{itemize}
-
-Ces algorithmes utilisent massivement les transformées de Fourier rapides (FFT) pour passer efficacement entre les domaines temporel et fréquentiel \cite{cumming2005, rosen2000sar}.
-
-\subsection{Interférométrie SAR (InSAR)}
-
-L'interférométrie SAR (Interferometric SAR, InSAR) est une technique avancée qui exploite la différence de phase entre deux images SAR complexes acquises depuis des positions ou à des moments différents pour mesurer des variations submillimétriques de distance entre le capteur et la scène \cite{massonnet1998radar, rosen2000sar}. Cette méthode transforme le SAR d'un simple système imageur en un instrument de mesure géodésique de haute précision \cite{burgmann2000sar}.
-
-L'interférogramme est obtenu par la multiplication pixel à pixel d'une image SAR complexe avec le conjugué complexe d'une seconde image, après co-registration précise des deux acquisitions \cite{rosen2000sar, bamler1998sar}. La phase interférométrique résultante s'exprime par :
-\begin{equation}
-    \Delta \phi = \phi_2 - \phi_1 = \frac{4\\pi}{\lambda} (R_2 - R_1),
-    \label{eq:phase_interferometrique_sar}
-\end{equation}
-où $\phi_1$ et $\phi_2$ sont les phases des signaux rétrodiffusés mesurées lors des deux acquisitions, et $R_1$, $R_2$ représentent les distances respectives entre le capteur et chaque point de la cible \cite{massonnet1998radar}.
-
-La phase interférométrique totale se décompose en plusieurs contributions \cite{rosen2000sar, burgmann2000sar} :
-\begin{equation}
-    \Delta\phi_{total} = \Delta\phi_{topo} + \Delta\phi_{defo} + \Delta\phi_{atmo} + \Delta\phi_{bruit},
-    \label{eq:phase_interferometrique_totale_sar}
-\end{equation}
-où $\Delta\phi_{topo}$ provient de la topographie, $\Delta\phi_{defo}$ des déformations du sol, $\Delta\phi_{atmo}$ des hétérogénéités atmosphériques, et $\Delta\phi_{bruit}$ de la décorrélation et du bruit système.
-
-La géométrie interférométrique est caractérisée par la ligne de base (baseline) $B$, vecteur séparant les positions des deux acquisitions, dont la composante perpendiculaire $B_\perp$ détermine la sensibilité aux variations d'altitude \cite{massonnet1998radar, rosen2000sar}. La ligne de base critique $B_c$ définit la séparation maximale au-delà de laquelle la décorrélation spatiale rend l'interférométrie impossible \cite{bamler1998sar}.
-
-L'interférogramme présente une ambiguïté fondamentale : la phase n'est mesurable que modulo $2\pi$, ce qui crée des franges d'interférence dans l'image \cite{massonnet1998radar}. Le processus de déroulement de phase (phase unwrapping) vise à reconstruire la phase absolue en ajoutant ou retirant des multiples de $2\pi$ de manière cohérente spatiale \cite{rosen2000sar, burgmann2000sar}. Ce problème mal posé nécessite des hypothèses de continuité de la phase et constitue l'une des principales difficultés du traitement InSAR.
-
-Les applications de l'InSAR incluent la génération de modèles numériques de terrain (MNT), la mesure de déformations de surface (subsidences, glissements de terrain, déformations volcaniques et sismiques), et la surveillance des infrastructures \cite{massonnet1998radar, burgmann2000sar, rosen2000sar}.
-
-\subsection{Polarimétrie SAR (PolSAR)}
-
-La polarimétrie SAR exploite la polarisation des ondes électromagnétiques pour enrichir considérablement l'information extraite des images radar \cite{lee2009polarimetric, cloude2009polarisation}. Un radar polarimétrique complet (fully polarimetric) émet et reçoit selon différentes combinaisons de polarisations linéaires : horizontale ($H$) et verticale ($V$), créant quatre canaux de mesure : $HH$, $HV$, $VH$, et $VV$ \cite{elachi2006remote, lee2009polarimetric}.
-
-Chaque pixel d'une image PolSAR est caractérisé par une matrice de rétrodiffusion complexe 2×2, appelée matrice de Sinclair ou matrice de diffusion \cite{cloude2009polarisation} :
-\begin{equation}
-    \mathbf{S} = \begin{bmatrix}
-    S_{HH} & S_{HV} \\
-    S_{VH} & S_{VV}
-    \end{bmatrix},
-    \label{eq:matrice_sinclair}
-\end{equation}
-où chaque élément $S_{pq}$ représente l'amplitude et la phase du signal rétrodiffusé en polarisation $p$ lorsque l'onde est émise en polarisation $q$ \cite{lee2009polarimetric}. Pour un radar monostatique avec réciprocité de diffusion, $S_{HV} = S_{VH}$, réduisant les degrés de liberté indépendants à trois \cite{cloude2009polarisation}.
-
-L'analyse polarimétrique s'appuie sur diverses représentations mathématiques de la matrice de diffusion \cite{lee2009polarimetric} :
-
-\begin{itemize}
-    \item Le vecteur de diffusion en base lexicographique : $\mathbf{k}_L = [S_{HH}, \sqrt{2}S_{HV}, S_{VV}]^T$ ;
-    \item Le vecteur de Pauli : $\mathbf{k}_P = \frac{1}{\sqrt{2}}[S_{HH}+S_{VV}, S_{HH}-S_{VV}, 2S_{HV}]^T$ ;
-    \item La matrice de cohérence : $\mathbf{T} = \langle \mathbf{k}_P \mathbf{k}_P^{*T} \rangle$ ;
-    \item La matrice de covariance : $\mathbf{C} = \langle \mathbf{k}_L \mathbf{k}_L^{*T} \rangle$.
-\end{itemize}
-où $\langle \cdot \rangle$ désigne l'opérateur de moyenne spatiale \cite{lee2009polarimetric, cloude2009polarisation}.
-
-Les décompositions polarimétriques permettent d'interpréter physiquement les mécanismes de diffusion \cite{lee2009polarimetric}. Parmi les plus utilisées :
-
-\begin{itemize}
-    \item La décomposition de Pauli exprime la matrice de diffusion comme la somme cohérente de diffuseurs élémentaires : diffusion simple (surface plane), double rebond (dièdre), et diffusion volumique \cite{lee2009polarimetric}.
-    
-    \item La décomposition de Cloude-Pottier, basée sur la diagonalisation de la matrice de cohérence, extrait trois paramètres : l'entropie \(H\) (randomisation), l'angle alpha \(\alpha\) (type de diffusion dominant), et l'anisotropie \(A\) (importance relative du second mécanisme) \cite{cloude1997eigenvalue, lee2009polarimetric}.
-    
-    \item La décomposition de Freeman-Durden modélise la matrice de covariance comme la combinaison incohérente de trois composantes physiques : diffusion de surface, diffusion volumique, et double rebond \cite{freeman1998threescattering, lee2009polarimetric}.
-\end{itemize}
-
-Ces descripteurs polarimétriques permettent de distinguer les propriétés physiques et géométriques des cibles : rugosité de surface, orientation des structures, contenu en humidité, biomasse végétale \cite{lee2009polarimetric, cloude2009polarisation}. Les applications incluent la classification des surfaces naturelles et anthropiques, l'estimation de paramètres biophysiques, et la détection de cibles spécifiques \cite{elachi2006remote}.
-
-\subsection{Complémentarité et synergie}
-
-L'interférométrie polarimétrique (Polarimetric SAR Interferometry, PolInSAR) combine les techniques d'interférométrie et de polarimétrie pour extraire des informations tridimensionnelles sur la structure verticale des milieux observés \cite{cloude1998polarimetric, papathanassiou2001single}. Cette synergie exploite simultanément la cohérence de phase interférométrique et la richesse de l'information polarimétrique.
-
-Le concept fondamental du PolInSAR repose sur l'observation que différentes polarisations sondent différentes parties de la structure verticale d'un milieu volumique comme une canopée forestière \cite{papathanassiou2001single}. La matrice de cohérence interférométrique 6×6 combine les matrices de cohérence \(\mathbf{T}_1\) et \(\mathbf{T}_2\) des deux images et la matrice de cohérence croisée \(\mathbf{\Omega}_{12}\) \cite{cloude1998polarimetric} :
-\begin{equation}
-    \mathbf{T}_6 = \begin{bmatrix}
-    \mathbf{T}_1 & \mathbf{\Omega}_{12} \\
-    \mathbf{\Omega}_{12}^* & \mathbf{T}_2
-    \end{bmatrix}.
-\end{equation}
-
-La cohérence complexe dépend de la polarisation et peut être optimisée pour maximiser la cohérence entre deux couches de diffusion \cite{papathanassiou2001single, cloude1998polarimetric}. Le modèle Random Volume over Ground (RVoG) décrit la réponse PolInSAR d'une canopée comme la superposition cohérente d'une composante volumique et d'une composante de sol \cite{papathanassiou2001single}. L'inversion de ce modèle permet d'estimer la hauteur de végétation, le coefficient d'extinction, et le rapport sol-volume \cite{cloude1998polarimetric}.
-
-Les applications du PolInSAR incluent l'estimation de la hauteur des forêts avec une précision métrique, la cartographie de la biomasse forestière au-dessus du sol, la caractérisation de la structure des canopées, et l'étude des milieux urbains complexes \cite{papathanassiou2001single, cloude1998polarimetric}. Ces techniques trouvent des applications en gestion forestière, suivi des ressources naturelles, et modélisation du cycle du carbone \cite{lee2009polarimetric}.
-
 
 % \subsection{Speckle}
 % \label{subsec:speckle}
@@ -190,15 +31,100 @@ Les applications du PolInSAR incluent l'estimation de la hauteur des forêts ave
 
 % La compréhension fine des propriétés physiques et statistiques du speckle est indispensable pour concevoir des algorithmes de dé-speckling optimaux et pour estimer la confiance radiométrique des mesures SAR, notamment dans les applications de segmentation, classification et inversion de paramètres biophysiques.
 
-\subsection{Applications des SAR}
-\label{subsec:applications_sar}
-
-Les systèmes SAR offrent une grande diversité d’applications grâce à leur capacité à fournir des images à haute résolution indépendamment des conditions météorologiques et d’éclairage. L’interférométrie SAR (InSAR) est notamment utilisée pour la génération de modèles numériques de terrain (MNT) et la mesure de déformations de surface submillimétriques. En comparant deux acquisitions cohérentes, il est possible de cartographier les subsidences urbaines, les glissements de terrain, les déformations volcaniques et les mouvements sismiques, avec une précision de l’ordre du centimètre voire du millimètre \cite{massonnet1998radar, rosen2000sar}.
-
-La polarimétrie SAR (PolSAR) enrichit l’information radar en exploitant la polarisation (HH, HV, VH, VV) des ondes. Elle permet de distinguer différents mécanismes de diffusion (surface, volume, double rebond) et d’estimer des paramètres biophysiques tels que la rugosité, la teneur en humidité ou la biomasse végétale. Les décompositions de Pauli, Cloude–Pottier et Freeman–Durden facilitent la classification des surfaces naturelles et anthropiques, ainsi que la surveillance des cultures et des forêts \cite{lee2009polarimetric, cloude2009polarisation}.
-
-La combinaison de l’interférométrie et de la polarimétrie (PolInSAR) ouvre la voie à l’extraction d’informations tridimensionnelles sur la structure verticale des milieux, comme la hauteur de la canopée forestière ou la stratification des couches géologiques. En utilisant des matrices de cohérence croisées, le modèle Random Volume over Ground (RVoG) permet d’estimer la hauteur des forêts avec une précision métrique et de cartographier la biomasse aérienne \cite{papathanassiou2001single, cloude1998polarimetric}.
-
-Enfin, les séries temporelles SAR (time series) constituent une autre application majeure, reposant sur l’analyse d’interférogrammes multi-temps pour surveiller l’évolution des déformations de surface sur de longues périodes. Cette approche est largement utilisée pour le suivi des infrastructures (ponts, barrages), la gestion des ressources hydrologiques, et l’évaluation des risques géologiques, en exploitant des méthodes telles que SBAS (Small BAseline Subset) et PS-InSAR (Persistent Scatterer InSAR) \cite{berardino2002new, hooper2007persistent}.
-
 % Enfin, la réduction du speckle est essentielle pour améliorer la qualité radiométrique des images SAR avant toute exploitation. Des filtres adaptatifs (Lee, Frost) et des méthodes multi-échelle (ondelettes, variationnelles) sont appliqués pour atténuer le bruit speckle tout en préservant les détails spatiaux. Cette étape est cruciale pour les applications de classification, de détection de cibles et d’inversion de paramètres biophysiques \cite{lee1994speckle, lopezmart2006multidimensional}.
+
+% ----------------------
+
+
+\section{Principes SAR}
+\label{sec:principes_sar}
+
+\subsection{Résolution en imagerie radar conventionnelle}
+
+Un radar à ouverture réelle (RAR) constitue la forme la plus élémentaire de système radar imageur. Ce dispositif émet des impulsions d'ondes électromagnétiques sur le côté du porteur et mesure l'intensité de la rétrodiffusion afin de reconstituer une image de la scène observée \cite{chan2008sar, curlander1991sar}.
+
+La résolution en portée, notée $\delta_r$, dépend directement de la durée temporelle de l'impulsion émise $\tau$ et s'exprime selon la relation
+\begin{equation}
+\delta_r = \frac{c_0 \cdot\tau}{2},
+\label{eq:resolution_distance_imagerie}
+\end{equation}
+où $c_0$ représente la vitesse de propagation des ondes électromagnétiques dans le vide, et le facteur $\frac{1}{2}$ résulte du trajet aller-retour du signal radar \cite{bamler1992comparison, rosen2000sar}. Pour améliorer la résolution en portée sans réduire l'énergie transmise, les systèmes modernes utilisent la compression d'impulsion basée sur des signaux modulés en fréquence (chirp) \cite{cumming2005, curlander1991sar}.
+
+La résolution azimutale d'un RAR, notée $\delta_{az}$, est limitée par les dimensions physiques de l'antenne et s'exprime par
+\begin{equation}
+\delta_{az} = \frac{\lambda\cdot R}{L},
+\label{eq:resolution_azimutale_imagerie}
+\end{equation}
+avec $\lambda$ la longueur d'onde du signal radar, $R$ la distance radiale (slant range) entre le radar et la scène observée, et $L$ la longueur physique de l'antenne \cite{chan2008sar, elachi2006remote}. Cette relation montre que la résolution azimutale se dégrade proportionnellement à la distance. Par exemple, un drone opérant à 120 m d'altitude avec une antenne de 20 cm de long et une longueur d'onde de 1,25 cm (bande K) produit une résolution azimutale d'environ 7,5 m, suffisante pour la détection de mouvements ou la cartographie simple mais limitée pour l'imagerie haute précision \cite{bamler1998sar}.
+
+\subsection{Principes généraux}
+
+Le radar à synthèse d'ouverture surmonte la limitation physique imposée par les dimensions de l'antenne en exploitant le déplacement du porteur (satellite, avion, ou drone) pour synthétiser une antenne virtuelle de grande dimension \cite{curlander1991sar, rosen2000sar}. Le concept fondamental repose sur l'enregistrement cohérent de multiples échos successifs provenant d'une même cible au sol pendant que le radar se déplace le long de sa trajectoire \cite{elachi2006remote, massonnet1998radar}.
+
+Le SAR observe la scène latéralement (side-looking geometry) pour maximiser la zone couverte (swath), éviter l'ambiguïté gauche-droite, et optimiser la résolution azimutale \cite{bamler1998sar}. Chaque point au sol reste illuminé dans le faisceau radar durant un temps d'observation $T_{ill}$ permettant l'enregistrement de nombreuses impulsions successives. La combinaison cohérente de ces retours synthétise une antenne virtuelle bien supérieure à la taille physique de l'antenne \cite{chan2008sar}.
+
+L'effet Doppler-Fizeau est essentiel : le mouvement du système radar engendre une variation de fréquence de l'écho rétrodiffusé, permettant la localisation selon l'axe azimutal à condition de connaître précisément la trajectoire du porteur \cite{curlander1991sar, bamler1992comparison}. Le signal recueilli sur une cible ponctuelle s'exprime par
+\begin{equation}
+s(t_0,\eta) \approx A\cdot\exp\left(j \frac{4\pi \cdot R(\eta)}{\lambda}\right),
+\label{eq:signal_retrodiffuse_sar}
+\end{equation}
+où $R(\eta)$ indique la distance instantanée, $A$ l'amplitude rétrodiffusée, et le terme $\frac{4\cdot\pi}{\lambda}$ résulte du double trajet du signal \cite{cumming2005}. Après focalisation, la résolution azimutale devient presque indépendante de la distance et s'approche de
+\begin{equation}
+\delta_{az} \approx \frac{L}{2}.
+\label{eq:resolution_azimutale}
+\end{equation}
+
+\subsection{Matrice temps lent temps rapide}
+
+Les données SAR brutes sont structurées autour d'une matrice bidimensionnelle $S(t,\eta)$ organisée selon deux variables temporelles distinctes \cite{cumming2005, curlander1991sar} :
+\begin{equation}
+    S = 
+    \begin{bmatrix}
+       s(t_1,\eta_1) & s(t_2,\eta_1) & \dots & s(t_N,\eta_1) \\
+        s(t_1,\eta_2) & s(t_2,\eta_2) & \dots & s(t_N,\eta_2) \\
+        \vdots & \vdots & \ddots & \vdots \\
+        s(t_1,\eta_M) & s(t_2,\eta_M) & \dots & s(t_N,\eta_M) 
+    \end{bmatrix}.
+    \label{eq:matrice_tps_lent_tps_rapide}
+\end{equation}
+Le temps rapide $t$ correspond à la durée de propagation de chaque impulsion, soit le temps d'aller-retour entre émission et réception, relié à la distance radiale par
+\begin{equation}
+R = \frac{c_0 \cdot t}{2}.
+\label{eq:distance_radiale_sar}
+\end{equation}
+Cette dimension discrétise les cibles selon leur éloignement du radar. L'échantillonnage doit satisfaire le critère de Nyquist \cite{bamler1992comparison}. Le temps lent $\eta$ indexe les impulsions successives émises pendant le déplacement du porteur, associé à la direction azimutale et contenant l'histoire Doppler des cibles \cite{cumming2005}. La fréquence de répétition d'impulsions doit garantir un échantillonnage correct du spectre Doppler, en évitant le repliement spectral \cite{rosen2000sar, elachi2006remote}.
+
+\subsection{Focalisation}
+
+Le traitement SAR convertit la matrice de données brutes $S(t,\eta)$ en une image focalisée $I(x,y)$, chaque pixel représentant la réflectivité radar du sol \cite{bamler1992comparison, cumming2005}. La focalisation comporte deux étapes. La compression en distance filtre les échos selon la structure temporelle de l'impulsion, offrant une haute résolution radiale dépendant de la bande passante \cite{cumming2005}. Cette compression s'effectue par filtrage adapté en domaine fréquentiel, exploitant la transformée de Fourier rapide. Elle est notamment détaillée en \ref{subsubsec:compression_dist}.
+
+La compression azimutale exploite la modulation Doppler du déplacement radar, nécessitant une correction de migration pour aligner les retours lors du passage dans le faisceau \cite{rosen2000sar}. Divers algorithmes tels que Range-Doppler, Chirp Scaling, ou omega-K s'appuient sur la transformée de Fourier rapide pour naviguer entre domaines temporel et fréquentiel \cite{cumming2005, bamler1992comparison, raney1994chirp}. Range-Doppler opère dans le domaine distance-Doppler et approxime la trajectoire hyperbolique \cite{cumming2005}. Chirp Scaling remplace l'interpolation par une mise à l'échelle, réduisant les imprécisions numériques \cite{raney1994chirp}. L'algorithme omega-K opère dans l'espace des fréquences spatiales bidimensionnel pour les très grandes ouvertures \cite{bamler1992comparison}. Ces algorithmes figurent parmis les plus utilisés, ils seront abordés plus précisément en \ref{subsec:algo_traitement}.
+
+\subsection{Interférométrie}
+
+L'interférométrie SAR (InSAR) mesure les variations de distance entre le capteur et le sol à partir de la différence de phase entre deux images SAR prises à des instants ou positions distincts \cite{massonnet1998radar, rosen2000sar, burgmann2000sar}. La phase, modulo $2\pi$, reflète les écarts de distance selon
+\begin{equation}
+\Delta \phi = \phi_2 - \phi_1 = \frac{4\pi}{\lambda} (R_2 - R_1),
+\label{eq:phase_interferometrique_sar}
+\end{equation}
+où les contributions topographiques, de déformation, atmosphériques et de bruit doivent être dissociées \cite{rosen2000sar, massonnet1998radar}. La ligne de base perpendiculaire $B_\perp$ détermine la sensibilité au relief. Une grande séparation induit une décorrélation spatiale \cite{bamler1998sar}. Le déroulement de phase reconstitue la phase absolue à partir d'informations modulo $2\pi$, opération requérant des hypothèses de continuité spatiale \cite{rosen2000sar, burgmann2000sar}.
+
+\subsection{Polarimétrie}
+
+La polarimétrie SAR analyse la diffusion radar selon la polarisation des ondes, enrichissant l'information extraite des images \cite{lee2009polarimetric, cloude2009polarisation}. Un radar polarimétrique complet envoie et reçoit selon différents états de polarisation, générant une matrice complexe de diffusion \cite{elachi2006remote, lee2009polarimetric}. Par diverses décompositions telles que Pauli, Cloude–Pottier ou Freeman–Durden, l'analyse met en lumière les mécanismes physiques, distinguant surface plane, dièdre, ou diffusion volumique \cite{lee2009polarimetric, cloude1997eigenvalue, freeman1998threescattering}. La matrice de diffusion complexe 2×2 s'écrit
+\begin{equation}
+\mathbf{S} = \begin{bmatrix}
+S_{HH} & S_{HV} \\
+S_{VH} & S_{VV}
+\end{bmatrix},
+\label{eq:matrice_sinclair}
+\end{equation}
+où chaque élément $S_{pq}$ représente l'amplitude complexe du signal en polarisation de réception $p$ lors d'une émission en polarisation $q$ \cite{lee2009polarimetric}. La décomposition de Freeman–Durden modélise la matrice comme combinaison de trois composantes : diffusion de surface, volumique, et double rebond \cite{freeman1998threescattering, lee2009polarimetric}.
+
+\subsection{Complémentarité et synergie}
+
+La synergie entre interférométrie et polarimétrie (PolInSAR) combine la cohérence de phase et l'information polarimétrique pour une analyse tridimensionnelle \cite{cloude1998polarimetric, papathanassiou2001single}. Le modèle Random Volume over Ground permet l'estimation précise de la hauteur des forêts, du coefficient d'extinction ou du rapport volume-sol \cite{cloude1998polarimetric, papathanassiou2001single}. Les méthodes PolInSAR permettent la cartographie de la biomasse et la caractérisation des strates végétales \cite{lee2009polarimetric}.
+
+\subsection{Applications}
+
+Les systèmes SAR offrent une grande diversité d'applications indépendamment des conditions météorologiques. L'interférométrie SAR génère des modèles numériques de terrain et surveille les déformations de surface pour la cartographie des subsidences, le suivi des glissements de terrain, et la détection de déformations volcaniques et sismiques \cite{massonnet1998radar, rosen2000sar}. La polarimétrie SAR estime les paramètres biophysiques tels que rugosité superficielle, teneur en humidité des sols et biomasse forestière. La combinaison PolInSAR offre l'estimation de hauteurs de formations forestières, la cartographie de biomasse aérienne, et l'analyse d'environnements complexes \cite{papathanassiou2001single, cloude1998polarimetric}. Des méthodes avancées exploitent les séries temporelles d'interférogrammes pour le suivi des infrastructures critiques \cite{berardino2002new, hooper2007persistent}.

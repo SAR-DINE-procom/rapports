@@ -37,7 +37,7 @@ Ainsi, l’imagerie radar revêt un intérêt manifeste tant dans le domaine civ
 Bien que l’imagerie radar conventionnelle possède des avantages significatifs par rapport à l'imagerie optique, elle présente une limite majeure : la résolution. En effet, dans le cas d’un SLAR/RAR \footnote{Real Aperture Radar ou radar à ouverture réelle}, la résolution en azimut s'exprime de la manière suivante \cite{radartutorial} :
 
 \begin{equation}
-\delta_{az} = \frac{h\times\lambda}{L\times \cos{\theta}}
+\delta_{az} = \frac{h\times\lambda}{L\times \cos{\theta}}.
 \label{eq:resolution_azimut_rar}
 \end{equation}
 Où :
@@ -63,17 +63,68 @@ L’utilisation d’un essaim confère plusieurs avantages d’un point de vue o
 
 Les applications de ce type de système sont à la fois civiles et stratégiques. Dans le domaine civil, elles contribuent à la surveillance des écosystèmes, à la prévention des risques naturels et à la production de données fiables pour l’aménagement du territoire et la gouvernance. Dans un contexte militaire ou stratégique, l’essaim permet une cartographie et une reconnaissance précises, même dans des zones hostiles ou couvertes, tout en garantissant une redondance et une adaptabilité accrues. Cette dualité illustre le potentiel des drones SAR en essaim comme outil pertinent à la fois pour la recherche, la gestion environnementale et la défense.
 
+Dans le cadre de ce projet, nous nous intéressons à l’étude d’un ensemble de systèmes de radars imageurs. L’objectif principal est de caractériser un système unitaire dans différentes conditions de fonctionnement, puis d’évaluer l’apport d’un essaim de systèmes SAR (au-delà de l’avantage indéniable en termes de résilience) en se basant sur les performances de détection. 
+
 \paragraph{Convention de nommage}
 
-Les informations entre crochets décrivent les unités, s'ils ne sont pas présents, la valeur est sans unité.
+Les symboles utilisés dans ce rapport suivent les notations usuelles en imagerie radar à synthèse d’ouverture (SAR).  
+Les unités sont indiquées entre crochets ; lorsqu’aucune unité n’est précisée, la variable est sans dimension.
 
 \begin{description}
-    \item[$PRF$] : La \textit{pulse range frequency}, la fréquence d'émission de pulses. [$Hz$]
-    \item[$N_a$] : Le nombre de point de mesures sur l'axe azimut 
-    \item[$v$] : La vitesse du porteur [$m.s^{-1}$] 
+    % --- Géométrie et paramètres de vol ---
+    \item[$v$] : Vitesse du porteur [$m·s^{-1}$].
+    \item[$h$] : Altitude du capteur [$m$].
+    \item[$R$] : Distance relative entre le radar et la cible [$m$].
+    \item[$\Delta R$] : Erreur radiale ou variation de distance [$m$].
+    \item[$\theta$] : Angle d’incidence ou d’observation [$rad$].
+    \item[$x,\,y$] : Coordonnées dans le plan d’imagerie (azimut, distance) [$m$].
+
+    % --- Paramètres radar fondamentaux ---
+    \item[$f_0$] : Fréquence centrale (porteuse) du signal radar [$Hz$].
+    \item[$\lambda$] : Longueur d’onde associée [$m$].
+    \item[$B$] : Bande passante instantanée du chirp [$Hz$].
+    \item[$T_{\mathrm{chirp}}$] : Durée d’un chirp (signal élémentaire) [$s$].
+    \item[$PRF$] : Pulse Repetition Frequency, fréquence de répétition des impulsions [$Hz$].
+    \item[$N$] : Nombre de canaux indépendants (polarimétrie ou multi-voies) [$–$].
+    \item[$P_x$] : Puissance, le champ $x$ change en fonction du contexte [$W$].
+    \item[$G_x$] : Gain, le champ $x$ change en fonction du contexte [$dBi$].
+    \item[$SNR$] : Rapport signal sur bruit (linéaire ou en dB selon le contexte) [$– ou dB$].
+    \item[$\sigma$] : Coefficient de rétrodiffusion normalisé (backscatter) [$–$].
+    \item[$\sigma_r$] : Surface Équivalente Radar/Radar Cross Section (SER/RCS) [$m^{2}$]. 
+
+    % --- Résolutions et paramètres d’imagerie ---
+    \item[$\delta_r$] : Résolution en distance [$m$].
+    \item[$\delta_{az}$] : Résolution azimutale, liée à la longueur synthétique de l’antenne [$m$].
+    \item[$L$] : Longueur de l’antenne [$m$].
+    \item[$N_r$] : Nombre d’échantillons (positions) le long de l’axe azimut [$-$].
+    \item[$\Delta x$] : Espacement spatial entre deux positions successives du radar [$m$].
+    \item[$K_{src}$] : Taux de modulation en fréquence du chirp [$s^{-2}$].
+    \item[$\varphi$] : Phase instantanée du signal [$rad$].
+    \item[$\sigma_\varphi$] : Écart type de phase (stabilité ou erreur de cohérence) [$rad$].
+    \item[$A$] : Amplitude du signal complexe [$–$].
+
+    % --- Acquisition et numérisation ---
+    \item[$f_s$] : Fréquence d’échantillonnage [$Hz$].
+    \item[$N$] : Nombre de bits du convertisseur (CAN/ADC) [$bits$].
+    \item[$\Delta$] : Pas de quantification [$V$].
+    \item[$\sigma_q$] : Écart type du bruit de quantification [$V$].
+    \item[$SNR_q$] : Rapport signal sur bruit dû à la quantification [$dB$].
+    \item[$n_I,\,n_Q$] : Bruits de quantification sur les composantes $I$ et $Q$ [$V$].
+    \item[$z = I + jQ$] : Échantillon complexe du signal radar [$–$].
+
+    % --- Chaîne de données et stockage ---
+    \item[$R_{\mathrm{inst}}$] : Débit instantané généré à la sortie des convertisseurs [$B·s^{-1}$].
+    \item[$R_{\mathrm{moy}}$] : Débit moyen enregistré après prise en compte du duty-cycle [$B·s^{-1}$].
+    \item[$V$] : Volume total de données acquises durant le vol [$bits$].
+    \item[$T_{\mathrm{vol}}$] : Durée utile d’acquisition pendant la mission [$s$].
+
+    % --- Horloges, synchronisation et métrologie ---
+    \item[$1\,\mathrm{pps}$] : Signal d’impulsion par seconde utilisé pour la synchronisation temporelle [$s$].
+    % --- Performances et indices divers ---
+    \item[$\mathrm{NF}$] : Figure de bruit de la chaîne RF [$dB$].
+    \item[$\mathrm{NF}$] : Facteur de bruit de la chaîne RF [$-$].
+    \item[$\mathrm{backoff_{dB}}$] : Marge de sécurité contre la saturation du convertisseur [$dB$].
 \end{description}
-
-
 
 
 % INTRODUCTION BY ALEXIS : 

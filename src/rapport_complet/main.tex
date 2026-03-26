@@ -106,9 +106,12 @@
 \usepackage{amsmath}
 \usepackage{microtype}
 
+\usepackage{tabularx}
+\usepackage{enumitem}
 \usepackage{placeins}
 \usepackage{float}
 \usepackage{tikz}
+\usetikzlibrary{arrows}
 %\usetikzlibrary{shapes.geometric, arrows.meta, positioning, decorations.pathreplacing, decorations.pathmorphing}
 \usetikzlibrary{shapes.geometric}
 \usetikzlibrary{arrows.meta}
@@ -117,6 +120,7 @@
 \usetikzlibrary{decorations.pathmorphing}
 \usetikzlibrary{decorations.markings}
 \usetikzlibrary{calc}
+
 
 \usepackage{gensymb}
 
@@ -135,9 +139,9 @@
 %----------------- Métadonnées du PDF (facilite le travail des moteurs de recherche) -----------
 \hypersetup{
 	pdfinfo = {
-		Author = {<Alexis COURBET>, <Mikael FRANCO>, <Maxence HUET>, <Jean TRONET>, <Samuel VIMARE>},
-		Title = {<Titre du document>},
-		Keywords = {<Mot-clé 1>; <Mot-clé 2>; ...}
+		Author = {Alexis COURBET, Mikael FRANCO, Maxence HUET, Jean TRONET, Samuel VIMARE},
+		Title = {Étude sur l'architecture matérielle et le traitement en imagerie SAR pour plateformes autonomes multi-capteurs},
+		Keywords = {SAR;RSO;imagerie;cartographie;drone;UAV;essaim de drones;système;backprojection;autofocus;CA-CFAR;fusion de données;détection multicapteurs; multicapteurs; multi-capteurs; mise en réseau; antenne; radar }
 	}
 }
 
@@ -166,10 +170,24 @@
 \def\Dset{\mathbb{D}} % disque unite ouvert
 \def\Eset{\mathbb{E}} % esperance mathematique
 
+
+
 %-------------------------------------- FIN DES DEFINITIONS ----------------------------------
 
 \begin{document}
 
+\tikzset{
+    % Styles de base
+    startstop/.style={rectangle, rounded corners, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=red!20},
+    process/.style={rectangle, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=blue!10},
+    decision/.style={diamond, aspect=2, minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=green!10},
+    arrow/.style={thick, ->, >=stealth},
+    % Styles spécifiques (Image SAR)
+    io/.style={rectangle, minimum width=2.5cm, minimum height=0.8cm, text centered, draw=none, fill=red, text=white, font=\bfseries},
+    cyanblock/.style={rectangle, minimum width=2.5cm, minimum height=0.8cm, text centered, fill=cyan},
+    yellowblock/.style={rectangle, minimum width=2.5cm, minimum height=0.8cm, text centered, fill=orange!80!yellow},
+    darkblue/.style={rectangle, minimum width=2.5cm, minimum height=0.8cm, text centered, fill=blue!80!black, text=white}
+}
 %---------------------------------------------------------------------------------------------
 %                                   PAGE DE TITRE (please modify)
 %---------------------------------------------------------------------------------------------
@@ -205,7 +223,7 @@ URL: \URLimta
 } % end of \entity
 
 % Type de document
-\DocumentType{Revue bibliographique}  
+\DocumentType{Rapport de projet}  
 %\DocumentType{Support de cours}
 %\DocumentType{Support de TP}
 %\DocumentType{Mémoire technique}
@@ -230,9 +248,7 @@ URL: \URLimta
 %\MentionSpeciale{\textcolor{red}{\fbox{DIFFUSION CONFIDENTIELLE}}}
 %\MentionSpeciale{\textcolor{red}{\fbox{DIFFUSION RESTREINTE}}}   
              
-
-\title{État de l’art sur le traitement et la détection en imagerie radar à synthèse d’ouverture (RSO) pour des plateformes autonomes multi-capteurs}
-%\title{Étude d'une forme d'onde pour communications longues-distances par le canal acoustique sous-marin}
+\title{SAR'DINE : étude d'un système de radar à synthèse d'ouverture en bande K}
 
 \author{
     Alexis COURBET\and
@@ -242,7 +258,8 @@ URL: \URLimta
 	Samuel VIMARE
 }
 
-\supervisors{Dr. François GALLEE, Dr. Frédéric MAUSSANG, Dr. Dominique PASTOR, Dr. Christophe SINTES}
+\supervisors{Dr. François GALLEE, Dr. Frédéric MAUSSANG, 
+Dr. Jean Marc LE CAILLEC, Dr. Dominique PASTOR, Dr. Christophe SINTES}
 
 
 % Numéro de version du document, affiché sur la couverture
@@ -291,18 +308,37 @@ URL: \URLimta
 
 \include{src/rapport_complet/sections/etat_de_lart}
     \include{src/rapport_complet/sections/etat_de_lart/RF/archi_hard_RF}
+    \include{src/rapport_complet/sections/etat_de_lart/RF/Acquisition_Image}
+    \include{src/rapport_complet/sections/etat_de_lart/RF/stockage-données-SAR}
+    \include{src/rapport_complet/sections/etat_de_lart/RF/sar_commerciaux}
     \include{src/rapport_complet/sections/etat_de_lart/traitement/chaine_de_traitement}
         \include{src/rapport_complet/sections/etat_de_lart/traitement/modelisation_bruit}
         \include{src/rapport_complet/sections/etat_de_lart/traitement/algo_traitement}
         \include{src/rapport_complet/sections/etat_de_lart/traitement/algo_detection}
         \include{src/rapport_complet/sections/etat_de_lart/traitement/algo_autofocus}
-    \include{src/rapport_complet/sections/etat_de_lart/Acquisition_Image}
-    \include{src/rapport_complet/sections/etat_de_lart/stockage-données-SAR}
-        
-    \include{src/rapport_complet/sections/etat_de_lart/sar_commerciaux}
+    
 
 \include{src/rapport_complet/sections/projet}
-    \include{src/rapport_complet/sections/projet/choix_algo}
+    \include{src/rapport_complet/sections/projet/rf/choixRF}
+    \include{src/rapport_complet/sections/projet/traitement/backprojection}
+    \include{src/rapport_complet/sections/projet/traitement/autofocus}
+    \include{src/rapport_complet/sections/projet/traitement/simulateur}
+    
+    \include{src/rapport_complet/sections/projet/traitement/detection}
+    %\include{src/rapport_complet/sections/projet/traitement/choix_algo} 
+    
+    
+
+    \include{src/rapport_complet/sections/projet/problemes/PB_sauvegardeIQ_&_SelfMixing} 
+    \include{src/rapport_complet/sections/projet/misc/3D} 
+    \include{src/rapport_complet/sections/projet/misc/tests_dev} 
+
+    \include{src/rapport_complet/sections/projet/res}
+    \include{src/rapport_complet/sections/projet/conclusion}
+
+    % \include{src/rapport_complet/sections/projet/gestion_projet}
+    %     \include{src/rapport_complet/sections/projet/gestion_projet/risques}
+    %     \include{src/rapport_complet/sections/projet/gestion_projet/risques_completes}
 
 
 %\include{src/rapport_complet/sections/bibliographie/tendances}
@@ -310,9 +346,9 @@ URL: \URLimta
 
 %-----------------------------------DEBUT DES ANNEXES ----------------------------------
 
-\begin{IMTAannexes}
+% \begin{IMTAannexes}
 		
-\end{IMTAannexes}
+% \end{IMTAannexes}
 %-----------------------------------FIN DES ANNEXES ----------------------------------
 
 

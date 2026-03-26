@@ -1,0 +1,50 @@
+\subsection{Systèmes existants}
+
+\subsubsection{SAR commerciaux miniaturisés}
+
+Les systèmes radar à synthèse d’ouverture (SAR) embarqués sur drones couvrent aujourd’hui un spectre très large, allant des solutions industrielles intégrées aux prototypes de recherche plus légers et ouverts. Cette diversité s’illustre particulièrement à travers deux exemples représentatifs : une solution commerciale aboutie, destinée à des usages militaires et civils professionnels, et une solution expérimentale compacte développée à titre individuel.
+
+Le radar SAR militaire commercial, tel que le HUSSAR~Drone~SAR de SpaceForest ou les modules de type~MPR-12, reflète une approche centrée sur la robustesse et la performance opérationnelle. Fonctionnant typiquement en bande~X ou~Ku, ces systèmes atteignent des portées d’imagerie de plusieurs kilomètres — jusqu’à~10 à~15~km — avec une résolution décimétrique. Leur architecture associe un émetteur–récepteur radar, un traitement embarqué en temps réel et une antenne planarisée à fort gain. Leur masse, souvent supérieure à~5~kg, ainsi que leur consommation énergétique, réservent leur utilisation à des plateformes de drones de catégorie moyenne à lourde. Ces radars sont optimisés pour des vols stables et prolongés, destinés à des missions de reconnaissance, de surveillance ou de cartographie à longue portée, avec un traitement propriétaire encapsulé et des interfaces simplifiées pour l’opérateur~\cite{HUSSAR2025}.
+
+À l’opposé, le SAR miniature expérimental développé par Forstén~\cite{Forsten2025} illustre les capacités obtenues à partir de moyens limités. Conçu pour un petit drone~FPV, ce système opère à environ~6~GHz (bande~C) et utilise une antenne patch imprimée d’une vingtaine de centimètres. Sa portée d’imagerie se limite à quelques centaines de mètres, mais il intègre une chaîne de traitement complète : formation d’image par rétroprojection factorisée, autofocus généralisé~(GPGA), correction tridimensionnelle de trajectoire et calibration polarimétrique sur quatre canaux (HH, HV, VH, VV). Le traitement est effectué en post-vol sur GPU à l’aide d’un environnement open-source. Ce dispositif démontre la faisabilité d’un radar SAR cohérent et fonctionnel à faible coût, adapté à l’expérimentation scientifique, au détriment toutefois de la robustesse mécanique et de la reproductibilité métrologique.
+
+Ainsi, le radar commercial privilégie la fiabilité et la performance opérationnelle, tandis que le système expérimental met l’accent sur la souplesse logicielle et la démonstration scientifique. Ces deux approches encadrent le domaine des SAR miniaturisés : la première tournée vers la production d’images calibrées et la reconnaissance, la seconde vers la recherche et l’évaluation algorithmique.
+
+\vspace{1em}
+
+Le tableau suivant récapitule les principales caractéristiques des radars SAR embarqués sur drones, en mettant en évidence la diversité des compromis entre masse, fréquence, portée et résolution.
+
+\begin{table}[h!]
+\centering
+\label{tab:radars_sar}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{@{} l c c c c c @{}}
+\toprule
+\textbf{Drone} & \textbf{Dimensions} & \textbf{Poids Radar} & \textbf{Fréquence} & \textbf{Imaging Range} & \textbf{Résolution pixel} \\ 
+\midrule
+HUSSAR DRONE & 71.5 $\times$ 63.5 $\times$ 54 cm & 5 kg+ & 9--11 GHz & 15 km & 15 $\times$ 30 cm \\
+SAR-LIGHT & 30 $\times$ 30 $\times$ 30 cm & 6 kg & 10 GHz -- 5.2 GHz, 900 MHz & 700 m & 8 cm \\
+Module Radar SAR miniature & nc & 6 kg & Bande Ku & 5 / 8 / 10 km & 0.3 / 1 / 3 m \\
+MPR-12 petit SAR aéroporté & nc & nc & Bande X et Ku & 5 km & 30 $\times$ 30 cm \\
+Forstén SAR (drone maison) & nc & nc & 6 GHz & 600 m (110 m altitude, 10° inclinaison) & nc \\
+\bottomrule
+\end{tabular}%
+}
+\caption{Comparatif de différents radars SAR embarqués sur drones.}
+\end{table}
+
+\subsubsection{Retours d’expérience et contraintes observées}
+
+Les travaux et expérimentations menés sur les SAR miniaturisés mettent en lumière plusieurs verrous techniques récurrents qui conditionnent la qualité des images et la fiabilité métrologique. Ces contraintes, liées à la miniaturisation et à la portabilité sur drones légers, se concentrent autour de quatre aspects principaux : stabilité du mouvement, cohérence~RF, capacité de traitement embarqué et gestion énergétique et thermique.
+
+La stabilité du mouvement et la précision de trajectoire constituent la première exigence critique. La cohérence de phase entre acquisitions successives requiert une précision de trajectoire de l’ordre de~$\lambda/100$ (soit environ~0{,}12~mm à~24~GHz) pour maintenir la focalisation~\cite{Aguasca2013_ARBRES_UAV_SAR}. Les plateformes multirotors sont sujettes à des micro-oscillations comprises entre~1 et~10~Hz, difficiles à compenser sans centrale inertielle rapide (IMU~>~1~kHz) couplée à un GPS différentiel~(RTK). Ces contraintes imposent de rigidifier la charge utile et de synchroniser finement les modules~RF et la centrale de navigation autour d’une référence commune~(1~PPS, 10~MHz).
+
+Sur le plan radiofréquence, la miniaturisation des frontaux~RF (synthétiseurs, LNA, mélangeurs) accroît la sensibilité au bruit de phase et aux dérives thermiques. Les systèmes commerciaux, tels que le~HUSSAR ou le~SAR-Light, utilisent des oscillateurs de référence~OCXO disciplinés GPS pour garantir une cohérence temporelle meilleure que~1° sur plusieurs secondes~\cite{HUSSAR2025,Angelliaume2022}. Les prototypes plus légers, fondés sur des~PLL ou~DDS non compensés, subissent au contraire des dérives de fréquence cumulatives limitant la cohérence à quelques centaines de millisecondes, d’où la nécessité d’un autofocus numérique.
+
+La capacité de traitement embarqué représente un autre facteur déterminant. Le traitement SAR — déchirpage, rétroprojection, compression et autofocus — est intensif en calcul et en mémoire. Les systèmes intégrés exploitent des~FPGA ou~SoC (Xilinx~RFSoC, Jetson~Orin) capables de générer des images préliminaires en vol, tandis que les plateformes expérimentales délèguent l’ensemble du traitement au post-vol sur~GPU. Un traitement embarqué complet améliore l’autonomie mais augmente la masse et la consommation (souvent~>~10~W). À l’inverse, un traitement différé réduit la charge utile mais impose un stockage plus conséquent et une stabilité~RF irréprochable. Les architectures hybrides, associant un aperçu embarqué à une imagerie finale au sol, offrent aujourd’hui le meilleur compromis.
+
+Les contraintes de stockage, d’alimentation et de thermique viennent compléter ce tableau. Les essais montrent qu’un enregistrement sans perte reste stable jusqu’à environ~50~MB/s, à condition d’intégrer un tampon mémoire d’au moins~512~MB et un système de fichiers optimisé (\texttt{noatime}, segmentation~1–5~min). La sous-chaîne acquisition–stockage représente en général 10~à~20\,\% de la puissance totale consommée, et la dissipation thermique — notamment pour les~SoC~ARM récents — impose un refroidissement actif, même sur des drones de~5 à~10~kg.
+
+Enfin, la calibration et la reproductibilité demeurent essentielles à la fiabilité des mesures. Les systèmes commerciaux réalisent des calibrations périodiques en chambre anéchoïque ou par cibles connues au sol, garantissant la stabilité radiométrique et polarimétrique. Les plateformes de recherche s’appuient sur des cibles ponctuelles artificielles et sur des routines de recalage automatique inspirées de Forstén ou de Krieger~\cite{Forsten2025,Krieger2010_InterferometricSAR}. Les difficultés principales concernent la stabilité thermique et la reproductibilité des conditions de vol.
+
+En définitive, miniaturiser un radar~SAR revient à transférer une partie des contraintes physiques — stabilité mécanique, synchronisation et cohérence~RF — vers le domaine numérique et algorithmique, où elles sont compensées par des techniques de recalage, d’autofocus et de correction géométrique. Les systèmes commerciaux privilégient l’intégration et la robustesse, tandis que les plateformes expérimentales misent sur la modularité et la transparence scientifique. Le système visé dans ce projet s’inscrit dans cette continuité, en cherchant un équilibre entre légèreté, cohérence de phase et flexibilité logicielle.
